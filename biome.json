@@ -9,7 +9,10 @@
       "src/bundle/features.ts",
       "test/images/**",
       ".tmp/**",
-      "node_modules/**"
+      "node_modules/**",
+      "docs/.vitepress/cache/**",
+      "docs/.vitepress/dist/**",
+      "**/*.vue"
     ]
   },
   "organizeImports": {

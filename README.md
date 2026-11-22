@@ -2,6 +2,8 @@
 
 ProtoApi is a JSON document format for Protocol Buffers APIs, plus the tools that convert to and from it: `.proto` text → ProtoApi, `FileDescriptorSet` → ProtoApi, ProtoApi → `.proto` text, and a source map that locates every document node in the original files. It is the protobuf counterpart of [gqlapi](https://github.com/udamir/graphapi) and the input format of [api-smart-diff](https://github.com/udamir/api-smart-diff) for protobuf and gRPC diffs.
 
+**Documentation: [udamir.github.io/protoapi](https://udamir.github.io/protoapi/)** — guide, specification, conversion examples and an online demo.
+
 - proto2, proto3, editions 2023, 2024 and 2026; edition feature defaults are read from `descriptor.proto` (`FeatureSetDefaults`), and a `descriptor.proto` of your own wins over the bundled one. An edition this version does not know (`UNSTABLE`, a future edition) is written verbatim in `syntax` with an `unsupported` issue and resolved with the edition 2026 defaults.
 - two producers with byte-identical output: pure TypeScript `.proto` parser (browser-capable) and `FileDescriptorSet` (ProtoJSON from `buf build -o image.json`, or binary through `@bufbuild/protobuf`)
 - annotation layer: comment tags (`@Minimum 1`, `@Format email`, …), AIP prefixes (`Required.`, `Output only.`, …), `google.api.field_behavior` / `field_info`, protovalidate, protoc-gen-validate and grpc-gateway rules lifted into JSON Schema keywords
@@ -153,6 +155,7 @@ bun run typecheck
 bun run check               # biome
 bun run build               # dist/ + browser/
 bun run test:dist           # smoke tests of both entries (CommonJS and ESM) after the build
+bun run docs:dev            # documentation site (VitePress, docs/); docs:build builds it, with the buf CLI for the examples
 bun scripts/images.ts       # regenerate buf images for the conformance fixtures and the bundle (needs the buf devDependency)
 bun scripts/case-images.ts  # record buf's verdict on the inline test cases (test/cases/*.ts)
 bun scripts/print-check.ts  # record that the printed text of every round-trip input passes buf build (PB-7.12)
