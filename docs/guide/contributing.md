@@ -24,7 +24,8 @@ node scripts/print-check.ts             # check that the printed text of every r
 node scripts/comment-fuzz.ts check 2000 # differential comment fuzz against buf
 node scripts/fetch-corpus.ts && node scripts/fetch-breaking.ts  # googleapis samples, buf's breaking test corpus
 pnpm bundle:fetch && pnpm bundle:gen                            # update the bundled definitions
-node bench/bench.ts --descriptor                                # performance
+node bench/budgets.ts [--write]                                 # performance budgets (PB-9) on Node: min / median / max per row, bench/results/node.md
+node bench/bench.ts --descriptor                                # timings per corpus size
 ```
 
 ## Project layout
