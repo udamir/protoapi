@@ -8,12 +8,12 @@ expect:
         pet:    { number: 1, $ref: "#/components/messages/shop.v1.Pet", required: true }
         start:  { number: 2, $ref: "#/components/messages/google.protobuf.Timestamp", options: { buf.validate.field: { timestamp: { gt_now: true } } } }
         length: { number: 3, $ref: "#/components/messages/google.protobuf.Duration", options: { buf.validate.field: { duration: { lte: { seconds: "86400" }, gte: { seconds: "60" } } } } }
-        ref:    { number: 4, type: string, protoType: string, const: fixed }
-        region: { number: 5, type: string, protoType: string, maxLength: 2, options: { buf.validate.field: { string: { not_in: [xx] } } } }
-        ratio:  { number: 6, type: number, protoType: double, options: { buf.validate.field: { double: { finite: true } } } }
-        big:    { number: 7, type: integer, protoType: uint64, exclusiveMinimum: "0", exclusiveMaximum: "18446744073709551615" }
-        email:  { number: 8, type: string, protoType: string }
-        phone:  { number: 9, type: string, protoType: string }
+        ref:    { number: 4, type: string, const: fixed }
+        region: { number: 5, type: string, maxLength: 2, options: { buf.validate.field: { string: { not_in: [xx] } } } }
+        ratio:  { number: 6, type: double, options: { buf.validate.field: { double: { finite: true } } } }
+        big:    { number: 7, type: uint64, exclusiveMinimum: "0", exclusiveMaximum: "18446744073709551615" }
+        email:  { number: 8, type: string }
+        phone:  { number: 9, type: string }
       options:
         buf.validate.message: { oneof: [{ fields: [email, phone], required: true }] }
   - pointer: "#/components/messages/shop.v1.Booking/properties/length/options/buf.validate.field/duration"

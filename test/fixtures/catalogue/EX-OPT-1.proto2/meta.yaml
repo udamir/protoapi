@@ -6,7 +6,7 @@ expect:
     value:
       type: object
       properties:
-        a: { number: 1, type: array, items: { type: integer, protoType: int32 }, packed: false }
-        b: { number: 2, type: array, items: { type: integer, protoType: int32 } }
-        c: { number: 3, type: array, items: { type: integer, protoType: int32 }, packed: false }
+        a: { number: 1, type: array, items: { type: int32 }, packed: false }
+        b: { number: 2, type: array, items: { type: int32 } }
+        c: { number: 3, type: array, items: { type: int32 }, packed: false }
       jsonFormat: LEGACY_BEST_EFFORT

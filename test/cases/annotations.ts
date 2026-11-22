@@ -247,7 +247,7 @@ export const cases: Case[] = [
         title: "T",
         number: 1,
         type: "array",
-        items: { type: "string", protoType: "string", format: "email", maxLength: 3, pattern: "^a$" },
+        items: { type: "string", format: "email", maxLength: 3, pattern: "^a$" },
         readOnly: true,
         minItems: 1,
         maxItems: 5,
@@ -356,7 +356,7 @@ service S {
       x([p.a.examples, p.a.options]).toEqual([["x", "y"], { "buf.validate.field": { string: { ulid: true } } }])
       x([p.c.examples, p.e.examples]).toEqual([["5"], ["E_ONE"]])
       x(p.d.options).toEqual({ "buf.validate.field": { string: { protobuf_fqn: true } } })
-      x(p.f.items).toEqual({ type: "integer", protoType: "int32", exclusiveMinimum: 0, examples: [1] })
+      x(p.f.items).toEqual({ type: "int32", exclusiveMinimum: 0, examples: [1] })
       const rpc = (r.document as Doc).services?.["t.S"]?.methods.R
       x([rpc?.deprecation, rpc?.options]).toEqual([{}, { [`${OA}.openapiv2_operation`]: { summary: "s" } }])
     },
@@ -575,8 +575,8 @@ message N {}
       for (const f of "abcdefghkl") x([f, p[f].options]).toEqual([f, undefined])
       x(p.b.description).toBe("The b.")
       // `required` opens the annotation keywords (design §7)
-      x(Object.keys(p.f)).toEqual(["number", "type", "protoType", "required", "format", "maxLength"])
-      x(Object.keys(p.h)).toEqual(["number", "type", "protoType", "jsonName", "required"])
+      x(Object.keys(p.f)).toEqual(["number", "type", "required", "format", "maxLength"])
+      x(Object.keys(p.h)).toEqual(["number", "type", "jsonName", "required"])
       x(Object.keys(p.e)).toEqual(["number", "$ref", "required"])
       // unmatched names stay under the message's options; OPTIONAL beats json_schema.required, recorded on the field
       x(msg(r.document).options).toEqual({ [`${OA}.openapiv2_schema`]: { json_schema: { required: ["nope"] } } })

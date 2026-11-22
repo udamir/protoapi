@@ -111,6 +111,12 @@ const ftypeOfModel = (f: MField): FType => {
 
 const decodePointerKey = (s: string) => s.replace(/~1/g, "/").replace(/~0/g, "~")
 
+/** The protobuf scalar of a scalar position (field, `items`, map key or value): its `type` when that names a scalar. */
+const scalarOf = (t: unknown): ProtoScalar | undefined => {
+  const type = isPlainObject(t) ? (t as { type?: unknown }).type : undefined
+  return typeof type === "string" && isScalar(type) ? type : undefined
+}
+
 const refFqn = (ref: string) => {
   const s = decodePointerKey(ref.replace(/^#\/components\/(messages|enums)\//, ""))
   try {
@@ -154,7 +160,7 @@ class Oracle {
         kind: "message",
         fqn: "",
         map: {
-          key: (f.propertyNames?.protoType ?? "string") as ProtoScalar,
+          key: scalarOf(f.propertyNames) ?? "string",
           value: this.refType(f.additionalProperties),
         },
       }
@@ -164,7 +170,8 @@ class Oracle {
   }
 
   private refType(t: ProtoApiTypeRef): FType {
-    if ("protoType" in t && t.protoType) return { kind: "scalar", scalar: t.protoType }
+    const scalar = scalarOf(t)
+    if (scalar) return { kind: "scalar", scalar }
     if ("$ref" in t && t.$ref)
       return t.$ref.includes("/enums/")
         ? { kind: "enum", fqn: refFqn(t.$ref) }
@@ -728,7 +735,8 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
   }
 
   const typeOf = (t: ProtoApiTypeRef | ProtoApiField): string => {
-    if ("protoType" in t && t.protoType) return t.protoType
+    const scalar = scalarOf(t)
+    if (scalar) return scalar
     if ("$ref" in t && t.$ref) return typeName(t.$ref)
     return "bytes"
   }
@@ -748,8 +756,8 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
     const posOf = (target: Target, node: unknown): Pos => {
       const n = (isPlainObject(node) ? node : {}) as Obj
       const p: Pos = { target, node: n }
-      const pt = n.protoType
-      if (typeof pt === "string" && isScalar(pt)) p.scalar = pt
+      const scalar = scalarOf(n)
+      if (scalar) p.scalar = scalar
       else if (typeof n.$ref === "string") {
         const fqn = refFqn(n.$ref)
         if (n.$ref.includes("/enums/")) p.enumFqn = fqn
@@ -1016,8 +1024,9 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
     const opts: string[] = []
     if (f.deprecation) opts.push("deprecated = true")
     if (f.jsonName !== undefined && !extension) opts.push(`json_name = ${quote(f.jsonName)}`)
-    const valueType: FType | undefined = f.protoType
-      ? { kind: "scalar", scalar: f.protoType }
+    const scalar = scalarOf(f)
+    const valueType: FType | undefined = scalar
+      ? { kind: "scalar", scalar }
       : f.$ref?.includes("/enums/")
         ? { kind: "enum" }
         : undefined
@@ -1075,7 +1084,7 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
     comment(depth, lines)
     let type: string
     if (f.type === "object" && f.additionalProperties) {
-      type = `map<${f.propertyNames?.protoType ?? "string"}, ${typeOf(f.additionalProperties)}>`
+      type = `map<${scalarOf(f.propertyNames) ?? "string"}, ${typeOf(f.additionalProperties)}>`
       label = ""
     } else if (f.type === "array" && f.items) type = typeOf(f.items)
     else type = typeOf(f)
@@ -1093,8 +1102,8 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
     const items = f.type === "array" ? f.items : undefined
     const packable =
       !!items &&
-      ("protoType" in items && items.protoType
-        ? items.protoType !== "string" && items.protoType !== "bytes"
+      (scalarOf(items)
+        ? scalarOf(items) !== "string" && scalarOf(items) !== "bytes"
         : "$ref" in items && !!items.$ref?.includes("/enums/"))
     if (packable) {
       if (syntax === "proto2" && f.packed !== false) out.push("packed = true")

@@ -75,14 +75,14 @@ components:
       description: A pet.
       type: object
       properties:
-        id: { description: Unique id., number: 1, type: integer, protoType: int64, required: true }
-        nickname: { number: 2, type: string, protoType: string, presence: explicit }
-        tags: { number: 3, type: array, items: { type: string, protoType: string } }
+        id: { description: Unique id., number: 1, type: int64, required: true }
+        nickname: { number: 2, type: string, presence: explicit }
+        tags: { number: 3, type: array, items: { type: string } }
         attrs:
           number: 4
           type: object
-          additionalProperties: { type: integer, protoType: int32 }
-          propertyNames: { type: string, protoType: string }
+          additionalProperties: { type: int32 }
+          propertyNames: { type: string }
         kind: { number: 5, $ref: "#/components/enums/shop.v1.Kind" }
   enums:
     shop.v1.Kind:
@@ -99,7 +99,7 @@ components:
 ## Design principles
 
 - **API-shaped, not file-shaped.** Services and methods come first; messages, enums and extensions are components keyed by fully qualified name, whatever file declares them. Files are listed separately, with what belongs to the file itself (syntax, package, imports, file options), and every service and component names its declaring `file`.
-- **JSON Schema where it fits.** A message is an object schema (`type: object`, `properties`), a repeated field is an array (`items`), a map is an object with `propertyNames` and `additionalProperties`, an enum is a string type with `values`, and validation annotations are JSON Schema keywords. Where protobuf has semantics JSON Schema lacks, the document uses protobuf keywords: `number`, `protoType`, `presence`, `oneof`, `jsonName`, `reserved`, `extensions`, `closed`, …
+- **JSON Schema where it fits.** A message is an object schema (`type: object`, `properties`), a repeated field is an array (`items`), a map is an object with `propertyNames` and `additionalProperties`, an enum is a string type with `values`, and validation annotations are JSON Schema keywords. Scalar types are the exact protobuf types (`type: int64`, `type: bytes`), so a wire-relevant type change is never hidden behind a JSON category. Where protobuf has semantics JSON Schema lacks, the document uses protobuf keywords: `number`, `presence`, `oneof`, `jsonName`, `reserved`, `extensions`, `closed`, …
 - **Nominal references.** A field of a message or enum type is a `$ref` to its component. Siblings of a `$ref` are attributes of the field (its number, description, annotations), never a schema to merge with the target.
 - **One spelling per fact.** Values are canonical (64-bit integers as decimal strings, bytes as base64, enum values as names), options equal to their default are omitted, absent keys mean the protobuf default, and keys and lists have a defined order. Two builds of the same API — from text or from a descriptor set — give equal documents, so a difference between two documents is a difference between the APIs.
 - **Lossless.** Everything that affects the API or its documentation is kept, and a document prints back to `.proto` files that build to the same document.

@@ -12,9 +12,9 @@ expect:
       description: A pet.
       type: object
       properties:
-        name: { number: 1, type: string, protoType: string, presence: explicit }
-        legacy_count: { number: 2, type: integer, protoType: int32 }
-        ids: { number: 3, type: array, items: { type: integer, protoType: int32 } }
+        name: { number: 1, type: string, presence: explicit }
+        legacy_count: { number: 2, type: int32 }
+        ids: { number: 3, type: array, items: { type: int32 } }
         kind: { number: 4, $ref: "#/components/enums/shop.v1.Kind", presence: explicit }
       options: { visibility: export }
   - pointer: "#/components/messages/shop.v1.Pet.Limits/options"

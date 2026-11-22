@@ -4,5 +4,5 @@ title: a default on an implicit-presence field is an invalid-option issue
 # buf 1.75 compiles this file (image: field size has defaultValue "20"), so the set also runs PB-2.
 expect:
   - pointer: "#/components/messages/shop.v1.Page/properties/size"
-    value: { number: 1, type: integer, protoType: int32, …: true }
+    value: { number: 1, type: int32, …: true }
 issues: [ "invalid-option @ #/components/messages/shop.v1.Page/properties/size/**" ]

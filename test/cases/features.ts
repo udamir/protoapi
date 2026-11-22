@@ -66,10 +66,10 @@ export const cases: Case[] = [
       })
       const both = props(r.document, "f.M").both
       x([both.propertyNames, both.additionalProperties]).toEqual([
-        { type: "string", protoType: "string", utf8Validation: false },
-        { type: "string", protoType: "string", utf8Validation: false },
+        { type: "string", utf8Validation: false },
+        { type: "string", utf8Validation: false },
       ])
-      x(props(r.document, "f.M").value.propertyNames).toEqual({ type: "integer", protoType: "int32" })
+      x(props(r.document, "f.M").value.propertyNames).toEqual({ type: "int32" })
       for (const m of ["f.M", "f.M.Inner"]) x(msg(r.document, m).jsonFormat).toBe("LEGACY_BEST_EFFORT")
       for (const e of ["f.E", "f.M.Nested"]) x(en(r.document, e).jsonFormat).toBe("LEGACY_BEST_EFFORT")
       x(Object.keys(en(r.document, "f.E"))).toEqual(["title", "file", "type", "values", "closed", "jsonFormat"])

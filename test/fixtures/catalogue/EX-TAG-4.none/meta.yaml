@@ -3,4 +3,4 @@ title: annotation mode none
 options: { annotations: none }
 expect:
   - pointer: "#/components/messages/shop.v1.Signup"
-    value: { type: object, properties: { email: { number: 1, description: "Required. The e-mail.\n@MaxLength 254", type: string, protoType: string, options: { buf.validate.field: { string: { email: true } } } } } }
+    value: { type: object, properties: { email: { number: 1, description: "Required. The e-mail.\n@MaxLength 254", type: string, options: { buf.validate.field: { string: { email: true } } } } } }

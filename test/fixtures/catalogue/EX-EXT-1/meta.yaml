@@ -4,6 +4,6 @@ title: proto2 extension fields, top-level and in a message scope
 expect:
   - pointer: "#/components/extensions"
     value:
-      shop.legacy.priority:          { title: priority, file: shop.proto, extendee: shop.legacy.Order, number: 100, type: boolean, protoType: bool, presence: explicit }
-      shop.legacy.notes:             { title: notes, file: shop.proto, extendee: shop.legacy.Order, number: 101, type: array, items: { type: string, protoType: string, utf8Validation: false } }
+      shop.legacy.priority:          { title: priority, file: shop.proto, extendee: shop.legacy.Order, number: 100, type: bool, presence: explicit }
+      shop.legacy.notes:             { title: notes, file: shop.proto, extendee: shop.legacy.Order, number: 101, type: array, items: { type: string, utf8Validation: false } }
       shop.legacy.Shipping.shipping: { title: shipping, file: shop.proto, extendee: shop.legacy.Order, number: 150, $ref: "#/components/messages/shop.legacy.Shipping" }

@@ -5,5 +5,5 @@ expect:
     value:
       type: object
       properties:
-        a: { number: 1, type: integer, protoType: int32 }
-        z: { number: 536870911, type: integer, protoType: int32 }
+        a: { number: 1, type: int32 }
+        z: { number: 536870911, type: int32 }

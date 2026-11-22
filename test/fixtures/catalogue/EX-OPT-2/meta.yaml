@@ -6,6 +6,6 @@ expect:
     value:
       type: object
       properties:
-        data: { number: 1, type: string, protoType: string, presence: explicit, utf8Validation: false }
-        ids:  { number: 2, type: array, items: { type: integer, protoType: int32 }, packed: false }
+        data: { number: 1, type: string, presence: explicit, utf8Validation: false }
+        ids:  { number: 2, type: array, items: { type: int32 }, packed: false }
       jsonFormat: LEGACY_BEST_EFFORT

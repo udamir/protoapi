@@ -7,10 +7,10 @@ expect:
     value:
       type: object
       properties:
-        card_token: { number: 1, type: string, protoType: string, oneof: method, utf8Validation: false }
+        card_token: { number: 1, type: string, oneof: method, utf8Validation: false }
         bank:       { number: 2, $ref: "#/components/messages/shop.v1.BankAccount", oneof: method }
         status:     { number: 3, $ref: "#/components/enums/shop.v1.Status", oneof: method }
-        note:       { number: 4, type: string, protoType: string, presence: explicit, utf8Validation: false }
+        note:       { number: 4, type: string, presence: explicit, utf8Validation: false }
       oneofs:
         method: { description: How the payment is made., options: { acme.opts.group: billing } }
       jsonFormat: LEGACY_BEST_EFFORT

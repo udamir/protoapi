@@ -6,7 +6,7 @@ expect:
     value:
       type: object
       properties:
-        email: { number: 1, type: string, protoType: string, options: { acme.opts.sensitivity: pii } }
+        email: { number: 1, type: string, options: { acme.opts.sensitivity: pii } }
       options: { acme.opts.table: { name: customers, indexes: [email] } }
 absent:
   - "#/components/messages/acme.opts.Table"

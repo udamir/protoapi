@@ -5,18 +5,18 @@ expect:
     value:
       type: object
       properties:
-        d:    { number: 1,  type: number,  protoType: double }
-        f:    { number: 2,  type: number,  protoType: float }
-        i32:  { number: 3,  type: integer, protoType: int32 }
-        i64:  { number: 4,  type: integer, protoType: int64 }
-        u32:  { number: 5,  type: integer, protoType: uint32 }
-        u64:  { number: 6,  type: integer, protoType: uint64 }
-        s32:  { number: 7,  type: integer, protoType: sint32 }
-        s64:  { number: 8,  type: integer, protoType: sint64 }
-        f32:  { number: 9,  type: integer, protoType: fixed32 }
-        f64:  { number: 10, type: integer, protoType: fixed64 }
-        sf32: { number: 11, type: integer, protoType: sfixed32 }
-        sf64: { number: 12, type: integer, protoType: sfixed64 }
-        b:    { number: 13, type: boolean, protoType: bool }
-        s:    { number: 14, type: string,  protoType: string }
-        raw:  { number: 15, type: string,  protoType: bytes }
+        d:    { number: 1,  type: double }
+        f:    { number: 2,  type: float }
+        i32:  { number: 3,  type: int32 }
+        i64:  { number: 4,  type: int64 }
+        u32:  { number: 5,  type: uint32 }
+        u64:  { number: 6,  type: uint64 }
+        s32:  { number: 7,  type: sint32 }
+        s64:  { number: 8,  type: sint64 }
+        f32:  { number: 9,  type: fixed32 }
+        f64:  { number: 10, type: fixed64 }
+        sf32: { number: 11, type: sfixed32 }
+        sf64: { number: 12, type: sfixed64 }
+        b:    { number: 13, type: bool }
+        s:    { number: 14, type: string }
+        raw:  { number: 15, type: bytes }

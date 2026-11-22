@@ -11,8 +11,8 @@ expect:
           due:        { number: 2, $ref: "#/components/messages/google.type.Date" }
           last_error: { number: 3, $ref: "#/components/messages/google.rpc.Status" }
           memo:       { number: 4, $ref: "#/components/messages/google.protobuf.StringValue" }
-      google.type.Money:  { type: object, properties: { currency_code: { number: 1, type: string, protoType: string }, units: { number: 2, type: integer, protoType: int64 }, nanos: { number: 3, type: integer, protoType: int32 } } }
-      google.type.Date:   { type: object, properties: { year: { number: 1, type: integer, protoType: int32 }, month: { number: 2, type: integer, protoType: int32 }, day: { number: 3, type: integer, protoType: int32 } } }
-      google.rpc.Status:  { type: object, properties: { code: { number: 1, type: integer, protoType: int32 }, message: { number: 2, type: string, protoType: string }, details: { number: 3, type: array, items: { $ref: "#/components/messages/google.protobuf.Any" } } } }
+      google.type.Money:  { type: object, properties: { currency_code: { number: 1, type: string }, units: { number: 2, type: int64 }, nanos: { number: 3, type: int32 } } }
+      google.type.Date:   { type: object, properties: { year: { number: 1, type: int32 }, month: { number: 2, type: int32 }, day: { number: 3, type: int32 } } }
+      google.rpc.Status:  { type: object, properties: { code: { number: 1, type: int32 }, message: { number: 2, type: string }, details: { number: 3, type: array, items: { $ref: "#/components/messages/google.protobuf.Any" } } } }
       google.protobuf.Any:         { … }
-      google.protobuf.StringValue: { type: object, properties: { value: { number: 1, type: string, protoType: string } } }
+      google.protobuf.StringValue: { type: object, properties: { value: { number: 1, type: string } } }

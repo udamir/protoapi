@@ -3,6 +3,6 @@
 title: proto2 map field has no presence
 expect:
   - pointer: "#/components/messages/shop.legacy.Paint/properties/paints"
-    value: { number: 1, type: object, propertyNames: { type: string, protoType: string, utf8Validation: false }, additionalProperties: { $ref: "#/components/enums/shop.legacy.Color" } }
+    value: { number: 1, type: object, propertyNames: { type: string, utf8Validation: false }, additionalProperties: { $ref: "#/components/enums/shop.legacy.Color" } }
   - pointer: "#/components/enums/shop.legacy.Color/closed"
     value: true

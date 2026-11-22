@@ -587,12 +587,12 @@ describe("PB-7 printer round trip", () => {
         messages: {
           "p.A": {
             type: "object",
-            properties: { f: { number: 1, type: "string", protoType: "string", required: true } },
+            properties: { f: { number: 1, type: "string", required: true } },
           },
           "p.B": {
             type: "object",
             required: ["f"],
-            properties: { f: { number: 1, type: "string", protoType: "string" } },
+            properties: { f: { number: 1, type: "string" } },
           },
         },
       },

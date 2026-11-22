@@ -13,11 +13,11 @@ expect:
     value:
       type: object
       properties:
-        url:   { number: 2, type: string, protoType: string, presence: required, utf8Validation: false }
-        title: { number: 3, type: string, protoType: string, presence: explicit, utf8Validation: false }
+        url:   { number: 2, type: string, presence: required, utf8Validation: false }
+        title: { number: 3, type: string, presence: explicit, utf8Validation: false }
       jsonFormat: LEGACY_BEST_EFFORT
   - pointer: "#/components/messages/shop.legacy.SearchResponse.Meta"
     value:
       type: object
-      properties: { total: { number: 1, type: integer, protoType: int32, presence: explicit } }
+      properties: { total: { number: 1, type: int32, presence: explicit } }
       jsonFormat: LEGACY_BEST_EFFORT

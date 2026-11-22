@@ -71,7 +71,6 @@ import {
   defaultJsonName,
   INT_RANGE,
   isPlainObject,
-  jsonTypeOf,
   parseFloatText,
   parseIntText,
   toBase64,
@@ -109,7 +108,6 @@ const FIELD_KEY_ORDER = [
   "extendee",
   "number",
   "type",
-  "protoType",
   "$ref",
   "items",
   "additionalProperties",
@@ -421,7 +419,7 @@ export class Lowering {
   }
 
   private typeRef(t: MTypeRef): ProtoApiTypeRef {
-    if (t.kind === "scalar") return { type: jsonTypeOf(t.scalar), protoType: t.scalar }
+    if (t.kind === "scalar") return { type: t.scalar }
     return { $ref: this.refOf(t) }
   }
 
@@ -693,7 +691,7 @@ export class Lowering {
     if (f.map) {
       out.type = "object"
       out.additionalProperties = this.typeRef(f.map.value)
-      out.propertyNames = { type: jsonTypeOf(f.map.key), protoType: f.map.key }
+      out.propertyNames = { type: f.map.key }
       shape = { self: { message: true }, map: { key: { scalar: f.map.key }, value: this.slot(f.map.value) } }
     } else if (f.repeated) {
       out.type = "array"

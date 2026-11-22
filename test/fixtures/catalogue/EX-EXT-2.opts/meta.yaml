@@ -4,10 +4,10 @@ options: { entry: [acme/opts.proto] }
 expect:
   - pointer: "#/components/messages"
     value:
-      acme.opts.Table: { type: object, properties: { name: { number: 1, type: string, protoType: string }, indexes: { number: 2, type: array, items: { type: string, protoType: string } } } }
+      acme.opts.Table: { type: object, properties: { name: { number: 1, type: string }, indexes: { number: 2, type: array, items: { type: string } } } }
   - pointer: "#/components/extensions"
     value:
-      acme.opts.owner:         { extendee: google.protobuf.FileOptions, number: 50000, type: string, protoType: string, presence: explicit }
-      acme.opts.sensitivity:   { extendee: google.protobuf.FieldOptions, number: 50001, type: string, protoType: string, presence: explicit }
+      acme.opts.owner:         { extendee: google.protobuf.FileOptions, number: 50000, type: string, presence: explicit }
+      acme.opts.sensitivity:   { extendee: google.protobuf.FieldOptions, number: 50001, type: string, presence: explicit }
       acme.opts.table:         { extendee: google.protobuf.MessageOptions, number: 50002, $ref: "#/components/messages/acme.opts.Table" }
-      acme.opts.internal_note: { extendee: google.protobuf.FieldOptions, number: 50010, type: string, protoType: string, presence: explicit, options: { retention: RETENTION_SOURCE, targets: [TARGET_TYPE_FIELD] } }
+      acme.opts.internal_note: { extendee: google.protobuf.FieldOptions, number: 50010, type: string, presence: explicit, options: { retention: RETENTION_SOURCE, targets: [TARGET_TYPE_FIELD] } }

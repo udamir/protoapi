@@ -2,4 +2,4 @@
 title: edition 2023 map field has no presence (inherits IMPLICIT from the file)
 expect:
   - pointer: "#/components/messages/shop.legacy.Paint/properties/paints"
-    value: { number: 1, type: object, propertyNames: { type: string, protoType: string }, additionalProperties: { $ref: "#/components/enums/shop.legacy.Color" } }
+    value: { number: 1, type: object, propertyNames: { type: string }, additionalProperties: { $ref: "#/components/enums/shop.legacy.Color" } }

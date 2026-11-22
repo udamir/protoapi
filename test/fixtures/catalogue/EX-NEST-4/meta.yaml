@@ -5,6 +5,6 @@ expect:
     value:
       type: object
       properties:
-        id:       { number: 1, type: string, protoType: string }
+        id:       { number: 1, type: string }
         children: { number: 2, type: array, items: { $ref: "#/components/messages/shop.v1.Node" } }
         parent:   { number: 3, $ref: "#/components/messages/shop.v1.Node" }

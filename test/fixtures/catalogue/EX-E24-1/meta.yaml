@@ -7,7 +7,7 @@ expect:
   - pointer: "#/components/messages"
     value:
       shop.v2.Pet:        { type: object, properties: { secret: { number: 1, $ref: "#/components/messages/shop.v2.Pet.Secret" } }, options: { visibility: export } }
-      shop.v2.Pet.Secret: { type: object, properties: { s: { number: 1, type: string, protoType: string, presence: explicit } }, options: { visibility: local } }
+      shop.v2.Pet.Secret: { type: object, properties: { s: { number: 1, type: string, presence: explicit } }, options: { visibility: local } }
       shop.v2.Plain:      { type: object, properties: {} }
   - pointer: "#/components/enums"
     value:

@@ -5,7 +5,7 @@ expect:
     value:
       type: object
       properties:
-        name: { number: 1, type: string, protoType: string, minLength: 1, maxLength: 64 }
-        id:   { number: 2, type: integer, protoType: uint64, exclusiveMinimum: "999" }
+        name: { number: 1, type: string, minLength: 1, maxLength: 64 }
+        id:   { number: 2, type: uint64, exclusiveMinimum: "999" }
         pet:  { number: 3, $ref: "#/components/messages/shop.v1.Pet", required: true }
-        ids:  { number: 4, type: array, items: { type: integer, protoType: int32, exclusiveMinimum: 0 }, minItems: 1 }
+        ids:  { number: 4, type: array, items: { type: int32, exclusiveMinimum: 0 }, minItems: 1 }

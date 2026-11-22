@@ -27,15 +27,6 @@ export const SCALARS = new Set<string>([
 
 export const isScalar = (name: string): name is ProtoScalar => SCALARS.has(name)
 
-export const jsonTypeOf = (s: ProtoScalar): "integer" | "number" | "boolean" | "string" =>
-  INT32_KINDS.has(s) || INT64_KINDS.has(s)
-    ? "integer"
-    : FLOAT_KINDS.has(s)
-      ? "number"
-      : s === "bool"
-        ? "boolean"
-        : "string"
-
 /** Wrapper well-known types and their scalar (`google.protobuf.StringValue` -> `string`). */
 export const WRAPPERS: Record<string, ProtoScalar> = {
   "google.protobuf.DoubleValue": "double",

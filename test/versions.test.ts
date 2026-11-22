@@ -51,7 +51,6 @@ describe("D-C: editions", () => {
     expect(msg(r, "p.M")?.properties.s).toEqual({
       number: 1,
       type: "string",
-      protoType: "string",
       presence: "explicit",
     })
   })
@@ -97,8 +96,8 @@ describe("D-C: editions", () => {
       ])
       // 2026 defaults: explicit presence, packed (no `packed: false`), open enums
       expect(msg(r, "p.M")?.properties).toEqual({
-        s: { number: 1, type: "string", protoType: "string", presence: "explicit" },
-        r: { number: 2, type: "array", items: { type: "integer", protoType: "int32" } },
+        s: { number: 1, type: "string", presence: "explicit" },
+        r: { number: 2, type: "array", items: { type: "int32" } },
       })
     })
   }

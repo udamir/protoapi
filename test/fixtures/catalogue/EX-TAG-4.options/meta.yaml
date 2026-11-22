@@ -3,4 +3,4 @@ title: annotation mode options
 options: { annotations: options }
 expect:
   - pointer: "#/components/messages/shop.v1.Signup"
-    value: { type: object, properties: { email: { number: 1, description: "Required. The e-mail.\n@MaxLength 254", type: string, protoType: string, format: email } } }
+    value: { type: object, properties: { email: { number: 1, description: "Required. The e-mail.\n@MaxLength 254", type: string, format: email } } }

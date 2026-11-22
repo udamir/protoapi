@@ -10,17 +10,17 @@ expect:
     value:
       type: object
       properties:
-        name: { number: 1, type: string, protoType: string, options: { google.api.field_behavior: [IDENTIFIER] } }
+        name: { number: 1, type: string, options: { google.api.field_behavior: [IDENTIFIER] } }
       options:
         google.api.resource: { type: library.example.com/Book, pattern: ["shelves/{shelf}/books/{book}"], plural: books, singular: book }
   - pointer: "#/components/messages/shop.v1.GetBookRequest"
     value:
       type: object
       properties:
-        name: { number: 1, type: string, protoType: string, required: true, options: { google.api.resource_reference: { type: library.example.com/Book } } }
+        name: { number: 1, type: string, required: true, options: { google.api.resource_reference: { type: library.example.com/Book } } }
   - pointer: "#/components/messages/shop.v1.ListBooksRequest"
     value:
       type: object
       properties:
-        parent:    { number: 1, type: string, protoType: string, options: { google.api.resource_reference: { child_type: library.example.com/Book } } }
-        page_size: { number: 2, type: integer, protoType: int32, options: { google.api.field_behavior: [OPTIONAL] } }
+        parent:    { number: 1, type: string, options: { google.api.resource_reference: { child_type: library.example.com/Book } } }
+        page_size: { number: 2, type: int32, options: { google.api.field_behavior: [OPTIONAL] } }

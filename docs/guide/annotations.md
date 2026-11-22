@@ -15,10 +15,9 @@ message Signup {
 ```
 
 ```yaml
-email:
-  { description: The user's e-mail address., number: 1, type: string, protoType: string, required: true, format: email }
-name: { number: 2, type: string, protoType: string, maxLength: 64 }
-age: { number: 3, type: integer, protoType: int32, maximum: 150, exclusiveMinimum: 0 }
+email: { description: The user's e-mail address., number: 1, type: string, required: true, format: email }
+name: { number: 2, type: string, maxLength: 64 }
+age: { number: 3, type: int32, maximum: 150, exclusiveMinimum: 0 }
 ```
 
 A lifted option is removed from `options`, a lifted tag or prefix from the description. Whatever cannot be expressed as a keyword — CEL expressions, `ignore`, message-level rules — stays under `options`, typed.
@@ -131,7 +130,6 @@ message Coupon {
 code:
   number: 1
   type: string
-  protoType: string
   maxLength: 64
   options:
     google.api.field_behavior: [OPTIONAL]

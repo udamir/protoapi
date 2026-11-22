@@ -5,11 +5,11 @@ expect:
     value:
       type: object
       properties:
-        name:        { number: 1, type: string, protoType: string, options: { google.api.field_behavior: [IDENTIFIER] } }
-        title:       { number: 2, type: string, protoType: string, required: true }
+        name:        { number: 1, type: string, options: { google.api.field_behavior: [IDENTIFIER] } }
+        title:       { number: 2, type: string, required: true }
         create_time: { number: 3, $ref: "#/components/messages/google.protobuf.Timestamp", readOnly: true }
-        etag:        { number: 4, type: string, protoType: string, writeOnly: true }
-        isbn:        { number: 5, type: string, protoType: string, required: true, immutable: true }
-        authors:     { number: 6, type: array, items: { type: string, protoType: string }, options: { google.api.field_behavior: [UNORDERED_LIST] } }
-        id:          { number: 7, type: string, protoType: string, format: uuid }
-        ip:          { number: 8, type: string, protoType: string, format: ip }
+        etag:        { number: 4, type: string, writeOnly: true }
+        isbn:        { number: 5, type: string, required: true, immutable: true }
+        authors:     { number: 6, type: array, items: { type: string }, options: { google.api.field_behavior: [UNORDERED_LIST] } }
+        id:          { number: 7, type: string, format: uuid }
+        ip:          { number: 8, type: string, format: ip }

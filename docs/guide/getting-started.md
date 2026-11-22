@@ -95,23 +95,19 @@ components:
           description: Unique id.
           number: 1
           type: string
-          protoType: string
           required: true
         title:
           number: 2
           type: string
-          protoType: string
         done:
           deprecation: {}
           number: 3
-          type: boolean
-          protoType: bool
+          type: bool
         tags:
           number: 4
           type: array
           items:
             type: string
-            protoType: string
     todo.v1.GetTodoRequest:
       title: GetTodoRequest
       file: todo/v1/todo.proto
@@ -120,13 +116,12 @@ components:
         id:
           number: 1
           type: string
-          protoType: string
 ```
 
 A few things to note:
 
 - Services and messages are keyed by their fully qualified name (`todo.v1.Todo`), fields by their name; every field carries its `number`.
-- A scalar field has a JSON Schema `type` and its `protoType`; a repeated field is `type: array` with `items`.
+- A scalar field has its protobuf type in `type` (`string`, `bool`, `int64`, …); a repeated field is `type: array` with `items`.
 - Comments became `description`s. The `Required.` prefix of the `id` comment is an [AIP annotation](/guide/annotations#aip-prefixes): it was removed from the description and became `required: true`.
 - `[deprecated = true]` became `deprecation: {}`; options equal to their default and implicit presence are not written at all.
 

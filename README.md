@@ -66,8 +66,8 @@ components:
       description: A pet.
       type: object
       properties:
-        id: { description: Unique id., number: 1, type: integer, protoType: int64, required: true }
-        nickname: { number: 2, type: string, protoType: string, presence: explicit }
+        id: { description: Unique id., number: 1, type: int64, required: true }
+        nickname: { number: 2, type: string, presence: explicit }
         created_at: { number: 3, $ref: "#/components/messages/google.protobuf.Timestamp" }
     google.protobuf.Timestamp: { … }
 ```
@@ -136,7 +136,7 @@ Issue codes: `syntax`, `missing-import`, `unresolved-type` (also a name of the w
 ## Format in short
 
 - Services and methods on top; messages, enums and extensions under `components`, keyed by fully qualified name (`pkg.Outer.Inner`).
-- Fields are keyed by name and carry `number`; scalars are `{ type, protoType }`; message and enum fields are nominal `$ref`s (siblings of `$ref` are field attributes, never schema overrides); `repeated` → `type: array, items`; `map<K, V>` → `type: object, propertyNames, additionalProperties`.
+- Fields are keyed by name and carry `number`; scalars are `{ type: <protobuf scalar> }` (`int64`, `bytes`, …); message and enum fields are nominal `$ref`s (siblings of `$ref` are field attributes, never schema overrides); `repeated` → `type: array, items`; `map<K, V>` → `type: object, propertyNames, additionalProperties`.
 - protobuf keywords: `presence: explicit | required`, `oneof` + `oneofs`, `jsonName` (only when different from the default), `default` (proto2 / editions), `delimited` (groups / `DELIMITED`), `reserved`, `extensions`, `extendee`, `closed` (closed enums), `options` (everything not lifted, typed, snake_case keys).
 - Canonical values: 64-bit integers as decimal strings, `"Infinity"` / `"-Infinity"` / `"NaN"`, bytes as base64, enums as names; options equal to their default are not written.
 - `files[path].bundled: true` marks a file resolved from the bundle that is not an entry file; it has no header `description` and is not printed by `printProto`.

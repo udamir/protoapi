@@ -14,7 +14,7 @@ Each example below is a set of `.proto` files shown in every form `protoapi` wor
 The badges state three facts that are checked for every example: whether building the printed files gives the same document again (a lossless round trip), whether the document built from buf's descriptor set with `buildFromDescriptorSet` equals the one built from the text, and whether the build reported [issues](/guide/diagnostics). **Specification** links to the section of the [ProtoApi 0.1 specification](/spec/v0.1) that defines the mapping.
 
 ::: tip How to read the ProtoApi tab
-The [specification](/spec/v0.1) defines every key. As a rule of thumb: services and components are keyed by fully qualified name and name their `file`; every field has its `number` and one type shape — `type` + `protoType` for scalars, `$ref` for messages and enums, `type: array` + `items`, or `type: object` + `propertyNames` + `additionalProperties` for maps; protobuf keywords (`presence`, `oneof`, `jsonName`, …) appear only when they differ from the default; and options that are not lifted into a keyword stay under `options`, typed.
+The [specification](/spec/v0.1) defines every key. As a rule of thumb: services and components are keyed by fully qualified name and name their `file`; every field has its `number` and one type shape — `type` with the protobuf scalar type (`int64`, `string`, …) for scalars, `$ref` for messages and enums, `type: array` + `items`, or `type: object` + `propertyNames` + `additionalProperties` for maps; protobuf keywords (`presence`, `oneof`, `jsonName`, …) appear only when they differ from the default; and options that are not lifted into a keyword stay under `options`, typed.
 :::
 
 ## Pet shop
@@ -25,7 +25,7 @@ A small but complete API: a file header, a service with an HTTP binding and an i
 
 ## Scalar fields
 
-Every scalar position carries both a JSON Schema `type` and the protobuf `protoType`: the 32- and 64-bit integer types are `integer`, `float` and `double` are `number`, `bool` is `boolean`, and `string` and `bytes` are `string`. A consumer reads the wire type from `protoType` and never has to infer it.
+Every scalar position — a field, `items`, a map key or value — carries the protobuf scalar type in `type`, exactly as written in the `.proto` file, so `int32`, `sint32` and `fixed32` stay distinct, as do `string` and `bytes`.
 
 <ConversionExample id="scalars" />
 

@@ -3,7 +3,7 @@ title: unknown option from a missing import
 textOnly: true   # other/flags.proto is missing
 expect:
   - pointer: "#/components/messages/shop.v1.Pet"
-    value: { type: object, properties: { name: { number: 1, type: string, protoType: string, options: { other.flags.hidden: "true" } } } }
+    value: { type: object, properties: { name: { number: 1, type: string, options: { other.flags.hidden: "true" } } } }
 issues:
   - "missing-import @ #/files/shop.proto/imports/0"
   - "unknown-option @ #/components/messages/shop.v1.Pet/properties/name/options/other.flags.hidden"

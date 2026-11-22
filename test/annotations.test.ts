@@ -32,7 +32,6 @@ message M {
       description: "Required. Text.\n@MaxLength 9\n@Title T",
       number: 1,
       type: "string",
-      protoType: "string",
       maxLength: 5,
     })
     expect(r.issues).toEqual([])

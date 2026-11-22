@@ -2,6 +2,6 @@
 title: a hand-written entry message is not a map
 expect:
   - pointer: "#/components/messages/shop.v1.AttrsEntry"
-    value: { type: object, properties: { key: { number: 1, type: string, protoType: string }, value: { number: 2, type: integer, protoType: int32 } } }
+    value: { type: object, properties: { key: { number: 1, type: string }, value: { number: 2, type: int32 } } }
   - pointer: "#/components/messages/shop.v1.Pet"
     value: { type: object, properties: { attrs: { number: 1, type: array, items: { $ref: "#/components/messages/shop.v1.AttrsEntry" } } } }

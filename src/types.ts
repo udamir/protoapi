@@ -135,8 +135,8 @@ export interface ProtoApiAnnotations {
 }
 
 export interface ProtoApiScalarRef extends ProtoApiAnnotations {
-  type: "integer" | "number" | "boolean" | "string"
-  protoType: ProtoScalar
+  /** the protobuf scalar type */
+  type: ProtoScalar
   /** `items` / map key / map value of type `string` whose resolved `utf8_validation` is NONE (see ProtoApiField) */
   utf8Validation?: false
 }
@@ -182,8 +182,8 @@ export interface ProtoApiReserved {
 
 export interface ProtoApiField extends ProtoApiElement, ProtoApiAnnotations {
   number: number
-  type?: "integer" | "number" | "boolean" | "string" | "array" | "object"
-  protoType?: ProtoScalar
+  /** a protobuf scalar type, `array` (repeated) or `object` (map) */
+  type?: ProtoScalar | "array" | "object"
   $ref?: string
   items?: ProtoApiTypeRef
   additionalProperties?: ProtoApiTypeRef

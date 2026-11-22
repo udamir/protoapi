@@ -5,10 +5,10 @@ expect:
     value:
       type: object
       properties:
-        counts: { number: 1, type: object, propertyNames: { type: string, protoType: string }, additionalProperties: { type: integer, protoType: int32 } }
-        by_id:  { number: 2, type: object, propertyNames: { type: integer, protoType: int64 }, additionalProperties: { $ref: "#/components/messages/shop.v1.Pet" } }
-        flags:  { number: 3, type: object, propertyNames: { type: boolean, protoType: bool }, additionalProperties: { $ref: "#/components/enums/shop.v1.Status" } }
-        blobs:  { number: 4, type: object, propertyNames: { type: integer, protoType: uint32 }, additionalProperties: { type: string, protoType: bytes } }
+        counts: { number: 1, type: object, propertyNames: { type: string }, additionalProperties: { type: int32 } }
+        by_id:  { number: 2, type: object, propertyNames: { type: int64 }, additionalProperties: { $ref: "#/components/messages/shop.v1.Pet" } }
+        flags:  { number: 3, type: object, propertyNames: { type: bool }, additionalProperties: { $ref: "#/components/enums/shop.v1.Status" } }
+        blobs:  { number: 4, type: object, propertyNames: { type: uint32 }, additionalProperties: { type: bytes } }
 absent:
   - "#/components/messages/shop.v1.Maps.CountsEntry"
   - "#/components/messages/shop.v1.Maps.ByIdEntry"

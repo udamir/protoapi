@@ -4,5 +4,5 @@ expect:
   - pointer: "#/components/messages/shop.v1.Pet"
     value:
       type: object
-      properties: { name: { number: 1, type: string, protoType: string } }
+      properties: { name: { number: 1, type: string } }
       reserved: { numbers: [[2, 2], [9, 12], [15, 15], [1000, 536870911]], names: [bar, foo] }

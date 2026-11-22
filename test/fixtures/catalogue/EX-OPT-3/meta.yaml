@@ -5,9 +5,9 @@ expect:
     value:
       type: object
       properties:
-        user_id:      { number: 1, type: string, protoType: string }
-        display_name: { number: 2, type: string, protoType: string }
-        email:        { number: 3, type: string, protoType: string, jsonName: mail }
-        foo_1bar:     { number: 4, type: string, protoType: string }
-        _private:     { number: 5, type: string, protoType: string }
-        legacy_ID:    { number: 6, type: string, protoType: string, jsonName: legacy_ID }
+        user_id:      { number: 1, type: string }
+        display_name: { number: 2, type: string }
+        email:        { number: 3, type: string, jsonName: mail }
+        foo_1bar:     { number: 4, type: string }
+        _private:     { number: 5, type: string }
+        legacy_ID:    { number: 6, type: string, jsonName: legacy_ID }

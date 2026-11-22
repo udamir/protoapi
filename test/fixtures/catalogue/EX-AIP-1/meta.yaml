@@ -5,11 +5,11 @@ expect:
     value:
       type: object
       properties:
-        name:        { number: 1, type: string, protoType: string, description: The resource name., options: { google.api.field_behavior: [IDENTIFIER] } }
-        title:       { number: 2, type: string, protoType: string, required: true, description: The title. }
+        name:        { number: 1, type: string, description: The resource name., options: { google.api.field_behavior: [IDENTIFIER] } }
+        title:       { number: 2, type: string, required: true, description: The title. }
         create_time: { number: 3, $ref: "#/components/messages/google.protobuf.Timestamp", description: Creation time., readOnly: true }
-        etag:        { number: 4, type: string, protoType: string, description: Etag for updates., writeOnly: true }
-        isbn:        { number: 5, type: string, protoType: string, description: ISBN., immutable: true }
-        notes:       { number: 6, type: string, protoType: string, description: Notes. }
-        label:       { number: 7, type: string, protoType: string, deprecation: { reason: use `title`. } }
-        misc:        { number: 8, type: string, protoType: string, description: required. lowercase is not a prefix. }
+        etag:        { number: 4, type: string, description: Etag for updates., writeOnly: true }
+        isbn:        { number: 5, type: string, description: ISBN., immutable: true }
+        notes:       { number: 6, type: string, description: Notes. }
+        label:       { number: 7, type: string, deprecation: { reason: use `title`. } }
+        misc:        { number: 8, type: string, description: required. lowercase is not a prefix. }

@@ -12,15 +12,15 @@ expect:
     value:
       type: object
       properties:
-        label:   { number: 1, type: string, protoType: string }
-        hits:    { number: 2, type: integer, protoType: int32, presence: explicit }
+        label:   { number: 1, type: string }
+        hits:    { number: 2, type: int32, presence: explicit }
         next:    { number: 3, $ref: "#/components/messages/shop.edt.Counter" }
-        samples: { number: 4, type: array, items: { type: integer, protoType: int32 } }
-        region:  { number: 5, type: string, protoType: string, oneof: scope }
-        zone:    { number: 6, type: string, protoType: string, oneof: scope }
+        samples: { number: 4, type: array, items: { type: int32 } }
+        region:  { number: 5, type: string, oneof: scope }
+        zone:    { number: 6, type: string, oneof: scope }
       oneofs: { scope: {} }
       options: { features: { field_presence: IMPLICIT } }
   - pointer: "#/components/messages/shop.edt.Other"
     value:
       type: object
-      properties: { label: { number: 1, type: string, protoType: string, presence: explicit } }
+      properties: { label: { number: 1, type: string, presence: explicit } }
