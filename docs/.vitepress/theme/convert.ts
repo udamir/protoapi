@@ -4,7 +4,7 @@
  */
 import { dump, load } from "js-yaml"
 
-import { buildFromDescriptorSet, buildFromProto, printProto } from "../../../src/index"
+import { buildFromDescriptorSet, buildFromProto, printProto } from "../../../src/index.ts"
 import type {
   BuildIssue,
   BuildOptions,
@@ -12,7 +12,7 @@ import type {
   FileDescriptorSetJson,
   ProtoApiDocument,
   SourceMap,
-} from "../../../src/index"
+} from "../../../src/index.ts"
 
 export type SourceKind = "proto" | "descriptor" | "protoapi"
 export type TargetKind = "protoapi" | "proto" | "sourcemap"
@@ -110,7 +110,7 @@ export const formatSourceMap = (sourceMap: SourceMap, files?: string[]): string 
 }
 
 export const formatIssue = (issue: BuildIssue): string => {
-  const where = issue.location ? `${issue.location.file}:${at(issue.location.start)}` : issue.file ?? ""
+  const where = issue.location ? `${issue.location.file}:${at(issue.location.start)}` : (issue.file ?? "")
   return `${issue.code}${where ? ` ${where}` : ""} ${issue.message}`
 }
 

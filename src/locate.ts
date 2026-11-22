@@ -1,7 +1,7 @@
 // Source map lookups (design §9).
 
-import type { JsonPointer, Location, SourceMap } from "./types"
-import { ptr } from "./paths"
+import type { JsonPointer, Location, SourceMap } from "./types.ts"
+import { ptr } from "./paths.ts"
 
 const toPointer = (path: (string | number)[]): JsonPointer => (path.length ? `#/${path.map(ptr).join("/")}` : "#")
 

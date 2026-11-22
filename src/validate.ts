@@ -3,14 +3,14 @@
 // options and edition defaults. Never throws and never changes the document: every finding is a `BuildIssue`.
 // The syntactic rules (labels, groups, statement order, keywords per edition) are checked in text.ts.
 
-import type { BuildIssue, BuildIssueCode, Location, ProtoSyntax } from "./types"
-import type { MEnum, MField, MFile, MMessage, MOptionHolder, MService, OptionTree } from "./model"
-import { type SymbolTable, defaultVisibility } from "./symbols"
-import { type Lowering, parentScope } from "./lower"
-import { OPTIONS_MESSAGE, type OptionsKind, optionNameSegments } from "./options"
-import { EDITION_NUMBERS, type ResolvedFeatures, editionNumber, isEditions, resolveFeatures } from "./features"
-import { defaultJsonName, isPlainObject } from "./values"
-import { ptr } from "./paths"
+import type { BuildIssue, BuildIssueCode, Location, ProtoSyntax } from "./types.ts"
+import type { MEnum, MField, MFile, MMessage, MOptionHolder, MService, OptionTree } from "./model.ts"
+import { type SymbolTable, defaultVisibility } from "./symbols.ts"
+import { type Lowering, parentScope } from "./lower.ts"
+import { OPTIONS_MESSAGE, type OptionsKind, optionNameSegments } from "./options.ts"
+import { EDITION_NUMBERS, type ResolvedFeatures, editionNumber, isEditions, resolveFeatures } from "./features.ts"
+import { defaultJsonName, isPlainObject } from "./values.ts"
+import { ptr } from "./paths.ts"
 
 const MESSAGE_MAX = 536870911
 const MESSAGE_SET_MAX = 2147483646
@@ -139,7 +139,10 @@ class Validator {
   /** package -> enum value name -> enum fqn, across the validated files */
   private readonly packageValues = new Map<string, Map<string, string>>()
 
-  constructor(private readonly input: ValidateInput) {
+  private readonly input: ValidateInput
+
+  constructor(input: ValidateInput) {
+    this.input = input
     this.symbols = input.symbols
     this.L = input.lowering
   }
@@ -296,7 +299,7 @@ class Validator {
       if (!field) continue
       const at = `${pointer}/options/${ptr(key)}`
       const loc = holder.optionLocs[key]
-      const info = this.definition(field, field.fqn ? this.symbols.extensionByName.get(key)?.scope ?? "" : def.fqn)
+      const info = this.definition(field, field.fqn ? (this.symbols.extensionByName.get(key)?.scope ?? "") : def.fqn)
       if (info.targets?.length && !info.targets.includes(TARGET[kind]))
         this.issue("invalid-option", `option \`${key}\` cannot be set on ${KIND_NAME[kind]}`, file, at, loc)
       this.support(key, info, file, at, loc)
@@ -348,7 +351,7 @@ class Validator {
       if (!field) continue
       const here = `${path}.${key}`
       const loc = locOf(here)
-      const scope = field.fqn ? this.symbols.extensionByName.get(key)?.scope ?? "" : def.fqn
+      const scope = field.fqn ? (this.symbols.extensionByName.get(key)?.scope ?? "") : def.fqn
       const info = this.definition(field, scope)
       if (info.targets?.length && !info.targets.includes(TARGET[kind]))
         this.issue("invalid-option", `feature \`${key}\` cannot be set on ${KIND_NAME[kind]}`, file, pointer, loc)

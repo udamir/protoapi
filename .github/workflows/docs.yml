@@ -18,18 +18,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0 # lastUpdated timestamps
-      - uses: oven-sh/setup-bun@v2
-      - uses: actions/setup-node@v4
+      - uses: voidzero-dev/setup-vp@v1.22.0
         with:
-          node-version: "22"
-      - uses: actions/configure-pages@v5
-      - run: bun install --frozen-lockfile
+          node-version: "24"
+          cache: true
+      - uses: actions/configure-pages@v6.0.0
       # the examples are compiled with the buf CLI of the devDependencies at build time
-      - run: bun run docs:build
-      - uses: actions/upload-pages-artifact@v3
+      - run: vp run docs:build
+      - uses: actions/upload-pages-artifact@v5.0.0
         with:
           path: docs/.vitepress/dist
 
@@ -41,4 +40,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5.0.1

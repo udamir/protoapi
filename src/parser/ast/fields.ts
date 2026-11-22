@@ -6,10 +6,10 @@
  * - reconstructed as TypeScript source from the published `.d.ts`; type-only imports.
  * - `OneofGroup.fieldOptions` added (`group Foo = 1 [deprecated = true] { ... }` inside a oneof).
  */
-import type { Span, Token } from "../recursive-descent-parser"
-import type { MalformedBase, Option, OptionName, StatementBase } from "./index"
-import type { Comma, Constant, Empty, IntLit, Keyword, Semi, Type } from "./lexical-elements"
-import type { MessageBody } from "./top-level-definitions"
+import type { Span, Token } from "../recursive-descent-parser.ts"
+import type { MalformedBase, Option, OptionName, StatementBase } from "./index.ts"
+import type { Comma, Constant, Empty, IntLit, Keyword, Semi, Type } from "./lexical-elements.ts"
+import type { MessageBody } from "./top-level-definitions.ts"
 
 export type Node =
   | Field

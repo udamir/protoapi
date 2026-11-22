@@ -1,10 +1,10 @@
 // PB-2: buildFromProto ≡ buildFromDescriptorSet(buf image) as JSON text, source maps equal (design §13). The builds use the default emission mode `imports: "user"` (U3) unless a test names another.
 
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vite-plus/test"
 import { readFileSync } from "node:fs"
 import { join } from "node:path"
-import { buildFromDescriptorSet, buildFromProto, bundledFiles } from "../src"
-import { IMAGES, buildBoth, fixtureSets, jsonDiff } from "./helpers"
+import { buildFromDescriptorSet, buildFromProto, bundledFiles } from "../src/index.ts"
+import { IMAGES, buildBoth, fixtureSets, jsonDiff } from "./helpers.ts"
 
 /** Document text and source map of both producers are equal, neither reports an issue. */
 const conformant = (set: string) => {

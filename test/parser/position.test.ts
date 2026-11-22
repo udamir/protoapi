@@ -1,6 +1,6 @@
-import { describe, expect, test } from "bun:test"
-import { createLineIndex } from "../../src/parser"
-import { as, parseOk } from "./helpers"
+import { describe, expect, test } from "vite-plus/test"
+import { createLineIndex } from "../../src/parser/index.ts"
+import { as, parseOk } from "./helpers.ts"
 
 describe("createLineIndex", () => {
   test("multi-line text, zero-based lines and columns", () => {

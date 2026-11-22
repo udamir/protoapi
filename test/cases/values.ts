@@ -2,7 +2,7 @@
 // narrowing (C-5), negative zero (F-2), enum-alias defaults (C-6), Any (C-9), unknown option fields (C-11),
 // extension-range options (F-1). buf 1.75 is the oracle: an accepted case is also a conformance test.
 
-import type { Case } from "./types"
+import type { Case } from "./types.ts"
 
 const P2 = 'syntax = "proto2";\npackage v;\n'
 const P3 = 'syntax = "proto3";\npackage v;\n'

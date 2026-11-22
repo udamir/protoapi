@@ -1,7 +1,7 @@
 // Dev helper: build a fixture set with both producers and print the differences.
-//   bun scripts/conform.ts poc [--doc] [--map]
+//   node scripts/conform.ts poc [--doc] [--map]
 
-import { buildBoth, jsonDiff } from "../test/helpers"
+import { buildBoth, jsonDiff } from "../test/helpers.ts"
 
 const set = process.argv[2] ?? "poc"
 const { text, descriptor } = buildBoth(set)

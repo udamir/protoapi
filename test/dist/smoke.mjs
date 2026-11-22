@@ -1,4 +1,4 @@
-// Smoke test of the built ESM bundles: node test/dist/smoke.mjs (after `bun run build`).
+// Smoke test of the built ESM bundles: node test/dist/smoke.mjs (after `pnpm build`).
 // Both entries are loaded through the package's own `exports` map (self-reference by name); `browser` points at the
 // ESM build.
 import assert from "node:assert"

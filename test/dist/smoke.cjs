@@ -1,4 +1,4 @@
-// Smoke test of the built CommonJS bundles: node test/dist/smoke.cjs (after `bun run build`).
+// Smoke test of the built CommonJS bundles: node test/dist/smoke.cjs (after `pnpm build`).
 // Both entries are loaded through the package's own `exports` map (self-reference by name).
 const assert = require("node:assert")
 const { readFileSync } = require("node:fs")
@@ -42,7 +42,9 @@ const api = core.createProtoApi(full.bundledFiles)
 assert.strictEqual(JSON.stringify(api.buildFromProto(shop).document), JSON.stringify(a.document))
 
 // built-in options are typed in core without anything supplied
-const o = core.buildFromProto({ "o.proto": 'syntax = "proto3"; package o; message M { string s = 1 [deprecated = true]; }' })
+const o = core.buildFromProto({
+  "o.proto": 'syntax = "proto3"; package o; message M { string s = 1 [deprecated = true]; }',
+})
 assert.deepStrictEqual(o.issues, [])
 assert.deepStrictEqual(o.document.components.messages["o.M"].properties.s.deprecation, {})
 

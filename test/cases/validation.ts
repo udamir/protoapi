@@ -2,7 +2,7 @@
 // issue, and the inputs around each rule that buf accepts stay issue-free and conform. `buf` is the substring of
 // buf 1.75's error recorded in test/images/cases/validation.json.
 
-import type { Case } from "./types"
+import type { Case } from "./types.ts"
 
 const P2 = 'syntax = "proto2";\npackage p;\nimport "google/protobuf/descriptor.proto";\n'
 const P3 = 'syntax = "proto3";\npackage p;\n'
@@ -338,15 +338,13 @@ export const cases: Case[] = [
     "message M { map<double, int32> m = 1; }",
     "message M { map<bytes, int32> m = 1; }",
     "message K {}\nmessage M { map<K, int32> m = 1; }",
-  ].map(
-    (body, i): Case => ({
-      id: `VAL-${61 + i}`,
-      title: `map key kind: ${/map<(\w+)/.exec(body)?.[1]}`,
-      sources: { "a.proto": `${P3}${body}\n` },
-      buf: "expected map key type",
-      issues: ["unresolved-type @ #/components/messages/p.M/properties/m/propertyNames"],
-    }),
-  ),
+  ].map((body, i): Case => ({
+    id: `VAL-${61 + i}`,
+    title: `map key kind: ${/map<(\w+)/.exec(body)?.[1]}`,
+    sources: { "a.proto": `${P3}${body}\n` },
+    buf: "expected map key type",
+    issues: ["unresolved-type @ #/components/messages/p.M/properties/m/propertyNames"],
+  })),
   {
     id: "VAL-66",
     title: "map keys buf accepts: integers, bool, string",

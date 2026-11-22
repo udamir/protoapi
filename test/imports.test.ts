@@ -2,10 +2,10 @@
 //
 // The catalogue variants per mode are EX-FILE-6.user, EX-FILE-6.public.user (an import public chain), EX-EXT-2.shop.user, EX-E24-1.user (import option) and EX-DIAG-4.local-visibility.user beside their referenced-mode sets.
 
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vite-plus/test"
 import { readFileSync } from "node:fs"
 import { join } from "node:path"
-import * as core from "../src/core"
+import * as core from "../src/core.ts"
 import {
   buildFromDescriptorSet,
   buildFromDescriptorSetBinary,
@@ -13,9 +13,9 @@ import {
   buildFromProtoAsync,
   bundledFiles,
   printProto,
-} from "../src"
-import type { BuildOptions, BuildResult, ProtoApiDocument } from "../src"
-import { IMAGES, IMPORT_MODES, buildBoth, jsonDiff, loadImage, loadSources, roundTrip } from "./helpers"
+} from "../src/index.ts"
+import type { BuildOptions, BuildResult, ProtoApiDocument } from "../src/index.ts"
+import { IMAGES, IMPORT_MODES, buildBoth, jsonDiff, loadImage, loadSources, roundTrip } from "./helpers.ts"
 
 const L = (...lines: string[]) => lines.join("\n")
 const TS = "google/protobuf/timestamp.proto"
@@ -268,7 +268,7 @@ describe("IN-13: bundled files carry no header description", () => {
     expect(asSource.files?.[TS]?.description).toContain("Protocol Buffers")
     expect(fromBundle.files?.[TS]?.description).toBeUndefined()
     // element descriptions of bundled declarations stay
-    expect(fromBundle.components?.messages?.["google.protobuf.Timestamp"]?.description).toBeString()
+    expect(fromBundle.components?.messages?.["google.protobuf.Timestamp"]?.description).toBeTypeOf("string")
   })
 
   test("IN-13.3: the binary path agrees", async () => {

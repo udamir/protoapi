@@ -2,9 +2,9 @@
 // with the bundled sources, `protoapi/core` with none; `createProtoApi` lets a caller inject a bundle of its own
 // (for example the `bundledFiles` of `protoapi`, loaded lazily).
 
-import type { PrintOptions, ProtoApiDocument } from "./types"
-import { type Builders, createBuilders } from "./build"
-import { createPrinter } from "./print"
+import type { PrintOptions, ProtoApiDocument } from "./types.ts"
+import { type Builders, createBuilders } from "./build.ts"
+import { createPrinter } from "./print.ts"
 
 export interface ProtoApi extends Builders {
   /** Print a document back to `.proto` files (path -> text). */

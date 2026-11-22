@@ -5,9 +5,9 @@
 // normalised to one canonical tree: snake_case keys, extension keys as fqn without brackets, canonical values
 // (§3.6), key order by definition (fields in declaration order, then extensions by number), defaults dropped (rule D).
 
-import type { Location, ProtoScalar, ProtoSyntax } from "./types"
-import type { MEnum, MField, MFile, MMessage, MOptionHolder, MRawOption, OptionTree, PendingIssue } from "./model"
-import { type SymbolTable, kindName } from "./symbols"
+import type { Location, ProtoScalar, ProtoSyntax } from "./types.ts"
+import type { MEnum, MField, MFile, MMessage, MOptionHolder, MRawOption, OptionTree, PendingIssue } from "./model.ts"
+import { type SymbolTable, kindName } from "./symbols.ts"
 import {
   canonFloat,
   canonFloatOf,
@@ -27,7 +27,7 @@ import {
   utf8Decode,
   utf8Encode,
   WRAPPERS,
-} from "./values"
+} from "./values.ts"
 
 export type OptionsKind =
   | "file"
@@ -120,7 +120,7 @@ const implicitPresence = (f: MField, def: MMessage): boolean => {
     for (const raw of h.raw) {
       if (raw.kind !== "json") continue
       const fs = raw.value.features
-      const v = isPlainObject(fs) ? fs.fieldPresence ?? fs.field_presence : undefined
+      const v = isPlainObject(fs) ? (fs.fieldPresence ?? fs.field_presence) : undefined
       if (v !== undefined) return v === 2 ? "IMPLICIT" : v
     }
     return undefined
@@ -301,10 +301,13 @@ interface TextprotoFieldNode extends Spanned {
 }
 
 export class OptionInterpreter {
-  constructor(
-    private readonly ctx: OptionContext,
-    private readonly holder: MOptionHolder,
-  ) {}
+  private readonly ctx: OptionContext
+  private readonly holder: MOptionHolder
+
+  constructor(ctx: OptionContext, holder: MOptionHolder) {
+    this.ctx = ctx
+    this.holder = holder
+  }
 
   /** the pointer suffix of the option statement being interpreted (issues inside aggregate values point at it) */
   private currentSub?: string
@@ -1039,7 +1042,7 @@ export const decodeWire = (
           ]),
         }
       : f && (f.vt ?? typeOfRef(f, symbols))
-    const e = !t ? -1 : t.kind === "message" ? 2 : t.kind === "scalar" ? WIRE_TYPE[t.scalar] ?? 0 : 0
+    const e = !t ? -1 : t.kind === "message" ? 2 : t.kind === "scalar" ? (WIRE_TYPE[t.scalar] ?? 0) : 0
     const packed = f?.repeated && w === 2 && e !== 2
     if (!f || !t || (w !== e && !packed)) {
       // an unknown field, or a known one with another wire type: skipped
@@ -1048,7 +1051,7 @@ export const decodeWire = (
       continue
     }
     const values: unknown[] = []
-    if (packed) for (const end = Number(varint()) + p; p < end; ) values.push(value(t, e))
+    if (packed) for (const end = Number(varint()) + p; p < end;) values.push(value(t, e))
     else values.push(value(t, w))
     for (const v of values) {
       const entry = v as { key?: unknown; value?: unknown }

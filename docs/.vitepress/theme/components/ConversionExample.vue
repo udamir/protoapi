@@ -2,7 +2,7 @@
 import { withBase } from "vitepress"
 import { computed, ref } from "vue"
 
-import { data } from "../../../examples/examples.data"
+import { data } from "../../../examples/examples.data.ts"
 
 const props = defineProps<{ id: string }>()
 

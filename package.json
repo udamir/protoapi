@@ -2,31 +2,22 @@
   "name": "protoapi",
   "version": "0.1.0",
   "description": "ProtoApi: a JSON document format for Protocol Buffers APIs, with builders from .proto text and FileDescriptorSet, a printer and a source map",
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
-  "types": "dist/types/index.d.ts",
-  "browser": "./dist/index.mjs",
-  "unpkg": "./browser/protoapi.min.js",
-  "jsdelivr": "./browser/protoapi.min.js",
-  "exports": {
-    ".": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
-    },
-    "./core": {
-      "types": "./dist/types/core.d.ts",
-      "import": "./dist/core.mjs",
-      "require": "./dist/core.cjs"
-    },
-    "./package.json": "./package.json"
-  },
-  "typesVersions": {
-    "*": {
-      "core": [
-        "./dist/types/core.d.ts"
-      ]
-    }
+  "keywords": [
+    "api",
+    "descriptor",
+    "diff",
+    "grpc",
+    "proto",
+    "protoapi",
+    "protobuf",
+    "schema"
+  ],
+  "homepage": "https://udamir.github.io/protoapi/",
+  "license": "MIT",
+  "author": "Damir Yusipov",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/udamir/protoapi"
   },
   "files": [
     "dist",
@@ -41,51 +32,60 @@
     "README.md",
     "CHANGELOG.md"
   ],
+  "type": "module",
   "sideEffects": false,
-  "scripts": {
-    "build": "bun run scripts/build.ts",
-    "test": "bun test",
-    "check": "biome check",
-    "typecheck": "tsc --noEmit",
-    "bundle:fetch": "bun run scripts/fetch-bundle.ts",
-    "bundle:gen": "bun run scripts/gen-bundle.ts",
-    "images": "bun run scripts/images.ts",
-    "prepublishOnly": "bun run typecheck && bun test && bun run build && bun run test:dist",
-    "test:dist": "node test/dist/smoke.cjs && node test/dist/smoke.mjs",
-    "docs:dev": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitepress dev docs",
-    "docs:build": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitepress build docs",
-    "docs:preview": "vitepress preview docs"
-  },
-  "keywords": [
-    "protobuf",
-    "proto",
-    "grpc",
-    "protoapi",
-    "descriptor",
-    "schema",
-    "api",
-    "diff"
-  ],
-  "author": "Damir Yusipov",
-  "license": "MIT",
-  "homepage": "https://udamir.github.io/protoapi/",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/udamir/protoapi"
-  },
-  "engines": {
-    "node": ">=18"
-  },
-  "peerDependencies": {
-    "@bufbuild/protobuf": "^2.8.0"
-  },
-  "peerDependenciesMeta": {
-    "@bufbuild/protobuf": {
-      "optional": true
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "browser": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
+  "typesVersions": {
+    "*": {
+      "core": [
+        "./dist/core.d.cts"
+      ]
     }
   },
+  "unpkg": "./browser/protoapi.min.js",
+  "jsdelivr": "./browser/protoapi.min.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./core": {
+      "import": {
+        "types": "./dist/core.d.mts",
+        "default": "./dist/core.mjs"
+      },
+      "require": {
+        "types": "./dist/core.d.cts",
+        "default": "./dist/core.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "node -e \"for (const d of ['dist', 'browser']) require('node:fs').rmSync(d, { recursive: true, force: true })\" && vp pack",
+    "test": "vp test run",
+    "test:watch": "vp test",
+    "check": "vp check",
+    "typecheck": "tsc --noEmit",
+    "test:dist": "node test/dist/smoke.cjs && node test/dist/smoke.mjs",
+    "bundle:fetch": "tsx scripts/fetch-bundle.ts",
+    "bundle:gen": "tsx scripts/gen-bundle.ts",
+    "images": "tsx scripts/images.ts",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "prepublishOnly": "pnpm run check && pnpm run typecheck && pnpm run test && pnpm run build && pnpm run test:dist"
+  },
   "devDependencies": {
-    "@biomejs/biome": "1.8.3",
     "@bufbuild/buf": "^1.75.0",
     "@bufbuild/protobuf": "^2.16.0",
     "@codemirror/commands": "^6.11.1",
@@ -96,13 +96,25 @@
     "@codemirror/state": "^6.7.6",
     "@codemirror/theme-one-dark": "^6.1.3",
     "@codemirror/view": "^6.43.15",
-    "@types/bun": "^1.2.18",
     "@types/js-yaml": "^4.0.9",
+    "@types/node": "^26.6.6",
     "codemirror": "^6.0.2",
-    "esbuild": "^0.25.0",
     "js-yaml": "^4.1.0",
-    "typescript": "^5.8.0",
+    "typescript": "^7.0.2",
+    "vite-plus": "^1.7.0",
     "vitepress": "2.0.0-alpha.21",
     "vue": "^3.5.46"
-  }
+  },
+  "peerDependencies": {
+    "@bufbuild/protobuf": "^2.8.0"
+  },
+  "peerDependenciesMeta": {
+    "@bufbuild/protobuf": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@10.33.0"
 }

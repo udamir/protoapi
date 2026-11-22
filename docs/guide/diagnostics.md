@@ -15,7 +15,9 @@ interface BuildIssue {
 ```ts
 const { document, issues } = buildFromProto(sources)
 for (const issue of issues) {
-  const at = issue.location ? `${issue.location.file}:${issue.location.start.line + 1}:${issue.location.start.column + 1}` : issue.file
+  const at = issue.location
+    ? `${issue.location.file}:${issue.location.start.line + 1}:${issue.location.start.column + 1}`
+    : issue.file
   console.log(`${at}: ${issue.code}: ${issue.message}`)
 }
 ```
@@ -24,23 +26,23 @@ The text producer checks the definitions of every file it builds that is not bun
 
 ## Issue codes
 
-| Code | Meaning |
-| --- | --- |
-| `syntax` | The file does not parse. The document keeps the `syntax` and `package` read before the error, and takes no declarations from the file. |
-| `missing-import` | An import is not found in `sources`, the bundle or the loader. |
-| `unresolved-type` | A type name does not resolve, or resolves to a name of the wrong kind (an enum as an rpc type, a message as a map key, an option name that is not an extension), or to a type not visible from the file (not imported, `local` in edition 2024, imported only with `import option`). The field keeps a best-effort `$ref`. |
-| `unresolved-extendee` | The message of an `extend` block does not resolve. |
-| `unknown-option` | A custom option without a definition. Its source text is kept as a string under `options`, and nothing is lifted from it. Also a field that a known option message does not have. |
-| `invalid-option` | An option value that does not fit its definition: out of range, an unknown enum value, a non-canonical literal, an option on the wrong target, a protovalidate rule family that does not fit the field, … |
-| `invalid-number` | A field or value number out of range or in the reserved range 19000 to 19999; an extension outside the extension ranges of its message. |
-| `duplicate-number` | Two fields or (without `allow_alias`) two enum values with the same number. |
-| `duplicate-name` | Two declarations with the same name, including JSON-name clashes and C++ scoping clashes of enum values. |
-| `reserved-conflict` | A field or value uses a reserved number or name; reserved and extension ranges overlap. |
-| `annotation-conflict` | Two annotation sources set a keyword to different values; recorded in `x-annotation-conflicts`, see [Annotations](/guide/annotations#precedence-and-conflicts). |
-| `invalid-tag` | A known comment tag whose value does not parse or that does not fit the field. |
-| `unsupported` | Something this version cannot handle: an unknown edition (written verbatim and resolved with the edition 2026 defaults), a binary set without a usable decoder. |
-| `no-source-info` | A descriptor-set file without `sourceCodeInfo`: no descriptions and no source map entries for it. |
-| `invalid-definition` | A syntax or edition rule is broken: proto3 `required` or groups, editions labels, options or keywords not available in the file's edition, naming style in edition 2024 and later, import cycles, statement order. |
+| Code                  | Meaning                                                                                                                                                                                                                                                                                                                    |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `syntax`              | The file does not parse. The document keeps the `syntax` and `package` read before the error, and takes no declarations from the file.                                                                                                                                                                                     |
+| `missing-import`      | An import is not found in `sources`, the bundle or the loader.                                                                                                                                                                                                                                                             |
+| `unresolved-type`     | A type name does not resolve, or resolves to a name of the wrong kind (an enum as an rpc type, a message as a map key, an option name that is not an extension), or to a type not visible from the file (not imported, `local` in edition 2024, imported only with `import option`). The field keeps a best-effort `$ref`. |
+| `unresolved-extendee` | The message of an `extend` block does not resolve.                                                                                                                                                                                                                                                                         |
+| `unknown-option`      | A custom option without a definition. Its source text is kept as a string under `options`, and nothing is lifted from it. Also a field that a known option message does not have.                                                                                                                                          |
+| `invalid-option`      | An option value that does not fit its definition: out of range, an unknown enum value, a non-canonical literal, an option on the wrong target, a protovalidate rule family that does not fit the field, …                                                                                                                  |
+| `invalid-number`      | A field or value number out of range or in the reserved range 19000 to 19999; an extension outside the extension ranges of its message.                                                                                                                                                                                    |
+| `duplicate-number`    | Two fields or (without `allow_alias`) two enum values with the same number.                                                                                                                                                                                                                                                |
+| `duplicate-name`      | Two declarations with the same name, including JSON-name clashes and C++ scoping clashes of enum values.                                                                                                                                                                                                                   |
+| `reserved-conflict`   | A field or value uses a reserved number or name; reserved and extension ranges overlap.                                                                                                                                                                                                                                    |
+| `annotation-conflict` | Two annotation sources set a keyword to different values; recorded in `x-annotation-conflicts`, see [Annotations](/guide/annotations#precedence-and-conflicts).                                                                                                                                                            |
+| `invalid-tag`         | A known comment tag whose value does not parse or that does not fit the field.                                                                                                                                                                                                                                             |
+| `unsupported`         | Something this version cannot handle: an unknown edition (written verbatim and resolved with the edition 2026 defaults), a binary set without a usable decoder.                                                                                                                                                            |
+| `no-source-info`      | A descriptor-set file without `sourceCodeInfo`: no descriptions and no source map entries for it.                                                                                                                                                                                                                          |
+| `invalid-definition`  | A syntax or edition rule is broken: proto3 `required` or groups, editions labels, options or keywords not available in the file's edition, naming style in edition 2024 and later, import cycles, statement order.                                                                                                         |
 
 ## Example
 

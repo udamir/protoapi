@@ -1,19 +1,19 @@
 /**
  * `.proto` parser: a strict TypeScript port of pbkit 0.0.72's `core/parser` + `core/ast` (MIT OR Apache-2.0, see ./NOTICE), extended for editions 2023 / 2024 and with buf 1.75's comment attachment.
  */
-import type { BuildIssue } from "../types"
-import type * as ast from "./ast/index"
-import { createLineIndex } from "./position"
-import { type Comment, type ParseError, parse, parseConstant } from "./proto"
-import { parseTextprotoMessage } from "./textproto"
+import type { BuildIssue } from "../types.ts"
+import type * as ast from "./ast/index.ts"
+import { createLineIndex } from "./position.ts"
+import { type Comment, type ParseError, parse, parseConstant } from "./proto.ts"
+import { parseTextprotoMessage } from "./textproto.ts"
 
-export type * from "./ast/index"
-export type { Comment as ProtoComment, ParseError, ParseResult, ProtoParser } from "./proto"
-export type { TextprotoParseResult } from "./textproto"
-export type { LineIndex, Position } from "./position"
-export type { Span, Token } from "./recursive-descent-parser"
-export { createLineIndex } from "./position"
-export { decodeBytesLit, decodeStrLit, decodeUtf8, parseFloatLit, parseIntLit } from "./literals"
+export type * from "./ast/index.ts"
+export type { Comment as ProtoComment, ParseError, ParseResult, ProtoParser } from "./proto.ts"
+export type { TextprotoParseResult } from "./textproto.ts"
+export type { LineIndex, Position } from "./position.ts"
+export type { Span, Token } from "./recursive-descent-parser.ts"
+export { createLineIndex } from "./position.ts"
+export { decodeBytesLit, decodeStrLit, decodeUtf8, parseFloatLit, parseIntLit } from "./literals.ts"
 export { parseConstant, parseTextprotoMessage }
 
 export interface ParseProtoResult {

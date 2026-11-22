@@ -7,8 +7,8 @@ import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } fr
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 
-import type { FileDescriptorSetJson } from "../../../src/index"
-import type { ExampleCase } from "./cases"
+import type { FileDescriptorSetJson } from "../../../src/index.ts"
+import type { ExampleCase } from "./cases.ts"
 
 const ROOT = fileURLToPath(new URL("../../../", import.meta.url))
 const BUF = join(ROOT, "node_modules", ".bin", "buf")

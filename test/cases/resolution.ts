@@ -2,7 +2,7 @@
 // `import option` types (decision 18), comments inside names (C-15), option name scopes and kinds. buf 1.75 is the
 // oracle; `buf` holds the substring of its error when it rejects the input.
 
-import type { Case } from "./types"
+import type { Case } from "./types.ts"
 
 const e = (edition: string, pkg: string, body = "") => `edition = "${edition}";\npackage ${pkg};\n${body}`
 const P3 = (pkg: string, body = "") => `syntax = "proto3";\n${pkg ? `package ${pkg};\n` : ""}${body}`

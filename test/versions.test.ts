@@ -1,16 +1,16 @@
 // Protobuf version compatibility (validation report §7): editions (D-C, C-4, F-4), edition feature defaults read
 // from FeatureSetDefaults, ProtoJSON serializer variants (C-14), descriptor default values (desc#13).
 
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vite-plus/test"
 import { readFileSync } from "node:fs"
 import { join } from "node:path"
 import * as pb from "@bufbuild/protobuf"
 import * as wkt from "@bufbuild/protobuf/wkt"
-import { buildFromDescriptorSet, buildFromProto, bundledFiles } from "../src"
-import type { BuildResult, FileDescriptorSetJson } from "../src"
-import { FeatureDefaults, featureDefaultsSource } from "../src/features"
-import { bundledFeatureDefaults } from "../src/bundle/features"
-import { IMAGES, loadImage } from "./helpers"
+import { buildFromDescriptorSet, buildFromProto, bundledFiles } from "../src/index.ts"
+import type { BuildResult, FileDescriptorSetJson } from "../src/index.ts"
+import { FeatureDefaults, featureDefaultsSource } from "../src/features.ts"
+import { bundledFeatureDefaults } from "../src/bundle/features.ts"
+import { IMAGES, loadImage } from "./helpers.ts"
 
 const codes = (r: BuildResult) =>
   r.issues.filter((i) => i.code !== "no-source-info").map((i) => `${i.code} @ ${i.pointer}: ${i.message}`)

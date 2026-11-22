@@ -2,7 +2,7 @@
 // The syntactic rules of a syntax or edition (labels, groups, statement order, keywords per edition) are checked
 // here, while the AST is at hand (validation decision D-E); the semantic checks are in validate.ts.
 
-import type { BuildIssue, BuildIssueCode, Location, ProtoSyntax } from "./types"
+import type { BuildIssue, BuildIssueCode, Location, ProtoSyntax } from "./types.ts"
 import type {
   Locs,
   MComments,
@@ -15,15 +15,15 @@ import type {
   MOptionHolder,
   MService,
   MTypeRef,
-} from "./model"
-import { newHolder } from "./model"
-import { protocGroupText } from "./comments"
-import { isScalar, parseIntText, decodeStringLiteral } from "./values"
-import { normalizePath, ptr } from "./paths"
-import { editionNumber, EDITION_NUMBERS, isEditions, isKnownSyntax, unsupportedEdition } from "./features"
-import { TRIVIA, addPending, optionNameSegments, tokensText } from "./options"
-import { createLineIndex } from "./parser"
-import { parse } from "./parser/proto"
+} from "./model.ts"
+import { newHolder } from "./model.ts"
+import { protocGroupText } from "./comments.ts"
+import { isScalar, parseIntText, decodeStringLiteral } from "./values.ts"
+import { normalizePath, ptr } from "./paths.ts"
+import { editionNumber, EDITION_NUMBERS, isEditions, isKnownSyntax, unsupportedEdition } from "./features.ts"
+import { TRIVIA, addPending, optionNameSegments, tokensText } from "./options.ts"
+import { createLineIndex } from "./parser/index.ts"
+import { parse } from "./parser/proto.ts"
 
 const MESSAGE_MAX = 536870911
 const ENUM_MAX = 2147483647

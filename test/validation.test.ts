@@ -1,10 +1,10 @@
 // Definition checks of the text producer (validation decision D-E) against the buf oracle; cases in
 // test/cases/validation.ts.
 
-import { describe, expect, test } from "bun:test"
-import { buildFromProto, bundledFiles } from "../src"
-import { cases } from "./cases/validation"
-import { describeCases } from "./cases/run"
+import { describe, expect, test } from "vite-plus/test"
+import { buildFromProto, bundledFiles } from "../src/index.ts"
+import { cases } from "./cases/validation.ts"
+import { describeCases } from "./cases/run.ts"
 
 describeCases("D-E definition checks", "validation", cases)
 

@@ -17,7 +17,7 @@ import type {
   ProtoApiTypeRef,
   ProtoOptions,
   SourceMap,
-} from "./types"
+} from "./types.ts"
 import type {
   Locs,
   MComments,
@@ -32,9 +32,16 @@ import type {
   MTypeRef,
   OptionTree,
   PendingIssue,
-} from "./model"
-import type { SymbolTable } from "./symbols"
-import { type OptionsKind, OptionInterpreter, fromScalarText, INVALID, lastInvalidReason, type VType } from "./options"
+} from "./model.ts"
+import type { SymbolTable } from "./symbols.ts"
+import {
+  type OptionsKind,
+  OptionInterpreter,
+  fromScalarText,
+  INVALID,
+  lastInvalidReason,
+  type VType,
+} from "./options.ts"
 import {
   type AnnotationInput,
   type AnnotationResult,
@@ -46,7 +53,7 @@ import {
   type Slot,
   type Target,
   tagCollisions,
-} from "./annotate"
+} from "./annotate.ts"
 import {
   FeatureDefaults,
   type ResolvedFeatures,
@@ -55,9 +62,9 @@ import {
   isEditions,
   mergeFeatureDefaults,
   resolveFeatures,
-} from "./features"
-import { bundledFeatureDefaults } from "./bundle/features"
-import { normalizeComment } from "./comments"
+} from "./features.ts"
+import { bundledFeatureDefaults } from "./bundle/features.ts"
+import { normalizeComment } from "./comments.ts"
 import {
   canonFloatOf,
   canonInt,
@@ -70,8 +77,8 @@ import {
   toBase64,
   unescapeC,
   WRAPPERS,
-} from "./values"
-import { ptr } from "./paths"
+} from "./values.ts"
+import { ptr } from "./paths.ts"
 
 export interface LowerInput {
   /** every file known to the build (user files and loaded bundle files) */
@@ -255,7 +262,10 @@ export class Lowering {
   private readonly entry: Set<string>
   private featureDefaults?: FeatureDefaults
 
-  constructor(private readonly input: LowerInput) {
+  private readonly input: LowerInput
+
+  constructor(input: LowerInput) {
+    this.input = input
     this.entry = new Set(input.entry)
     this.useMap = input.options.sourceMap !== false
     this.useFiles = input.options.files !== false
@@ -598,7 +608,7 @@ export class Lowering {
     this.issue(
       "invalid-option",
       `default value ${JSON.stringify(d.value)} is not valid for field ${f.name} (${
-        t.kind === "scalar" ? t.scalar : t.kind === "enum" ? t.def?.fqn ?? "enum" : "message"
+        t.kind === "scalar" ? t.scalar : t.kind === "enum" ? (t.def?.fqn ?? "enum") : "message"
       }); it is dropped`,
       file,
       pointer,

@@ -1,7 +1,7 @@
 // Text front end fixes (phase B): keyword type names (text#13), syntax-error files (text#14), missing imports per
 // importer (C-17). buf 1.75 is the oracle.
 
-import type { Case } from "./types"
+import type { Case } from "./types.ts"
 
 export const cases: Case[] = [
   {

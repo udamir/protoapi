@@ -1,7 +1,7 @@
 import { defineConfig } from "vitepress"
 
 import pkg from "../../package.json" with { type: "json" }
-import { CASES } from "./theme/cases"
+import { CASES } from "./theme/cases.ts"
 
 // the heading ids VitePress gives the example sections, whose titles are the case titles
 const slug = (title: string): string =>

@@ -4,16 +4,16 @@
 //   "<EX-ID>: <title>"     PB-1/PB-3/PB-5: buildFromProto output matches the design fragments, issues and absences
 //   "<EX-ID>: conformance" PB-2: buildFromDescriptorSet(buf image) gives the same document text and source map
 //
-// Images are generated with `bun scripts/images.ts catalogue`; sets marked `textOnly` do not compile with buf.
+// Images are generated with `node scripts/images.ts catalogue`; sets marked `textOnly` do not compile with buf.
 
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vite-plus/test"
 import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 import yaml from "js-yaml"
-import { buildFromDescriptorSet, buildFromProto } from "../../src"
-import type { BuildOptions, BuildResult } from "../../src"
-import { FIXTURES, IMAGES, fixtureSets, jsonDiff, loadImage, loadSources } from "../helpers"
-import { formatSpan, matchFragment, matchIssues, parsePointer, resolvePointer } from "./match"
+import { buildFromDescriptorSet, buildFromProto } from "../../src/index.ts"
+import type { BuildOptions, BuildResult } from "../../src/index.ts"
+import { FIXTURES, IMAGES, fixtureSets, jsonDiff, loadImage, loadSources } from "../helpers.ts"
+import { formatSpan, matchFragment, matchIssues, parsePointer, resolvePointer } from "./match.ts"
 
 interface Expectation {
   pointer: string
@@ -90,7 +90,7 @@ const checkFragments = (result: BuildResult, meta: Meta): string[] => {
   return problems
 }
 
-const run = (key: string) => (FAILING[key] ? test.failing : test)
+const run = (key: string) => (FAILING[key] ? test.fails : test)
 
 describe("mapping catalogue", () => {
   for (const id of SETS) {
@@ -105,7 +105,9 @@ describe("mapping catalogue", () => {
     if (meta.textOnly) continue
     run(`${id} conformance`)(`${id}: conformance`, () => {
       const imagePath = join(IMAGES, "catalogue", `${id}.json`)
-      expect(existsSync(imagePath) ? imagePath : "image missing: run `bun scripts/images.ts catalogue`").toBe(imagePath)
+      expect(existsSync(imagePath) ? imagePath : "image missing: run `node scripts/images.ts catalogue`").toBe(
+        imagePath,
+      )
       const text = buildFromProto(textSources(id, meta), options)
       const descriptor = buildFromDescriptorSet(loadImage(`catalogue/${id}`), options)
       expect(jsonDiff(descriptor.document, text.document)).toEqual([])

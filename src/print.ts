@@ -22,11 +22,11 @@ import type {
   ProtoScalar,
   ProtoSyntax,
   TagName,
-} from "./types"
-import type { MField, MFile, MMessage } from "./model"
-import { SymbolTable } from "./symbols"
-import { linkAll } from "./resolve"
-import { textToModel } from "./text"
+} from "./types.ts"
+import type { MField, MFile, MMessage } from "./model.ts"
+import { SymbolTable } from "./symbols.ts"
+import { linkAll } from "./resolve.ts"
+import { textToModel } from "./text.ts"
 import {
   FLOAT_KINDS,
   INT32_KINDS,
@@ -37,12 +37,12 @@ import {
   fromBase64,
   isPlainObject,
   isScalar,
-} from "./values"
-import { OPTIONS_MESSAGE, WKT_VALUE_FORM, fromWktJson } from "./options"
-import { NUMERIC_RULES as NUMERIC, OA, OA_FIELD, OA_SCHEMA, STRING_FORMATS, WKT_FAMILY } from "./annotate"
-import { normalizePath } from "./paths"
-import { featuresOf as treeFeatures, isEditions } from "./features"
-import { parentScope as parentOf } from "./lower"
+} from "./values.ts"
+import { OPTIONS_MESSAGE, WKT_VALUE_FORM, fromWktJson } from "./options.ts"
+import { NUMERIC_RULES as NUMERIC, OA, OA_FIELD, OA_SCHEMA, STRING_FORMATS, WKT_FAMILY } from "./annotate.ts"
+import { normalizePath } from "./paths.ts"
+import { featuresOf as treeFeatures, isEditions } from "./features.ts"
+import { parentScope as parentOf } from "./lower.ts"
 
 const featuresOf = (o: unknown): Obj | undefined => (isPlainObject(o) ? treeFeatures(o) : undefined)
 
@@ -124,11 +124,13 @@ const lastSegment = (fqn: string) => fqn.slice(fqn.lastIndexOf(".") + 1)
 
 class Oracle {
   readonly symbols: SymbolTable
+  private readonly doc: ProtoApiDocument
   constructor(
-    private readonly doc: ProtoApiDocument,
+    doc: ProtoApiDocument,
     bundle: Readonly<Record<string, string>>,
     sources: Readonly<Record<string, string>> | undefined,
   ) {
+    this.doc = doc
     const cached = sources ? undefined : bundleSymbols.get(bundle)
     if (cached) this.symbols = cached
     else {
@@ -852,7 +854,7 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
   const tryOpenapi = (o: Obj, p: Pos, shape: Shape, kw: string, v: unknown): boolean => {
     const rule = OPENAPI[kw]
     if (!rule || p.target !== targetOf(kw, shape)) return false
-    if ((/Items$/.test(kw) && shape !== "repeated") || (/Properties$/.test(kw) && shape !== "map")) return false
+    if ((kw.endsWith("Items") && shape !== "repeated") || (kw.endsWith("Properties") && shape !== "map")) return false
     let value = v
     if (kw === "examples") {
       if (!Array.isArray(v) || v.length !== 1) return false

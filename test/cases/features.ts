@@ -4,7 +4,7 @@
 // carries `packed`, `features.repeated_field_encoding`, `features.utf8_validation` or `features.json_format`. Also the
 // LEGACY_REQUIRED oneof guard. buf 1.75 is the oracle.
 
-import type { Case } from "./types"
+import type { Case } from "./types.ts"
 
 type Doc = {
   files?: Record<string, { options?: Record<string, unknown> }>

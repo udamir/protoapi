@@ -5,7 +5,7 @@
  * Modifications:
  * - reconstructed as TypeScript source from the published `.d.ts`; type-only import.
  */
-import type { ColRow } from "./recursive-descent-parser"
+import type { ColRow } from "./recursive-descent-parser.ts"
 
 export interface Location extends Range {
   filePath: string

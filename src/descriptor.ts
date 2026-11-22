@@ -1,6 +1,6 @@
 // FileDescriptorSet (ProtoJSON) front end (design §6): descriptor protos -> model, SourceCodeInfo -> spans.
 
-import type { BuildIssue, Location, ProtoScalar, ProtoSyntax } from "./types"
+import type { BuildIssue, Location, ProtoScalar, ProtoSyntax } from "./types.ts"
 import type {
   Locs,
   MComments,
@@ -12,11 +12,11 @@ import type {
   MOneof,
   MService,
   MTypeRef,
-} from "./model"
-import { newHolder } from "./model"
-import { DESCRIPTOR_SCALAR, DESCRIPTOR_TYPE_BY_NUMBER } from "./values"
-import { normalizePath, ptr } from "./paths"
-import { EDITION_NUMBERS, KNOWN_EDITIONS, unsupportedEdition } from "./features"
+} from "./model.ts"
+import { newHolder } from "./model.ts"
+import { DESCRIPTOR_SCALAR, DESCRIPTOR_TYPE_BY_NUMBER } from "./values.ts"
+import { normalizePath, ptr } from "./paths.ts"
+import { EDITION_NUMBERS, KNOWN_EDITIONS, unsupportedEdition } from "./features.ts"
 
 type Json = Record<string, unknown>
 
@@ -54,7 +54,7 @@ const num = (o: Json | undefined, camel: string): number | undefined => {
   return v === undefined ? undefined : Number(v)
 }
 const enumStr = (v: unknown, byNumber?: Record<number, string>): string | undefined =>
-  v === undefined ? undefined : typeof v === "number" ? byNumber?.[v] ?? String(v) : String(v)
+  v === undefined ? undefined : typeof v === "number" ? (byNumber?.[v] ?? String(v)) : String(v)
 
 const LABELS: Record<number, string> = { 1: "LABEL_OPTIONAL", 2: "LABEL_REQUIRED", 3: "LABEL_REPEATED" }
 const EDITION_BY_NUMBER: Record<number, string> = Object.fromEntries(
@@ -82,11 +82,10 @@ const detachedOf = (l: SciLocation | undefined): string[] => list<string>(l, "le
 class SourceIndex {
   private readonly root: TrieNode = {}
   private readonly locations: SciLocation[]
+  private readonly file: string
 
-  constructor(
-    private readonly file: string,
-    info: Json | undefined,
-  ) {
+  constructor(file: string, info: Json | undefined) {
+    this.file = file
     this.locations = arr(info, "location")
     // locations come in tree order: the trie nodes of the previous path's common prefix are reused
     const chain: TrieNode[] = [this.root]
@@ -420,7 +419,7 @@ export const syntaxOf = (f: Json): { syntax: ProtoSyntax; unsupported?: string }
     raw === undefined || raw === null
       ? undefined
       : typeof raw === "number" || /^\d+$/.test(String(raw))
-        ? EDITION_BY_NUMBER[Number(raw)] ?? String(Number(raw))
+        ? (EDITION_BY_NUMBER[Number(raw)] ?? String(Number(raw)))
         : String(raw)
   if (name === undefined || name === "EDITION_UNKNOWN")
     return syntax === "editions"

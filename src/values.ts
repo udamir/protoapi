@@ -1,7 +1,7 @@
 // Canonical values (design §3.6, D7): 64-bit integers as decimal strings, non-finite floats as "Infinity" /
 // "-Infinity" / "NaN", bytes as standard padded base64, enums as names.
 
-import type { ProtoScalar } from "./types"
+import type { ProtoScalar } from "./types.ts"
 
 export const INT64_KINDS = new Set<ProtoScalar>(["int64", "uint64", "sint64", "fixed64", "sfixed64"])
 export const INT32_KINDS = new Set<ProtoScalar>(["int32", "uint32", "sint32", "fixed32", "sfixed32"])

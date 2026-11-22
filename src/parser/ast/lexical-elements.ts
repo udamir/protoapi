@@ -5,9 +5,9 @@
  * Modifications:
  * - reconstructed as TypeScript source from the published `.d.ts`; type-only imports.
  */
-import type { Span, Token } from "../recursive-descent-parser"
-import type { StatementBase } from "./index"
-import type { TextprotoMessageStatement } from "./textproto"
+import type { Span, Token } from "../recursive-descent-parser.ts"
+import type { StatementBase } from "./index.ts"
+import type { TextprotoMessageStatement } from "./textproto.ts"
 
 export type Node =
   | CommentGroup

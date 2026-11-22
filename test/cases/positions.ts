@@ -1,7 +1,7 @@
 // Source-map positions of the text producer against buf's SourceCodeInfo (C-8 / decision D-A: tab stops of 4, no
 // width for a BOM, `\r`, `\f`, `\v`), option statement spans (IN-5, C-10) and syntax-error locations (text#14).
 
-import type { Case } from "./types"
+import type { Case } from "./types.ts"
 
 const span = (
   r: { sourceMap: Record<string, { start: { line: number; column: number }; end: { line: number; column: number } }> },

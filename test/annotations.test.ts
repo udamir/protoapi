@@ -1,10 +1,10 @@
 // PB-3 annotation layer (design §3.8, D13, D14; validation A-1 … A-15, agent-decided items 4–10) against the buf
 // oracle; cases in test/cases/annotations.ts.
 
-import { describe, expect, test } from "bun:test"
-import { buildFromProto } from "../src"
-import { cases } from "./cases/annotations"
-import { describeCases } from "./cases/run"
+import { describe, expect, test } from "vite-plus/test"
+import { buildFromProto } from "../src/index.ts"
+import { cases } from "./cases/annotations.ts"
+import { describeCases } from "./cases/run.ts"
 
 describeCases("PB-3 annotation layer", "annotations", cases)
 

@@ -1,15 +1,15 @@
 // Binary FileDescriptorSet input through the optional @bufbuild/protobuf decoder (design D11).
 
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vite-plus/test"
 import { readFileSync } from "node:fs"
 import { join } from "node:path"
 import * as pb from "@bufbuild/protobuf"
 import * as wkt from "@bufbuild/protobuf/wkt"
-import { buildFromDescriptorSet, buildFromDescriptorSetBinary, buildFromProto } from "../src"
-import { createBuilders } from "../src/build"
-import { bundledSources } from "../src/bundle/sources"
-import { BUFBUILD_MINIMUM, loadBufbuild, readBufExtension } from "../src/binary"
-import { IMAGES, jsonDiff, loadImage, loadSources } from "./helpers"
+import { buildFromDescriptorSet, buildFromDescriptorSetBinary, buildFromProto } from "../src/index.ts"
+import { createBuilders } from "../src/build.ts"
+import { bundledSources } from "../src/bundle/sources.ts"
+import { BUFBUILD_MINIMUM, loadBufbuild, readBufExtension } from "../src/binary.ts"
+import { IMAGES, jsonDiff, loadImage, loadSources } from "./helpers.ts"
 
 const readBinary = (name: string) => new Uint8Array(readFileSync(join(IMAGES, `${name}.binpb`)))
 const decode = (bytes: Uint8Array) => pb.fromBinary(wkt.FileDescriptorSetSchema, bytes)

@@ -2,7 +2,7 @@
 // the validation report. buf 1.75 is the oracle: an accepted case is also a conformance test; issues of the shared
 // annotation layer are reported by both producers (`descriptorIssues`).
 
-import type { Case } from "./types"
+import type { Case } from "./types.ts"
 
 const OA = "grpc.gateway.protoc_gen_openapiv2.options"
 const HEAD = `syntax = "proto3";

@@ -39,10 +39,10 @@ function buildFromProto(sources: Record<string, string>, options?: TextBuildOpti
 
 Builds a document from `.proto` text. `sources` maps import paths to file contents; imports resolve from `sources`, then `options.bundle`, then the built-in bundle, then `options.loader`.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
+| Parameter | Type                     | Description                                                                              |
+| --------- | ------------------------ | ---------------------------------------------------------------------------------------- |
 | `sources` | `Record<string, string>` | Import path → `.proto` text. Every key is an entry file unless `options.entry` is given. |
-| `options` | `TextBuildOptions` | `BuildOptions` plus `loader?: (importPath: string) => string \| undefined`. |
+| `options` | `TextBuildOptions`       | `BuildOptions` plus `loader?: (importPath: string) => string \| undefined`.              |
 
 ### `buildFromProtoAsync(sources, options?)`
 
@@ -173,24 +173,24 @@ Normalizes comment text (without its `//` or `/* */` markers) the way descriptio
 
 ## Types
 
-| Type | Description |
-| --- | --- |
-| `ProtoApiDocument` | A `protoapi: "0.1"` document: `files`, `services`, `components`. |
-| `ProtoApiFile` | An entry of `files`: `syntax`, `package`, `imports`, `importFlags`, `options`, `description`, `bundled`. |
-| `ProtoApiService`, `ProtoApiMethod`, `ProtoApiMethodMessage`, `ProtoApiHttpRule` | Services, methods, their request and response, and the `google.api.http` rule. |
-| `ProtoApiMessage`, `ProtoApiField`, `ProtoApiReserved`, `ProtoApiExtensionRangeOptions` | Messages and their fields, reserved numbers and names, options of extension ranges. |
-| `ProtoApiEnum`, `ProtoApiEnumValue` | Enums and their values. |
-| `ProtoApiExtension` | An extension: a field with an `extendee`. |
-| `ProtoApiScalarRef`, `ProtoApiNamedRef`, `ProtoApiTypeRef` | The type of `items`, `propertyNames` and `additionalProperties`. |
-| `ProtoApiAnnotations` | The JSON Schema keywords of the annotation layer. |
-| `ProtoApiElement` | What every element may carry: `title`, `file`, `description`, `deprecation`, `options`, `x-annotation-conflicts`. |
-| `ProtoOptions`, `ProtoOptionValue` | Option maps and their values. |
-| `AnnotationConflict`, `AnnotationSource` | An entry of `x-annotation-conflicts`. |
-| `ProtoScalar`, `ProtoSyntax`, `KnownProtoSyntax` | Scalar type names, the `syntax` of a file. |
-| `BuildOptions`, `TextBuildOptions`, `DescriptorBuildOptions`, `ImportsMode`, `TagName` | Build options. |
-| `BuildResult`, `BuildIssue`, `BuildIssueCode` | Build results and issues. |
-| `SourceMap`, `Location`, `Position`, `JsonPointer`, `LocatableDiff` | Source maps. |
-| `PrintOptions` | Print options. |
-| `ProtoSources`, `ProtoLoader`, `AsyncProtoLoader`, `FileDescriptorSetJson`, `DescriptorDecoder` | Inputs of the builders. |
+| Type                                                                                            | Description                                                                                                       |
+| ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `ProtoApiDocument`                                                                              | A `protoapi: "0.1"` document: `files`, `services`, `components`.                                                  |
+| `ProtoApiFile`                                                                                  | An entry of `files`: `syntax`, `package`, `imports`, `importFlags`, `options`, `description`, `bundled`.          |
+| `ProtoApiService`, `ProtoApiMethod`, `ProtoApiMethodMessage`, `ProtoApiHttpRule`                | Services, methods, their request and response, and the `google.api.http` rule.                                    |
+| `ProtoApiMessage`, `ProtoApiField`, `ProtoApiReserved`, `ProtoApiExtensionRangeOptions`         | Messages and their fields, reserved numbers and names, options of extension ranges.                               |
+| `ProtoApiEnum`, `ProtoApiEnumValue`                                                             | Enums and their values.                                                                                           |
+| `ProtoApiExtension`                                                                             | An extension: a field with an `extendee`.                                                                         |
+| `ProtoApiScalarRef`, `ProtoApiNamedRef`, `ProtoApiTypeRef`                                      | The type of `items`, `propertyNames` and `additionalProperties`.                                                  |
+| `ProtoApiAnnotations`                                                                           | The JSON Schema keywords of the annotation layer.                                                                 |
+| `ProtoApiElement`                                                                               | What every element may carry: `title`, `file`, `description`, `deprecation`, `options`, `x-annotation-conflicts`. |
+| `ProtoOptions`, `ProtoOptionValue`                                                              | Option maps and their values.                                                                                     |
+| `AnnotationConflict`, `AnnotationSource`                                                        | An entry of `x-annotation-conflicts`.                                                                             |
+| `ProtoScalar`, `ProtoSyntax`, `KnownProtoSyntax`                                                | Scalar type names, the `syntax` of a file.                                                                        |
+| `BuildOptions`, `TextBuildOptions`, `DescriptorBuildOptions`, `ImportsMode`, `TagName`          | Build options.                                                                                                    |
+| `BuildResult`, `BuildIssue`, `BuildIssueCode`                                                   | Build results and issues.                                                                                         |
+| `SourceMap`, `Location`, `Position`, `JsonPointer`, `LocatableDiff`                             | Source maps.                                                                                                      |
+| `PrintOptions`                                                                                  | Print options.                                                                                                    |
+| `ProtoSources`, `ProtoLoader`, `AsyncProtoLoader`, `FileDescriptorSetJson`, `DescriptorDecoder` | Inputs of the builders.                                                                                           |
 
 The [specification](/spec/v0.1#_9-typescript-types) lists the document types in full.

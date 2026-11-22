@@ -4,8 +4,8 @@
  */
 import { defineLoader } from "vitepress"
 
-import { bufImage } from "../.vitepress/theme/buf"
-import { CASES } from "../.vitepress/theme/cases"
+import { bufImage } from "../.vitepress/theme/buf.ts"
+import { CASES } from "../.vitepress/theme/cases.ts"
 
 export type ImageTexts = Record<string, { image: string } | { error: string }>
 

@@ -26,7 +26,7 @@
  * 2. `#` comments inside aggregate option values (`{ ... }`) are accepted and recorded (textproto syntax); protoc's .proto tokenizer rejects them.
  * 3. Not a deviation from buf or protoc, but from pbkit: a comment after a block's closing `}` is never a trailing comment, and detached comments right before a closing `}` are dropped (both remain in `comments`).
  */
-import type * as ast from "./ast/index"
+import type * as ast from "./ast/index.ts"
 import {
   acceptPatternAndThen,
   acceptSpecialToken,
@@ -37,7 +37,7 @@ import {
   multilineCommentPattern,
   singlelineCommentPattern,
   skipTrivia,
-} from "./misc"
+} from "./misc.ts"
 import {
   type Pattern,
   type RecursiveDescentParser,
@@ -48,8 +48,8 @@ import {
   namePattern,
   ParserSyntaxError,
   TokenSyntaxError,
-} from "./recursive-descent-parser"
-import { acceptStrLitToken, acceptTextprotoStatements, strLitPattern } from "./textproto"
+} from "./recursive-descent-parser.ts"
+import { acceptStrLitToken, acceptTextprotoStatements, strLitPattern } from "./textproto.ts"
 
 /** Any comment the proto parser records: `//`, `/* *\/`, and `#` (only inside aggregate option values). */
 export type Comment = ast.Comment | ast.TextprotoComment
@@ -1155,7 +1155,7 @@ function acceptReserved(
   const keyword = acceptKeyword(parser, reservedPattern)
   if (!keyword) return
   skipWsAndComments(parser)
-  const reserved = parser.try("-") ?? parser.try(intLitPattern) ? expectRanges(parser) : expectFieldNames(parser)
+  const reserved = (parser.try("-") ?? parser.try(intLitPattern)) ? expectRanges(parser) : expectFieldNames(parser)
   skipWsAndComments(parser)
   const semi = expectSemi(parser)
   const trailingComments = acceptTrailingComments(parser)

@@ -1,8 +1,8 @@
 // Comment groups of the parser keyed by SourceCodeInfo path, for differential tests against buf images (IN-10).
 
-import { protocGroupText } from "../../src/comments"
-import { parseProto } from "../../src/parser"
-import type * as ast from "../../src/parser"
+import { protocGroupText } from "../../src/comments.ts"
+import { parseProto } from "../../src/parser/index.ts"
+import type * as ast from "../../src/parser/index.ts"
 
 export interface PathComments {
   L?: string

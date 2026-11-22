@@ -2,15 +2,15 @@
 // in test/cases/values.ts. Also: unknown option fields from descriptors (C-11), and the global guard that no document
 // holds `null` or a non-finite number (C-5).
 
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vite-plus/test"
 import { readdirSync, readFileSync } from "node:fs"
 import { join } from "node:path"
-import { buildFromDescriptorSet, buildFromProto, bundledFiles } from "../src"
-import type { ProtoApiDocument } from "../src"
-import { buildCase, describeCases, loadOracles } from "./cases/run"
-import type { Case } from "./cases/types"
-import { cases } from "./cases/values"
-import { FIXTURES, IMAGES, buildBoth, fixtureSets, loadImage, loadSources } from "./helpers"
+import { buildFromDescriptorSet, buildFromProto, bundledFiles } from "../src/index.ts"
+import type { ProtoApiDocument } from "../src/index.ts"
+import { buildCase, describeCases, loadOracles } from "./cases/run.ts"
+import type { Case } from "./cases/types.ts"
+import { cases } from "./cases/values.ts"
+import { FIXTURES, IMAGES, buildBoth, fixtureSets, loadImage, loadSources } from "./helpers.ts"
 
 describeCases("PB-5 canonical values", "values", cases)
 
@@ -65,7 +65,7 @@ describe("PB-5 global guard: no document value is null or a non-finite number (C
     assertJsonSafe(buildFromProto({ ...bundledFiles }, { includeImports: true, sourceMap: false }).document)
     const set = JSON.parse(readFileSync(join(IMAGES, "bundle.json"), "utf8"))
     assertJsonSafe(buildFromDescriptorSet(set, { includeImports: true, sourceMap: false }).document)
-    const dir = join(import.meta.dir, "cases")
+    const dir = join(import.meta.dirname, "cases")
     for (const f of readdirSync(dir)) {
       if (!f.endsWith(".ts") || f === "types.ts" || f === "run.ts") continue
       const module = f.slice(0, -3)

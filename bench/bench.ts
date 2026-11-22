@@ -1,12 +1,12 @@
 // Performance benchmark (design §12, PB-9). Synthetic corpus generator from the research PoC
 // (docs/research/grpc/poc/bench/bench.ts in api-smart-diff): comments, options, scalars, refs, maps, enums, services.
-//   bun bench/bench.ts [--descriptor]
+//   node bench/bench.ts [--descriptor]
 
 import { mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs"
 import { join } from "node:path"
 import { spawnSync } from "node:child_process"
-import { buildFromDescriptorSet, buildFromProto, parseProto, printProto } from "../src"
-import { generate } from "./generate"
+import { buildFromDescriptorSet, buildFromProto, parseProto, printProto } from "../src/index.ts"
+import { generate } from "./generate.ts"
 
 export { generate }
 
@@ -21,7 +21,7 @@ const min3 = (fn: () => unknown): number => {
 }
 
 if (import.meta.main) {
-  const dir = join(import.meta.dir, "..", ".tmp", "bench")
+  const dir = join(import.meta.dirname, "..", ".tmp", "bench")
   mkdirSync(dir, { recursive: true })
   const rows = [
     "| corpus | size | parse | buildFromProto | buildFromProto (no map) | printProto | buildFromDescriptorSet |",
@@ -45,7 +45,7 @@ if (import.meta.main) {
       mkdirSync(join(work, "src"), { recursive: true })
       writeFileSync(join(work, "src", `${name}.proto`), src)
       const ts = readFileSync(
-        join(import.meta.dir, "..", "bundle", "proto", "google", "protobuf", "timestamp.proto"),
+        join(import.meta.dirname, "..", "bundle", "proto", "google", "protobuf", "timestamp.proto"),
         "utf8",
       )
       mkdirSync(join(work, "src", "google", "protobuf"), { recursive: true })
@@ -53,7 +53,7 @@ if (import.meta.main) {
       writeFileSync(join(work, "buf.yaml"), "version: v2\nmodules:\n  - path: src\n")
       const image = join(work, "image.json")
       if (!existsSync(image))
-        spawnSync(join(import.meta.dir, "..", "node_modules", ".bin", "buf"), ["build", "-o", image], { cwd: work })
+        spawnSync(join(import.meta.dirname, "..", "node_modules", ".bin", "buf"), ["build", "-o", image], { cwd: work })
       const set = JSON.parse(readFileSync(image, "utf8"))
       desc = `${min3(() => buildFromDescriptorSet(set)).toFixed(0)} ms`
     }

@@ -3,8 +3,8 @@
 // the resolved keywords. Both producers must give the same pointers and spans (the runner compares the source maps
 // with the descriptor build of buf's image); `check` pins the spans of the text build.
 
-import type { BuildResult } from "../../src"
-import type { Case } from "./types"
+import type { BuildResult } from "../../src/index.ts"
+import type { Case } from "./types.ts"
 
 const L = (...lines: string[]) => lines.join("\n")
 

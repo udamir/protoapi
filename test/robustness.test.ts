@@ -1,6 +1,6 @@
 // PB-8: builders never throw on input problems; every problem is an issue (design §4.3, §13).
 
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vite-plus/test"
 import {
   buildFromDescriptorSet,
   buildFromDescriptorSetBinary,
@@ -11,9 +11,9 @@ import {
   locatePointer,
   parseProto,
   printProto,
-} from "../src"
-import type { ProtoApiDocument } from "../src"
-import { loadImage, loadSources } from "./helpers"
+} from "../src/index.ts"
+import type { ProtoApiDocument } from "../src/index.ts"
+import { loadImage, loadSources } from "./helpers.ts"
 
 // deterministic PRNG
 const rng = (seed: number) => () => {

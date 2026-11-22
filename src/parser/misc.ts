@@ -8,7 +8,7 @@
  *   per-accept loop counter).
  * - the default identifier pattern is sticky (see recursive-descent-parser.ts).
  */
-import type { Pattern, RecursiveDescentParser, Span, Token } from "./recursive-descent-parser"
+import type { Pattern, RecursiveDescentParser, Span, Token } from "./recursive-descent-parser.ts"
 
 /** Any parser: `addComment` is a method, so a parser of a narrower comment type is assignable to this. */
 type AnyParser = RecursiveDescentParser<Token>

@@ -1,8 +1,8 @@
 // Dev helper: printer round trip build(print(build(x))) == build(x) (PB-7), with the PB-7 harness of test/helpers.ts.
-//   bun scripts/roundtrip.ts poc | bundle | <fixture set> [--include-imports] [--print <file>]
+//   node scripts/roundtrip.ts poc | bundle | <fixture set> [--include-imports] [--print <file>]
 
-import { bundledFiles } from "../src"
-import { loadSources, roundTrip } from "../test/helpers"
+import { bundledFiles } from "../src/index.ts"
+import { loadSources, roundTrip } from "../test/helpers.ts"
 
 const set = process.argv[2] ?? "poc"
 const sources = set === "bundle" ? { ...bundledFiles } : loadSources(set)

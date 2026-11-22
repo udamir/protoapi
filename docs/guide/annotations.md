@@ -15,7 +15,8 @@ message Signup {
 ```
 
 ```yaml
-email: { description: The user's e-mail address., number: 1, type: string, protoType: string, required: true, format: email }
+email:
+  { description: The user's e-mail address., number: 1, type: string, protoType: string, required: true, format: email }
 name: { number: 2, type: string, protoType: string, maxLength: 64 }
 age: { number: 3, type: integer, protoType: int32, maximum: 150, exclusiveMinimum: 0 }
 ```
@@ -30,20 +31,20 @@ A lifted option is removed from `options`, a lifted tag or prefix from the descr
 
 A tag is a line of a field's leading or trailing comment that starts with `@` and a known tag name (case-insensitive, optional colon). The line is removed from the description.
 
-| Tag | Keyword | Value |
-| --- | --- | --- |
-| `@Required` | `required: true` | none, `true` or `false` |
-| `@Min` / `@Minimum`, `@Max` / `@Maximum` | `minimum`, `maximum` | a decimal number; on 64-bit fields an integer, written as a decimal string |
-| `@ExclusiveMinimum`, `@ExclusiveMaximum`, `@MultipleOf` | same names | as `@Minimum` |
-| `@MinLength`, `@MaxLength`, `@MinItems`, `@MaxItems` | same names | a non-negative integer |
-| `@Pattern` | `pattern` | the rest of the line |
-| `@Format` | `format` | a name (`email`, `uuid`, `uri`, …); string fields only |
-| `@Enum` | `enum` | comma-separated values; strings on string fields, protobuf constants on numeric and enum fields |
-| `@Default` | `x-default` | JSON if it parses, else the raw string |
-| `@Example` (repeatable) | `examples` | JSON if it parses, else the raw string |
-| `@ReadOnly`, `@WriteOnly` | `readOnly`, `writeOnly` | none, `true` or `false` |
-| `@Deprecated` | `deprecation.reason` | the rest of the line; sets `deprecation` without the option |
-| `@Title` | `title` | the rest of the line |
+| Tag                                                     | Keyword                 | Value                                                                                           |
+| ------------------------------------------------------- | ----------------------- | ----------------------------------------------------------------------------------------------- |
+| `@Required`                                             | `required: true`        | none, `true` or `false`                                                                         |
+| `@Min` / `@Minimum`, `@Max` / `@Maximum`                | `minimum`, `maximum`    | a decimal number; on 64-bit fields an integer, written as a decimal string                      |
+| `@ExclusiveMinimum`, `@ExclusiveMaximum`, `@MultipleOf` | same names              | as `@Minimum`                                                                                   |
+| `@MinLength`, `@MaxLength`, `@MinItems`, `@MaxItems`    | same names              | a non-negative integer                                                                          |
+| `@Pattern`                                              | `pattern`               | the rest of the line                                                                            |
+| `@Format`                                               | `format`                | a name (`email`, `uuid`, `uri`, …); string fields only                                          |
+| `@Enum`                                                 | `enum`                  | comma-separated values; strings on string fields, protobuf constants on numeric and enum fields |
+| `@Default`                                              | `x-default`             | JSON if it parses, else the raw string                                                          |
+| `@Example` (repeatable)                                 | `examples`              | JSON if it parses, else the raw string                                                          |
+| `@ReadOnly`, `@WriteOnly`                               | `readOnly`, `writeOnly` | none, `true` or `false`                                                                         |
+| `@Deprecated`                                           | `deprecation.reason`    | the rest of the line; sets `deprecation` without the option                                     |
+| `@Title`                                                | `title`                 | the rest of the line                                                                            |
 
 On a repeated field, value tags (`@Minimum`, `@Pattern`, `@Format`, `@Enum`, lengths) apply to `items`, and `@MinItems` / `@MaxItems` to the field. On a map field, value tags apply to the map value and `@MinItems` / `@MaxItems` become `minProperties` / `maxProperties`. Wrapper types (`google.protobuf.StringValue`, `Int64Value`, …) take the tags of their scalar. Any other `@tag` stays in the description.
 
@@ -65,14 +66,14 @@ Pass the same map to `printProto` so that printed tags use your names.
 
 The [AIP](https://google.aip.dev/203) convention starts a field comment with a field behaviour. `protoapi` recognizes these prefixes, with exact casing, at the start of the first line of the description:
 
-| Prefix | Keyword |
-| --- | --- |
-| `Required.` | `required: true` |
-| `Output only.` | `readOnly: true` |
-| `Input only.` | `writeOnly: true` |
-| `Immutable.` | `immutable: true` |
-| `Identifier.` | `IDENTIFIER` added to `options["google.api.field_behavior"]` |
-| `Optional.` | nothing (removed from the description) |
+| Prefix         | Keyword                                                      |
+| -------------- | ------------------------------------------------------------ |
+| `Required.`    | `required: true`                                             |
+| `Output only.` | `readOnly: true`                                             |
+| `Input only.`  | `writeOnly: true`                                            |
+| `Immutable.`   | `immutable: true`                                            |
+| `Identifier.`  | `IDENTIFIER` added to `options["google.api.field_behavior"]` |
+| `Optional.`    | nothing (removed from the description)                       |
 
 Prefixes stack (`Required. Immutable. The id.`). On every element kind, a first line `Deprecated: <reason>` sets `deprecation.reason`. Prefixes and the `Deprecated:` line are removed from the description.
 
@@ -84,18 +85,18 @@ Options are lifted when their definition is known — bundled, or present in the
 
 **protovalidate** — `(buf.validate.field)`:
 
-| Rule | Keyword |
-| --- | --- |
-| `required` | `required: true` |
-| numeric `gt`, `gte`, `lt`, `lte`, `const`, `in` | `exclusiveMinimum`, `minimum`, `exclusiveMaximum`, `maximum`, `const`, `enum` |
-| `string.min_len`, `max_len`, `len`, `pattern`, `prefix`, `suffix`, `contains`, `const`, `in` | `minLength`, `maxLength`, both, `pattern`, `pattern` (`^` + escaped), `pattern` (escaped + `$`), `pattern` (escaped), `const`, `enum` |
-| `string.email`, `hostname`, `ip`, `ipv4`, `ipv6`, `uri`, `uri_ref`, `uuid`, … | `format` with the same name (`uri_ref` → `uri-reference`) |
-| `bytes.min_len`, `max_len`, `len`, `const`, `in` | `minLength`, `maxLength`, both, `const` (base64), `enum` |
-| `bool.const`, `enum.const`, `enum.in` | `const`, `enum` (enum value names) |
-| `repeated.min_items`, `max_items`, `unique`, `items` | `minItems`, `maxItems`, `uniqueItems`, rules on `items` |
-| `map.min_pairs`, `max_pairs`, `keys`, `values` | `minProperties`, `maxProperties`, rules on `propertyNames` / `additionalProperties` |
-| `<type>.example` | `examples` |
-| `cel`, `ignore`, `not_in`, `enum.defined_only`, timestamp / duration / any rules, `(buf.validate.message)`, `(buf.validate.oneof)` | stay under `options` |
+| Rule                                                                                                                               | Keyword                                                                                                                               |
+| ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `required`                                                                                                                         | `required: true`                                                                                                                      |
+| numeric `gt`, `gte`, `lt`, `lte`, `const`, `in`                                                                                    | `exclusiveMinimum`, `minimum`, `exclusiveMaximum`, `maximum`, `const`, `enum`                                                         |
+| `string.min_len`, `max_len`, `len`, `pattern`, `prefix`, `suffix`, `contains`, `const`, `in`                                       | `minLength`, `maxLength`, both, `pattern`, `pattern` (`^` + escaped), `pattern` (escaped + `$`), `pattern` (escaped), `const`, `enum` |
+| `string.email`, `hostname`, `ip`, `ipv4`, `ipv6`, `uri`, `uri_ref`, `uuid`, …                                                      | `format` with the same name (`uri_ref` → `uri-reference`)                                                                             |
+| `bytes.min_len`, `max_len`, `len`, `const`, `in`                                                                                   | `minLength`, `maxLength`, both, `const` (base64), `enum`                                                                              |
+| `bool.const`, `enum.const`, `enum.in`                                                                                              | `const`, `enum` (enum value names)                                                                                                    |
+| `repeated.min_items`, `max_items`, `unique`, `items`                                                                               | `minItems`, `maxItems`, `uniqueItems`, rules on `items`                                                                               |
+| `map.min_pairs`, `max_pairs`, `keys`, `values`                                                                                     | `minProperties`, `maxProperties`, rules on `propertyNames` / `additionalProperties`                                                   |
+| `<type>.example`                                                                                                                   | `examples`                                                                                                                            |
+| `cel`, `ignore`, `not_in`, `enum.defined_only`, timestamp / duration / any rules, `(buf.validate.message)`, `(buf.validate.oneof)` | stay under `options`                                                                                                                  |
 
 See the [protovalidate example](/examples/#protovalidate-rules).
 
@@ -145,10 +146,10 @@ code:
 
 The `annotations` build option chooses what is lifted:
 
-| `annotations` | Lifted |
-| --- | --- |
-| `"all"` (default) | comment tags, AIP prefixes and convention options |
-| `"options"` | convention options only; comments are kept verbatim as descriptions |
-| `"none"` | nothing: every convention option stays under `options` raw, comments are descriptions |
+| `annotations`     | Lifted                                                                                |
+| ----------------- | ------------------------------------------------------------------------------------- |
+| `"all"` (default) | comment tags, AIP prefixes and convention options                                     |
+| `"options"`       | convention options only; comments are kept verbatim as descriptions                   |
+| `"none"`          | nothing: every convention option stays under `options` raw, comments are descriptions |
 
 The built-in keywords (`deprecation` from `[deprecated = true]`, `jsonName`, `default`, `idempotency`) and the `http` rule of a method are written in every mode. Print documents built with `"options"` or `"none"` with `printProto(document, { tags: false })`, so that the printer does not turn keywords into comment tags. Try the modes in the [online demo](/demo).

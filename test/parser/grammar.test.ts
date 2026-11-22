@@ -1,6 +1,6 @@
-import { describe, expect, test } from "bun:test"
-import { decodeStrLit, parseProto } from "../../src/parser"
-import { as, bs, enumBody, messageBody, optionNameText, parseOk, topLevel, typeText } from "./helpers"
+import { describe, expect, test } from "vite-plus/test"
+import { decodeStrLit, parseProto } from "../../src/parser/index.ts"
+import { as, bs, enumBody, messageBody, optionNameText, parseOk, topLevel, typeText } from "./helpers.ts"
 
 describe("edition 2024 symbol visibility", () => {
   const text = `edition = "2024";
@@ -384,7 +384,7 @@ service S { ; }
 })
 
 describe("constants", () => {
-  function fieldDefault(body: string): import("../../src/parser").Constant {
+  function fieldDefault(body: string): import("../../src/parser/index.ts").Constant {
     const field = as(messageBody(`syntax = "proto2"; message L { ${body} }`)[0], "field")
     const opt = field.fieldOptions?.fieldOptionOrCommas[0]
     return as(opt, "field-option").constant

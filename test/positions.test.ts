@@ -1,9 +1,9 @@
 // Source-map positions of the text producer (C-8, D-A, C-10, text#14) against buf; cases in test/cases/positions.ts.
 
-import { describe, expect, test } from "bun:test"
-import { createLineIndex } from "../src/parser"
-import { cases } from "./cases/positions"
-import { describeCases } from "./cases/run"
+import { describe, expect, test } from "vite-plus/test"
+import { createLineIndex } from "../src/parser/index.ts"
+import { cases } from "./cases/positions.ts"
+import { describeCases } from "./cases/run.ts"
 
 describeCases("positions", "positions", cases)
 

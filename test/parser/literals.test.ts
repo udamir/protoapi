@@ -1,6 +1,6 @@
-import { describe, expect, test } from "bun:test"
-import { decodeBytesLit, decodeStrLit, decodeUtf8, parseFloatLit, parseIntLit } from "../../src/parser"
-import { bs } from "./helpers"
+import { describe, expect, test } from "vite-plus/test"
+import { decodeBytesLit, decodeStrLit, decodeUtf8, parseFloatLit, parseIntLit } from "../../src/parser/index.ts"
+import { bs } from "./helpers.ts"
 
 /** A StrLit-like value from raw token texts (quotes included). */
 const lit = (...tokens: string[]) => ({ tokens: tokens.map((text) => ({ start: 0, end: text.length, text })) })

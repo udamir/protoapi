@@ -1,5 +1,5 @@
 // Downloads real-world conformance fixtures (googleapis, pinned commit) into test/fixtures/googleapis/.
-// Then `bun scripts/images.ts googleapis` builds their buf images.
+// Then `node scripts/images.ts googleapis` builds their buf images.
 
 import { mkdirSync, writeFileSync } from "node:fs"
 import { dirname, join } from "node:path"
@@ -21,7 +21,7 @@ const FILES = [
   // design §13 sample (phase D)
   "google/storage/v2/storage.proto",
 ]
-const ROOT = join(import.meta.dir, "..", "test", "fixtures", "googleapis")
+const ROOT = join(import.meta.dirname, "..", "test", "fixtures", "googleapis")
 for (const f of FILES) {
   const res = await fetch(`https://raw.githubusercontent.com/googleapis/googleapis/${GOOGLEAPIS}/${f}`)
   if (!res.ok) throw new Error(`${res.status} ${f}`)

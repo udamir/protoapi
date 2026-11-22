@@ -9,16 +9,16 @@ import type {
   FileDescriptorSetJson,
   ProtoSources,
   TextBuildOptions,
-} from "./types"
-import type { MEnum, MField, MFile, MMessage, MOptionHolder, MTypeRef } from "./model"
-import { SymbolTable } from "./symbols"
-import { linkAll } from "./resolve"
-import { Lowering } from "./lower"
-import { DEFAULT_TAB_WIDTH, textToModel } from "./text"
-import { convertFile } from "./descriptor"
-import { normalizePath, ptr } from "./paths"
-import { type BufbuildModules, decodeWithBufbuild, loadBufbuild } from "./binary"
-import { validateFiles } from "./validate"
+} from "./types.ts"
+import type { MEnum, MField, MFile, MMessage, MOptionHolder, MTypeRef } from "./model.ts"
+import { SymbolTable } from "./symbols.ts"
+import { linkAll } from "./resolve.ts"
+import { Lowering } from "./lower.ts"
+import { DEFAULT_TAB_WIDTH, textToModel } from "./text.ts"
+import { convertFile } from "./descriptor.ts"
+import { normalizePath, ptr } from "./paths.ts"
+import { type BufbuildModules, decodeWithBufbuild, loadBufbuild } from "./binary.ts"
+import { validateFiles } from "./validate.ts"
 
 const DESCRIPTOR_PROTO = "google/protobuf/descriptor.proto"
 

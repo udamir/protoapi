@@ -4,7 +4,7 @@ import type { EditorView } from "@codemirror/view"
 import { useData } from "vitepress"
 import { onBeforeUnmount, onMounted, shallowRef, useTemplateRef, watch } from "vue"
 
-import type { Language } from "../convert"
+import type { Language } from "../convert.ts"
 
 const props = defineProps<{ modelValue: string; language: Language; readonly?: boolean; label: string }>()
 const emit = defineEmits<{ "update:modelValue": [value: string] }>()

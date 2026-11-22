@@ -2,12 +2,12 @@
 //
 // `roundTrip` (helpers.ts) prints with the build's tag options and rebuilds from the printed files alone (`imports: "user"`, the default), every printed file over the sources (`"all"`) or the printed entry files over the sources (`"referenced"`). PB-7.7 … PB-7.11 run it over every input the tests have, in all three emission modes; PB-7.12 checks that the printed text passes `buf build` wherever the input did (recorded by scripts/print-check.ts in test/images/printed.json, keyed by the printed text's hash).
 
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vite-plus/test"
 import { existsSync, readFileSync } from "node:fs"
-import { buildFromProto, bundledFiles, printProto } from "../src"
-import type { BuildOptions, PrintOptions, ProtoApiDocument, ProtoSources } from "../src"
-import { IMPORT_MODES, inMode, loadSources, roundTrip } from "./helpers"
-import { PRINT_CHECK, type PrintCheck, printedHash, roundTripSets } from "./roundtrip-sets"
+import { buildFromProto, bundledFiles, printProto } from "../src/index.ts"
+import type { BuildOptions, PrintOptions, ProtoApiDocument, ProtoSources } from "../src/index.ts"
+import { IMPORT_MODES, inMode, loadSources, roundTrip } from "./helpers.ts"
+import { PRINT_CHECK, type PrintCheck, printedHash, roundTripSets } from "./roundtrip-sets.ts"
 
 const L = (...lines: string[]) => lines.join("\n")
 
@@ -188,7 +188,7 @@ describe("PB-7 printer round trip", () => {
   }, 60000)
 
   test("PB-7.12: the printed text passes buf build wherever the input does (recorded oracle)", () => {
-    expect(existsSync(PRINT_CHECK) ? "recorded" : "run `bun scripts/print-check.ts`").toBe("recorded")
+    expect(existsSync(PRINT_CHECK) ? "recorded" : "run `node scripts/print-check.ts`").toBe("recorded")
     const recorded = JSON.parse(readFileSync(PRINT_CHECK, "utf8")) as PrintCheck
     const problems: string[] = []
     let checked = 0
@@ -379,7 +379,7 @@ describe("PB-7 printer round trip", () => {
       { "a.proto": 'syntax = "proto2"; package nf.v1; message M { optional int32 a = 1 [default = 3]; }' },
       { files: false },
     ).document
-    expect(printProto(doc)["protoapi.proto"]).toStartWith('syntax = "proto2";\npackage nf.v1;')
+    expect(printProto(doc)["protoapi.proto"]).toMatch(/^syntax = "proto2";\npackage nf\.v1;/)
   })
 
   test("PB-7.19: Any option values print in the expanded text form (P-8)", () => {
@@ -427,7 +427,7 @@ describe("PB-7 printer round trip", () => {
     )
     const r = roundTrip({ "a.proto": L('edition = "2027";', "package a;", "message M { int32 a = 1; }") })
     expect(r.diff).toEqual([])
-    expect(r.printed["a.proto"]).toStartWith('edition = "2027";')
+    expect(r.printed["a.proto"]).toMatch(/^edition = "2027";/)
   })
 
   test("PB-7.21: the written imports, re-exports (P-12), option definitions from PrintOptions.sources (P-9)", () => {

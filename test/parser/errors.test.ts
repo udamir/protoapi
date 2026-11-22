@@ -1,7 +1,7 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vite-plus/test"
 import { readFileSync } from "node:fs"
-import { parseConstant, parseProto, parseTextprotoMessage } from "../../src/parser"
-import { bundleDir, listProtoFiles } from "./helpers"
+import { parseConstant, parseProto, parseTextprotoMessage } from "../../src/parser/index.ts"
+import { bundleDir, listProtoFiles } from "./helpers.ts"
 
 describe("syntax errors", () => {
   test("EX-DIAG-3: missing field number", () => {

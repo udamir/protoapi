@@ -1,23 +1,24 @@
 // PB-9: performance budgets, one test per row of design §12 (every timing row: min of at least 3 runs after warm-up). Set PROTOAPI_SKIP_PERF=1 to skip the timing rows on slow CI machines; the size rows (PB-9.8, PB-9.9) always run.
 
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vite-plus/test"
 import { spawnSync } from "node:child_process"
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
+import { pathToFileURL } from "node:url"
 import { gzipSync } from "node:zlib"
-import { build } from "esbuild"
-import { buildFromDescriptorSet, buildFromProto, bundledFiles, printProto } from "../src"
-import type { FileDescriptorSetJson } from "../src"
-import { parseTextprotoMessage } from "../src/parser"
-import { generate } from "../bench/generate"
-import { ROOT } from "./helpers"
+import { build } from "vite-plus"
+import { buildFromDescriptorSet, buildFromProto, bundledFiles, printProto } from "../src/index.ts"
+import type { FileDescriptorSetJson } from "../src/index.ts"
+import { parseTextprotoMessage } from "../src/parser/index.ts"
+import { generate } from "../bench/generate.ts"
+import { ROOT } from "./helpers.ts"
 
 const skip = !!process.env.PROTOAPI_SKIP_PERF
 /** Min of `runs` timed runs after three warm-up runs (the JIT tiers up over several runs of a large build) and a
  *  full collection of the earlier tests' garbage. */
 const best = (fn: () => unknown, runs = 3, warm = 3) => {
   for (let i = 0; i < warm; i++) fn()
-  ;(globalThis as { Bun?: { gc(force: boolean): void } }).Bun?.gc(true)
+  ;(globalThis as { gc?: () => void }).gc?.()
   let min = Number.POSITIVE_INFINITY
   for (let i = 0; i < runs; i++) {
     const t0 = performance.now()
@@ -116,28 +117,17 @@ describe.skipIf(skip)("PB-9 performance (timing rows)", () => {
   })
 
   test("PB-9.7: peak heap of the 8.6 MB build < 1 GB (it completes in node with the V8 heap capped at 1 GB)", async () => {
-    // a fresh node process with --max-old-space-size=1024 runs the build bundled by esbuild: completing proves the
-    // peak heap stays below the cap (an out-of-memory abort otherwise)
-    const out = join(ROOT, ".tmp", "bench", "pb-9.7.cjs")
-    await build({
-      stdin: {
-        contents: [
-          'const { buildFromProto } = require("./src/index.ts")',
-          'const { generate } = require("./bench/generate.ts")',
-          'const r = buildFromProto({ "big.proto": generate(10200, "bench.f") })',
-          "console.log(Object.keys(r.document.components.messages).length)",
-        ].join("\n"),
-        resolveDir: ROOT,
-        loader: "ts",
-      },
-      bundle: true,
-      platform: "node",
-      format: "cjs",
-      outfile: out,
-      external: ["@bufbuild/protobuf"],
-      logLevel: "silent",
+    // a fresh node process with --max-old-space-size=1024 runs the build from the TypeScript sources (node strips the
+    // types): completing proves the peak heap stays below the cap (an out-of-memory abort otherwise)
+    const script = [
+      `import { buildFromProto } from ${JSON.stringify(pathToFileURL(join(ROOT, "src", "index.ts")).href)}`,
+      `import { generate } from ${JSON.stringify(pathToFileURL(join(ROOT, "bench", "generate.ts")).href)}`,
+      'const r = buildFromProto({ "big.proto": generate(10200, "bench.f") })',
+      "console.log(Object.keys(r.document.components.messages).length)",
+    ].join("\n")
+    const res = spawnSync("node", ["--max-old-space-size=1024", "--input-type=module", "--eval", script], {
+      encoding: "utf8",
     })
-    const res = spawnSync("node", ["--max-old-space-size=1024", out], { encoding: "utf8" })
     expect(res.stderr).not.toContain("heap out of memory")
     expect(res.status).toBe(0)
     expect(Number(res.stdout.trim())).toBeGreaterThan(10000)
@@ -146,30 +136,29 @@ describe.skipIf(skip)("PB-9 performance (timing rows)", () => {
 
 describe("PB-9 performance (size rows)", () => {
   test("PB-9.8: browser code without the bundled sources, minified + gzip, < 60 KB", async () => {
-    // the core entry as the build script bundles it (IIFE, es2020, minified), its bundled .proto strings left out
-    const res = await build({
-      entryPoints: [join(ROOT, "src", "core.ts")],
-      bundle: true,
-      minify: true,
-      format: "iife",
-      globalName: "protoapiCore",
-      platform: "browser",
-      target: "es2020",
-      write: false,
-      external: ["@bufbuild/protobuf", "@bufbuild/protobuf/*"],
+    // the core entry as the browser build bundles it (IIFE, es2020, minified), its bundled .proto strings left out
+    const res = (await build({
+      configFile: false,
+      logLevel: "silent",
       plugins: [
         {
           name: "without-bundled-sources",
-          setup(b) {
-            b.onLoad({ filter: /src[\\/]bundle[\\/](core-sources|sources)\.ts$/ }, () => ({
-              contents: "export const coreSources = {}; export const bundledSources = {}",
-              loader: "ts",
-            }))
-          },
+          enforce: "pre",
+          load: (id) =>
+            /src[\\/]bundle[\\/](core-sources|sources)\.ts$/.test(id)
+              ? "export const coreSources = {}; export const bundledSources = {}"
+              : undefined,
         },
       ],
-    })
-    const size = gzipSync(res.outputFiles[0].contents).length
+      build: {
+        write: false,
+        minify: true,
+        target: "es2020",
+        lib: { entry: join(ROOT, "src", "core.ts"), formats: ["iife"], name: "protoapiCore" },
+        rolldownOptions: { external: [/^@bufbuild\/protobuf/] },
+      },
+    })) as { output: { code: string }[] }[]
+    const size = gzipSync(res[0].output[0].code).length
     expect(size).toBeLessThan(60 * 1024)
   })
 

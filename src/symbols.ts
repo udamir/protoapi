@@ -1,9 +1,9 @@
 // Symbol table and protoc's name lookup (design §5.3, `DescriptorBuilder::LookupSymbol` + `FindSymbol`).
 
-import type { MEnum, MField, MFile, MMessage, MOptionHolder, MService } from "./model"
-import { FeatureDefaults, isEditions } from "./features"
-import { bundledFeatureDefaults } from "./bundle/features"
-import { isPlainObject } from "./values"
+import type { MEnum, MField, MFile, MMessage, MOptionHolder, MService } from "./model.ts"
+import { FeatureDefaults, isEditions } from "./features.ts"
+import { bundledFeatureDefaults } from "./bundle/features.ts"
+import { isPlainObject } from "./values.ts"
 
 export type SymbolKind =
   | "package"
@@ -88,9 +88,9 @@ const identOf = (n: unknown): string =>
  */
 export const defaultVisibility = (file: MFile): string =>
   isEditions(file.syntax)
-    ? declaredDefaultVisibility(file) ??
+    ? (declaredDefaultVisibility(file) ??
       BUNDLED_DEFAULTS.forSyntax(file.syntax).default_symbol_visibility ??
-      "EXPORT_ALL"
+      "EXPORT_ALL")
     : "EXPORT_ALL"
 
 const isLocal = (explicit: "export" | "local" | undefined, nested: boolean, defaults: string): boolean => {

@@ -54,20 +54,20 @@ the source map holds (lines and columns zero-based, end exclusive):
 
 In general:
 
-| Pointer | Span |
-| --- | --- |
-| `#/files/<path>` | the whole file |
-| `…/syntax`, `…/package`, `…/imports/<i>`, `…/options/<name>` of a file | the statement |
-| `#/services/<S>`, `…/methods/<M>`, `#/components/messages/<M>`, `#/components/enums/<E>` | the declaration, from its keyword to its closing `}` or `;` |
-| `…/methods/<M>/request`, `…/response` | the type name; `…/request/stream`, `…/response/stream` the `stream` keyword |
-| `…/properties/<f>`, `…/values/<V>`, `#/components/extensions/<x>` | the field or value declaration |
-| `…/number`, `…/type` (also for `$ref`), `…/jsonName`, `…/default` | the token or option |
-| `…/presence` | the `optional` / `required` label when written, else the field |
-| `…/oneofs/<k>` | the `oneof` block |
-| `…/reserved/numbers/<i>`, `…/reserved/names/<i>`, `…/extensions/<i>` | the written range or name that starts the interval |
-| `…/options/<name>`, `…/deprecation`, `…/idempotency`, `…/http` | the option statement |
+| Pointer                                                                                                                       | Span                                                                                     |
+| ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `#/files/<path>`                                                                                                              | the whole file                                                                           |
+| `…/syntax`, `…/package`, `…/imports/<i>`, `…/options/<name>` of a file                                                        | the statement                                                                            |
+| `#/services/<S>`, `…/methods/<M>`, `#/components/messages/<M>`, `#/components/enums/<E>`                                      | the declaration, from its keyword to its closing `}` or `;`                              |
+| `…/methods/<M>/request`, `…/response`                                                                                         | the type name; `…/request/stream`, `…/response/stream` the `stream` keyword              |
+| `…/properties/<f>`, `…/values/<V>`, `#/components/extensions/<x>`                                                             | the field or value declaration                                                           |
+| `…/number`, `…/type` (also for `$ref`), `…/jsonName`, `…/default`                                                             | the token or option                                                                      |
+| `…/presence`                                                                                                                  | the `optional` / `required` label when written, else the field                           |
+| `…/oneofs/<k>`                                                                                                                | the `oneof` block                                                                        |
+| `…/reserved/numbers/<i>`, `…/reserved/names/<i>`, `…/extensions/<i>`                                                          | the written range or name that starts the interval                                       |
+| `…/options/<name>`, `…/deprecation`, `…/idempotency`, `…/http`                                                                | the option statement                                                                     |
 | lifted keywords (`required`, `minimum`, `format`, `examples`, …), also under `items`, `propertyNames`, `additionalProperties` | the option statement they were lifted from, or the line of the comment tag or AIP prefix |
-| resolved features (`packed`, `utf8Validation`, `jsonFormat`) | the option that sets them on the element itself; an inherited value has no entry |
+| resolved features (`packed`, `utf8Validation`, `jsonFormat`)                                                                  | the option that sets them on the element itself; an inherited value has no entry         |
 
 Bundled files are located too, so a type such as `google.protobuf.Timestamp` points into the bundled `timestamp.proto`. The [conversion examples](/examples/) show the source map of each example in the **Source map** tab, and the [online demo](/demo) has a **Source map** output.
 

@@ -7,13 +7,13 @@
  * - `Import.weakOrPublic` documented to also hold `option` (edition 2024 `import option "x.proto";`).
  * - comment semantics of `StatementBase` follow buf 1.75 (see KNOWN_DEVIATIONS in ../proto.ts).
  */
-import type { Span, Token } from "../recursive-descent-parser"
-import type * as extensionsAndReserved from "./extensions-and-reserved"
-import type * as fields from "./fields"
-import type * as lexicalElements from "./lexical-elements"
-import type { CommentGroup, Constant, Dot, Empty, FullIdent, Keyword, Semi, StrLit } from "./lexical-elements"
-import type * as textproto from "./textproto"
-import type * as topLevelDefinitions from "./top-level-definitions"
+import type { Span, Token } from "../recursive-descent-parser.ts"
+import type * as extensionsAndReserved from "./extensions-and-reserved.ts"
+import type * as fields from "./fields.ts"
+import type * as lexicalElements from "./lexical-elements.ts"
+import type { CommentGroup, Constant, Dot, Empty, FullIdent, Keyword, Semi, StrLit } from "./lexical-elements.ts"
+import type * as textproto from "./textproto.ts"
+import type * as topLevelDefinitions from "./top-level-definitions.ts"
 import type {
   Enum,
   EnumBodyStatement,
@@ -24,13 +24,13 @@ import type {
   RpcBodyStatement,
   Service,
   ServiceBodyStatement,
-} from "./top-level-definitions"
+} from "./top-level-definitions.ts"
 
-export type * from "./extensions-and-reserved"
-export type * from "./fields"
-export type * from "./lexical-elements"
-export type * from "./textproto"
-export type * from "./top-level-definitions"
+export type * from "./extensions-and-reserved.ts"
+export type * from "./fields.ts"
+export type * from "./lexical-elements.ts"
+export type * from "./textproto.ts"
+export type * from "./top-level-definitions.ts"
 
 export interface Proto {
   statements: TopLevelStatement[]

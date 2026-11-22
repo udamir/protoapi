@@ -1,11 +1,11 @@
 // Downloads the bundled .proto definitions at the pinned versions into bundle/proto/ and their licences into
-// bundle/LICENSES/. Run `bun run bundle:fetch` (network) and then `bun run bundle:gen` to regenerate
+// bundle/LICENSES/. Run `pnpm bundle:fetch` (network) and then `pnpm bundle:gen` to regenerate
 // src/bundle/sources.ts. Versions are recorded in bundle/VERSIONS.md.
 
 import { mkdirSync, writeFileSync } from "node:fs"
 import { dirname, join } from "node:path"
 
-const ROOT = join(import.meta.dir, "..", "bundle")
+const ROOT = join(import.meta.dirname, "..", "bundle")
 
 interface Source {
   name: string

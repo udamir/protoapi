@@ -1,5 +1,5 @@
 /** Example `.proto` inputs: the conversion examples page renders each one, and the online demo offers them as presets */
-import type { BuildOptions } from "../../../src/index"
+import type { BuildOptions } from "../../../src/index.ts"
 
 export interface ExampleCase {
   id: string

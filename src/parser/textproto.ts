@@ -13,10 +13,10 @@
  *   character classes instead of the `i` flag.
  * - `parseTextprotoMessage` never throws: it returns `error` and requires the whole input to be consumed.
  */
-import type * as ast from "./ast/textproto"
-import type { MultilineComment, SinglelineComment } from "./ast/lexical-elements"
-import { acceptPatternAndThen, choice, many, mergeSpans, skipTrivia } from "./misc"
-import type { AcceptFn } from "./misc"
+import type * as ast from "./ast/textproto.ts"
+import type { MultilineComment, SinglelineComment } from "./ast/lexical-elements.ts"
+import { acceptPatternAndThen, choice, many, mergeSpans, skipTrivia } from "./misc.ts"
+import type { AcceptFn } from "./misc.ts"
 import {
   type RecursiveDescentParser,
   type Token,
@@ -25,7 +25,7 @@ import {
   namePattern,
   ParserSyntaxError,
   TokenSyntaxError,
-} from "./recursive-descent-parser"
+} from "./recursive-descent-parser.ts"
 
 type Comment = ast.TextprotoComment | SinglelineComment | MultilineComment
 

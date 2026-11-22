@@ -7,13 +7,13 @@
 // `unknown-option` when an option field has no definition anywhere. buf's `ImageFile.buf_extension` (field 8042) is
 // read from the unknown fields, so `bufExtension.isImport` survives the binary path (C-3).
 
-import type { BuildIssue, FileDescriptorSetJson, ProtoScalar } from "./types"
-import type { MEnum, MField, MFile, MMessage } from "./model"
-import { SymbolTable } from "./symbols"
-import { linkAll } from "./resolve"
-import { DESCRIPTOR_SCALAR, defaultJsonName } from "./values"
-import { EDITION_NUMBERS, KNOWN_EDITIONS } from "./features"
-import { type VType, decodeWire, scalarType, wireDef } from "./options"
+import type { BuildIssue, FileDescriptorSetJson, ProtoScalar } from "./types.ts"
+import type { MEnum, MField, MFile, MMessage } from "./model.ts"
+import { SymbolTable } from "./symbols.ts"
+import { linkAll } from "./resolve.ts"
+import { DESCRIPTOR_SCALAR, defaultJsonName } from "./values.ts"
+import { EDITION_NUMBERS, KNOWN_EDITIONS } from "./features.ts"
+import { type VType, decodeWire, scalarType, wireDef } from "./options.ts"
 
 /** The first @bufbuild/protobuf release that supports edition 2024 (the peer dependency minimum). */
 export const BUFBUILD_MINIMUM = "2.8.0"

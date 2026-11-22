@@ -6,7 +6,7 @@
  * `\UXXXXXXXX` produce the UTF-8 encoding of the code point (a `\u` high surrogate followed by a `\u` low surrogate
  * is combined), and every other character is UTF-8 encoded. Adjacent literals (`"a" 'b'`) are concatenated.
  */
-import type { StrLit } from "./ast/lexical-elements"
+import type { StrLit } from "./ast/lexical-elements.ts"
 
 const simpleEscapes: Record<string, number> = {
   a: 0x07,

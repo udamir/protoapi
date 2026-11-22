@@ -9,11 +9,11 @@
  *   `group`) `trailingComments` are the comments after the opening `{`, as in protoc; comments after the closing
  *   `}` are not attached (pbkit attached those instead).
  */
-import type { Span, Token } from "../recursive-descent-parser"
-import type { Extensions, Reserved } from "./extensions-and-reserved"
-import type { Field, FieldOptions, Group, MalformedField, MapField, Oneof } from "./fields"
-import type { Option, StatementBase } from "./index"
-import type { Empty, Keyword, Semi, SignedIntLit, Type } from "./lexical-elements"
+import type { Span, Token } from "../recursive-descent-parser.ts"
+import type { Extensions, Reserved } from "./extensions-and-reserved.ts"
+import type { Field, FieldOptions, Group, MalformedField, MapField, Oneof } from "./fields.ts"
+import type { Option, StatementBase } from "./index.ts"
+import type { Empty, Keyword, Semi, SignedIntLit, Type } from "./lexical-elements.ts"
 
 export type Node =
   | Enum

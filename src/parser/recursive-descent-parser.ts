@@ -143,12 +143,12 @@ export class ParserSyntaxError extends Error {
   readonly got: string | typeof eof
   /** Human-readable descriptions of `expectedPatterns`. */
   readonly expected: string[]
-  constructor(
-    parser: RecursiveDescentParser<Token>,
-    public readonly expectedPatterns: Pattern[],
-    public readonly mistakePatterns: Pattern[] = [],
-  ) {
+  readonly expectedPatterns: Pattern[]
+  readonly mistakePatterns: Pattern[]
+  constructor(parser: RecursiveDescentParser<Token>, expectedPatterns: Pattern[], mistakePatterns: Pattern[] = []) {
     super()
+    this.expectedPatterns = expectedPatterns
+    this.mistakePatterns = mistakePatterns
     this.name = "ParserSyntaxError"
     this.offset = parser.loc
     this.got = getGot(parser, mistakePatterns)

@@ -19,14 +19,14 @@ Name lookup follows protoc: a type is visible through the file's own imports and
 
 `protoapi` ships the `.proto` sources of the definitions most APIs import, pinned to the versions in `bundle/VERSIONS.md`:
 
-| Files | Origin | Licence |
-| --- | --- | --- |
-| `google/protobuf/*.proto` — `descriptor`, `any`, `timestamp`, `duration`, `empty`, `struct`, `wrappers`, `field_mask`, `api`, `type`, `source_context`, `cpp_features`, `java_features` | protobuf v36.2 | BSD-3-Clause |
-| `google/protobuf/go_features.proto` | protobuf-go v1.36.12 | BSD-3-Clause |
-| `google/api/*.proto` (`annotations`, `http`, `field_behavior`, `field_info`, `client`, `resource`, `launch_stage`, `routing`, `visibility`), `google/rpc/*.proto` (`status`, `code`, `error_details`), `google/type/*.proto` | googleapis | Apache-2.0 |
-| `buf/validate/validate.proto` | protovalidate v1.2.2 | Apache-2.0 |
-| `validate/validate.proto` | protoc-gen-validate v1.3.3 | Apache-2.0 |
-| `protoc-gen-openapiv2/options/{annotations,openapiv2}.proto` | grpc-gateway v2.33.0 | BSD-3-Clause |
+| Files                                                                                                                                                                                                                        | Origin                     | Licence      |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- | ------------ |
+| `google/protobuf/*.proto` — `descriptor`, `any`, `timestamp`, `duration`, `empty`, `struct`, `wrappers`, `field_mask`, `api`, `type`, `source_context`, `cpp_features`, `java_features`                                      | protobuf v36.2             | BSD-3-Clause |
+| `google/protobuf/go_features.proto`                                                                                                                                                                                          | protobuf-go v1.36.12       | BSD-3-Clause |
+| `google/api/*.proto` (`annotations`, `http`, `field_behavior`, `field_info`, `client`, `resource`, `launch_stage`, `routing`, `visibility`), `google/rpc/*.proto` (`status`, `code`, `error_details`), `google/type/*.proto` | googleapis                 | Apache-2.0   |
+| `buf/validate/validate.proto`                                                                                                                                                                                                | protovalidate v1.2.2       | Apache-2.0   |
+| `validate/validate.proto`                                                                                                                                                                                                    | protoc-gen-validate v1.3.3 | Apache-2.0   |
+| `protoc-gen-openapiv2/options/{annotations,openapiv2}.proto`                                                                                                                                                                 | grpc-gateway v2.33.0       | BSD-3-Clause |
 
 The bundle serves three purposes: imports of these files resolve without any setup; option values of their extensions (`google.api.http`, `buf.validate.field`, …) are typed and [lifted into keywords](/guide/annotations); and `descriptor.proto` supplies the built-in options and the feature defaults of every edition. The sources are exported as `bundledFiles` (import path → text).
 
@@ -40,11 +40,11 @@ buildFromProto(sources, { bundle: { "acme/options.proto": acmeOptions } })
 
 The **entry files** (`options.entry`, by default every key of `sources`) are always emitted in full: every service, message, enum and extension they declare. What is emitted of the files they import depends on the `imports` option:
 
-| `imports` | Entry files | Imported user files (`sources`, loader) | Imported bundled files |
-| --- | --- | --- | --- |
-| `"user"` (default) | in full | in full, when reachable from an entry file through imports of any kind | referenced declarations only |
-| `"referenced"` | in full | referenced declarations only | referenced declarations only |
-| `"all"` | in full | in full | in full |
+| `imports`          | Entry files | Imported user files (`sources`, loader)                                | Imported bundled files       |
+| ------------------ | ----------- | ---------------------------------------------------------------------- | ---------------------------- |
+| `"user"` (default) | in full     | in full, when reachable from an entry file through imports of any kind | referenced declarations only |
+| `"referenced"`     | in full     | referenced declarations only                                           | referenced declarations only |
+| `"all"`            | in full     | in full                                                                | in full                      |
 
 "Referenced declarations" are the types used by emitted declarations, transitively: field, map value and method types (the extendees of extensions are not followed). So with the default mode, a document contains your whole API and exactly the well-known and googleapis types it uses:
 

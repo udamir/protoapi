@@ -6,10 +6,10 @@ import { createHash } from "node:crypto"
 import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 import yaml from "js-yaml"
-import { bundledFiles } from "../src"
-import type { BuildOptions } from "../src"
-import { FIXTURES, IMAGES, fixtureSets, loadSources } from "./helpers"
-import type { Case, CaseOracle } from "./cases/types"
+import { bundledFiles } from "../src/index.ts"
+import type { BuildOptions } from "../src/index.ts"
+import { FIXTURES, IMAGES, fixtureSets, loadSources } from "./helpers.ts"
+import type { Case, CaseOracle } from "./cases/types.ts"
 
 export interface RoundTripSet {
   /** fixture set path, `bundle`, or `cases/<module>/<case id>` */

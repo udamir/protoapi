@@ -1,6 +1,6 @@
-import { expect, test } from "bun:test"
-import { createLineIndex, parseProto } from "../../src/parser"
-import { generateSyntheticProto } from "./synthetic"
+import { expect, test } from "vite-plus/test"
+import { createLineIndex, parseProto } from "../../src/parser/index.ts"
+import { generateSyntheticProto } from "./synthetic.ts"
 
 test("parses a ~1.5 MB synthetic file in under 1000 ms", () => {
   const text = generateSyntheticProto(1_500_000)

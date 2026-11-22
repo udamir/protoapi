@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue"
 
-import { buildFromProto, type BuildIssue } from "../../../../src/index"
-import { data as images } from "../../../examples/images.data"
-import { CASES } from "../cases"
+import { buildFromProto, type BuildIssue } from "../../../../src/index.ts"
+import { data as images } from "../../../examples/images.data.ts"
+import { CASES } from "../cases.ts"
 import {
   DEFAULT_OPTIONS,
   SOURCES,
@@ -22,7 +22,7 @@ import {
   type SourceKind,
   type TargetKind,
   type TextFormat,
-} from "../convert"
+} from "../convert.ts"
 import CodeEditor from "./CodeEditor.vue"
 
 const source = ref<SourceKind>("proto")
@@ -85,7 +85,7 @@ const singleText = computed({
 })
 
 const editorText = computed({
-  get: () => (source.value === "proto" ? files.value[activeFile.value] ?? "" : singleText.value),
+  get: () => (source.value === "proto" ? (files.value[activeFile.value] ?? "") : singleText.value),
   set: (text: string) => {
     if (source.value === "proto") {
       files.value = { ...files.value, [activeFile.value]: text }
@@ -244,7 +244,7 @@ const copy = async () => {
 const download = () => {
   const name =
     target.value === "proto"
-      ? activeOutput.value.split("/").at(-1) ?? "protoapi.proto"
+      ? (activeOutput.value.split("/").at(-1) ?? "protoapi.proto")
       : target.value === "protoapi"
         ? `protoapi.${format.value}`
         : "sourcemap.yaml"
@@ -300,7 +300,7 @@ onMounted(() => {
   annotations.value = state.options?.annotations ?? DEFAULT_OPTIONS.annotations
   entry.value = state.options?.entry
   const same = (item: (typeof CASES)[number]) => JSON.stringify(item.files) === JSON.stringify(state.files)
-  preset.value = state.source === "proto" ? CASES.find(same)?.id ?? "" : ""
+  preset.value = state.source === "proto" ? (CASES.find(same)?.id ?? "") : ""
   if (state.source === "proto") {
     files.value = { ...state.files }
     activeFile.value = Object.keys(state.files).at(-1) ?? ""
@@ -447,7 +447,12 @@ onMounted(() => {
             <button class="link" :disabled="inputEmpty" @click="share">Share</button>
           </span>
         </header>
-        <div v-if="multiFileOutput && outputNames.length > 1 && !error" class="files" role="tablist" aria-label="Output files">
+        <div
+          v-if="multiFileOutput && outputNames.length > 1 && !error"
+          class="files"
+          role="tablist"
+          aria-label="Output files"
+        >
           <span v-for="name in outputNames" :key="name" :class="['file', { active: activeOutput === name }]">
             <button role="tab" :aria-selected="activeOutput === name" @click="activeOutput = name">{{ name }}</button>
           </span>
@@ -475,7 +480,9 @@ onMounted(() => {
           <button v-if="canShow(issue)" class="issue" title="Show in the input" @click="showIssue(issue)">
             <code>{{ issue.code }}</code> {{ formatIssue(issue).slice(issue.code.length + 1) }}
           </button>
-          <span v-else class="issue"><code>{{ issue.code }}</code> {{ formatIssue(issue).slice(issue.code.length + 1) }}</span>
+          <span v-else class="issue"
+            ><code>{{ issue.code }}</code> {{ formatIssue(issue).slice(issue.code.length + 1) }}</span
+          >
           <small v-if="issue.pointer" class="pointer">{{ issue.pointer }}</small>
         </li>
       </ul>

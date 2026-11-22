@@ -6,9 +6,9 @@
 // (design §5.2), the bundled one (generated into src/bundle/features.ts) fills the features it does not define.
 // proto2 and proto3 files use the defaults of EDITION_PROTO2 and EDITION_PROTO3.
 
-import type { BuildIssue, KnownProtoSyntax, Location, ProtoSyntax } from "./types"
-import type { OptionTree } from "./model"
-import { isPlainObject } from "./values"
+import type { BuildIssue, KnownProtoSyntax, Location, ProtoSyntax } from "./types.ts"
+import type { OptionTree } from "./model.ts"
+import { isPlainObject } from "./values.ts"
 
 /** Resolved values of the `google.protobuf.FeatureSet` fields (enum value names). */
 export interface ResolvedFeatures {
@@ -127,7 +127,11 @@ export const mergeFeatureDefaults = (
 export class FeatureDefaults {
   private readonly cache = new Map<string, ResolvedFeatures>()
 
-  constructor(readonly source: FeatureDefaultsSource) {}
+  readonly source: FeatureDefaultsSource
+
+  constructor(source: FeatureDefaultsSource) {
+    this.source = source
+  }
 
   private number(edition: string): number | undefined {
     return this.source.editions[edition] ?? EDITION_NUMBERS[edition]

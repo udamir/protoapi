@@ -4,9 +4,9 @@
  */
 import { createMarkdownRenderer, defineLoader } from "vitepress"
 
-import { buildFromDescriptorSet, buildFromProto, printProto } from "../../src/index"
-import { bufImage, displayImage } from "../.vitepress/theme/buf"
-import { CASES } from "../.vitepress/theme/cases"
+import { buildFromDescriptorSet, buildFromProto, printProto } from "../../src/index.ts"
+import { bufImage, displayImage } from "../.vitepress/theme/buf.ts"
+import { CASES } from "../.vitepress/theme/cases.ts"
 import {
   DEFAULT_OPTIONS,
   encodeState,
@@ -15,7 +15,7 @@ import {
   optionsCode,
   serialize,
   withoutConflicts,
-} from "../.vitepress/theme/convert"
+} from "../.vitepress/theme/convert.ts"
 
 export interface ExamplePanel {
   id: string

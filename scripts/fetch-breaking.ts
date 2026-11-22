@@ -2,14 +2,14 @@
 // at the tag of the pinned buf CLI into test/fixtures/buf-breaking/<current|previous>/<module>/ (validation §8, design
 // §13: "the buf breaking_test.go corpus"). Only the .proto inputs and the modules' buf.yaml are kept; every module
 // gets a SOURCE.md (the fixture-set marker of test/helpers.ts) and the corpus root the licence.
-// Then `bun scripts/images.ts buf-breaking` builds their buf images.
+// Then `node scripts/images.ts buf-breaking` builds their buf images.
 
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs"
 import { dirname, join } from "node:path"
 
 const TAG = "v1.75.0"
 const BASE = "private/bufpkg/bufcheck/testdata/breaking/"
-const ROOT = join(import.meta.dir, "..", "test", "fixtures", "buf-breaking")
+const ROOT = join(import.meta.dirname, "..", "test", "fixtures", "buf-breaking")
 
 /** Modules whose buf.yaml names one build root (`build.roots: [root]`): the root's files move up to the module, so
  *  that the fixture paths are the import paths. */
