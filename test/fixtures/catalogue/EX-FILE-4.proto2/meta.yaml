@@ -1,0 +1,5 @@
+# EX-FILE-4.proto2 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: syntax proto2 (descriptor has no syntax field)
+expect:
+  - pointer: "#/files/shop.proto/syntax"
+    value: proto2

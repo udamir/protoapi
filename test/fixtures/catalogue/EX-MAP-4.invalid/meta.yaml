@@ -1,0 +1,8 @@
+# EX-MAP-4.invalid (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: field_presence on a map field is an invalid-option issue
+textOnly: true   # protoc rejects field_presence on a map field
+expect:
+  - pointer: "#/components/messages/shop.legacy.Paint/properties/paints"
+    value: { number: 1, type: object, propertyNames: { type: string, protoType: string }, additionalProperties: { type: integer, protoType: int32 }, …: true }
+absent: [ "#/components/messages/shop.legacy.Paint/properties/paints/presence" ]
+issues: [ "invalid-option @ #/components/messages/shop.legacy.Paint/properties/paints/**" ]

@@ -1,0 +1,6 @@
+enum Delta {
+  DELTA_ZERO = 0;
+  DELTA_UP   = 1;
+  reserved -10 to -1, 2 to 9;
+  reserved 1000 to max;
+}

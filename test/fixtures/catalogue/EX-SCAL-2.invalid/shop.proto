@@ -1,0 +1,9 @@
+syntax = "proto3";
+package shop.v1;
+message Bad {
+  int32 ok = 1;
+  int32 impl_lo = 19000;
+  int32 impl_hi = 19999;
+  int32 zero = 0;
+  int32 big = 536870912;
+}

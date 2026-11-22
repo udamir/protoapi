@@ -1,0 +1,13 @@
+// A `//` group on the line after a same-line trailing comment, followed by a blank line (IN-10, Q0-P phase C): buf 1.75 attributes it to nothing (protoc: detached comment of the next declaration).
+
+syntax = "proto3";
+
+package named.comments.aftertrailing;
+
+message Pet {
+  int32 age = 6; // Age in years.
+  // Not attached to anything.
+
+  // Number of legs.
+  int32 legs = 7;
+}

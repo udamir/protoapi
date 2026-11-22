@@ -1,0 +1,17 @@
+# EX-CMT-3 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: comments on oneofs and option statements; indentation, markers and whitespace
+expect:
+  - pointer: "#/services/shop.v1.PetService/methods/GetPet"
+    value: { description: Gets a pet., idempotency: NO_SIDE_EFFECTS, … }
+  - pointer: "#/components/messages/shop.v1.Pet"
+    value:
+      …: true
+      properties:
+        dog:    { number: 1, description: a dog, …, oneof: kind }
+        cat:    { number: 2, …, oneof: kind }
+        notes:  { number: 3, description: "Lists:\n\n * one\n * two", … }
+        raw:    { number: 4, description: no space after the marker, … }
+        spaced: { number: 5, description: Inner spaces and a tab., … }
+      oneofs:
+        kind: { description: Kind of pet. }
+absent: [ "#/components/messages/shop.v1.Pet/properties/cat/description" ]

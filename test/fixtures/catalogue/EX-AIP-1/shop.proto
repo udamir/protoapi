@@ -1,0 +1,21 @@
+syntax = "proto3";
+package shop.v1;
+import "google/protobuf/timestamp.proto";
+message Book {
+  // Identifier. The resource name.
+  string name = 1;
+  // Required. The title.
+  string title = 2;
+  // Output only. Creation time.
+  google.protobuf.Timestamp create_time = 3;
+  // Input only. Etag for updates.
+  string etag = 4;
+  // Immutable. ISBN.
+  string isbn = 5;
+  // Optional. Notes.
+  string notes = 6;
+  // Deprecated: use `title`.
+  string label = 7 [deprecated = true];
+  // required. lowercase is not a prefix.
+  string misc = 8;
+}

@@ -1,0 +1,9 @@
+syntax = "proto3";
+package shop.v1;
+message Pet {
+  reserved 15, 2, 9 to 11;
+  reserved 12;
+  reserved 1000 to max;
+  reserved "foo", "bar";
+  string name = 1;
+}

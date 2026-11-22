@@ -1,0 +1,4 @@
+syntax = "proto3";
+package shop.v1;
+import "b.proto";
+message Adoption { Pet pet = 1; }

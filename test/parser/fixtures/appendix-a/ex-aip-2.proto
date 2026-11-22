@@ -1,0 +1,12 @@
+import "google/api/field_behavior.proto";
+import "google/api/field_info.proto";
+message Book {
+  string name  = 1 [(google.api.field_behavior) = IDENTIFIER];
+  string title = 2 [(google.api.field_behavior) = REQUIRED];
+  google.protobuf.Timestamp create_time = 3 [(google.api.field_behavior) = OUTPUT_ONLY];
+  string etag  = 4 [(google.api.field_behavior) = INPUT_ONLY];
+  string isbn  = 5 [(google.api.field_behavior) = REQUIRED, (google.api.field_behavior) = IMMUTABLE];
+  repeated string authors = 6 [(google.api.field_behavior) = UNORDERED_LIST];
+  string id    = 7 [(google.api.field_info).format = UUID4];
+  string ip    = 8 [(google.api.field_info).format = IPV4_OR_IPV6];
+}

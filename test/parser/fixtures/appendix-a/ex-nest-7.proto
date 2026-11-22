@@ -1,0 +1,7 @@
+import "google/protobuf/timestamp.proto";
+message Timestamp { string iso = 1; }
+message Event {
+  Timestamp                 local  = 1;
+  google.protobuf.Timestamp global = 2;
+  .shop.v1.Timestamp        same   = 3;
+}

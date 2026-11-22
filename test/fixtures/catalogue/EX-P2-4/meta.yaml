@@ -1,0 +1,18 @@
+# EX-P2-4 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+# phase C (validation decision F-3): resolved packed / utf8Validation / jsonFormat keywords against the modern baseline
+title: string, bytes and number literal forms in defaults
+expect:
+  - pointer: "#/components/messages/shop.legacy.Literals"
+    value:
+      type: object
+      properties:
+        joined: { number: 1, type: string,  protoType: string, presence: explicit, default: multipart, utf8Validation: false }
+        esc:    { number: 2, type: string,  protoType: string, presence: explicit, default: 'ABé"q"', utf8Validation: false }
+        empty:  { number: 3, type: string,  protoType: string, presence: explicit, default: "", utf8Validation: false }
+        high:   { number: 4, type: string,  protoType: bytes,  presence: explicit, default: "/wA=" }
+        neg:    { number: 5, type: integer, protoType: sint32, presence: explicit, default: -127 }
+        oct:    { number: 6, type: integer, protoType: uint32, presence: explicit, default: 15 }
+        tenth:  { number: 7, type: number,  protoType: float,  presence: explicit, default: 0.1 }
+        huge:   { number: 8, type: number,  protoType: double, presence: explicit, default: 1e+300 }
+        whole:  { number: 9, type: number,  protoType: double, presence: explicit, default: 5 }
+      jsonFormat: LEGACY_BEST_EFFORT

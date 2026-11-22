@@ -1,0 +1,10 @@
+message Payment {
+  // How the payment is made.
+  oneof method {
+    option (acme.opts.group) = "billing";
+    string      card_token = 1;
+    BankAccount bank       = 2;
+    Status      status     = 3;
+  }
+  optional string note = 4;
+}

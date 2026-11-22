@@ -1,0 +1,32 @@
+# EX-SVC-1 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: method kinds, idempotency, deprecation, cross-package and well-known types
+options: { entry: [shop.proto] }
+expect:
+  - pointer: "#/services"
+    value:
+      shop.v1.PetService:
+        title: PetService
+        file: shop.proto
+        description: Pet operations.
+        options: { google.api.default_host: pets.example.com }
+        methods:
+          GetPet:    { idempotency: NO_SIDE_EFFECTS, request: { schema: { $ref: "#/components/messages/shop.v1.GetPetRequest" } }, response: { schema: { $ref: "#/components/messages/shop.v1.Pet" } } }
+          ListPets:  { request: { schema: { $ref: "#/components/messages/shop.v1.ListPetsRequest" } }, response: { schema: { $ref: "#/components/messages/shop.v1.Pet" }, stream: true } }
+          Upload:    { request: { schema: { $ref: "#/components/messages/shop.v1.Photo" }, stream: true }, response: { schema: { $ref: "#/components/messages/shop.v1.UploadResult" } } }
+          Chat:      { request: { schema: { $ref: "#/components/messages/shop.v1.ChatMessage" }, stream: true }, response: { schema: { $ref: "#/components/messages/shop.v1.ChatMessage" }, stream: true } }
+          PutPet:    { idempotency: IDEMPOTENT, request: { schema: { $ref: "#/components/messages/shop.v1.Pet" } }, response: { schema: { $ref: "#/components/messages/shop.v1.Pet" } } }
+          DeletePet: { request: { schema: { $ref: "#/components/messages/shop.v1.DeletePetRequest" } }, response: { schema: { $ref: "#/components/messages/google.protobuf.Empty" } } }
+          Lookup:    { request: { schema: { $ref: "#/components/messages/other.v1.LookupRequest" } }, response: { schema: { $ref: "#/components/messages/other.v1.LookupResponse" } } }
+          FetchPet:  { deprecation: { reason: use GetPet. }, request: { schema: { $ref: "#/components/messages/shop.v1.GetPetRequest" } }, response: { schema: { $ref: "#/components/messages/shop.v1.Pet" } } }
+      shop.v1.Health: { title: Health, file: shop.proto, methods: {} }
+  - pointer: "#/components/messages/google.protobuf.Empty"
+    value: { title: Empty, file: google/protobuf/empty.proto, description: …, type: object, properties: {} }
+  - pointer: "#/components/messages/other.v1.LookupRequest"
+    value: { title: LookupRequest, file: other/v1/types.proto, … }
+  - pointer: "#/components/messages/other.v1.LookupResponse"
+    value: { title: LookupResponse, file: other/v1/types.proto, … }
+  - pointer: "#/files/google~1protobuf~1empty.proto"
+    value: { … }
+  - pointer: "#/files/other~1v1~1types.proto"
+    value: { … }
+absent: [ "#/files/google~1api~1client.proto" ]

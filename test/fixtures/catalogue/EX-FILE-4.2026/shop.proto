@@ -1,0 +1,18 @@
+edition = "2026";
+package shop.v1;
+option features.enforce_naming_style = STYLE_LEGACY;
+// A pet.
+export message Pet {
+  string name = 1;
+  int32 legacy_count = 2 [features.field_presence = IMPLICIT];
+  repeated int32 ids = 3;
+  Kind kind = 4;
+  message Limits {
+    option features.enforce_proto_limits = LEGACY_NO_EXPLICIT_LIMITS;
+    string v = 1;
+  }
+}
+export enum Kind {
+  KIND_UNSPECIFIED = 0;
+  KIND_DOG = 1;
+}

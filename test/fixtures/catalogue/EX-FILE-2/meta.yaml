@@ -1,0 +1,8 @@
+# EX-FILE-2 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: file without a package
+expect:
+  - pointer: "#/files"
+    value: { shop.proto: { syntax: proto3 } }
+  - pointer: "#/components/messages"
+    value:
+      Pet: { title: Pet, file: shop.proto, type: object, properties: { name: { number: 1, type: string, protoType: string } } }

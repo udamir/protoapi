@@ -1,0 +1,13 @@
+# EX-SRC-1 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: source-map pointers for one message
+expect:
+  - pointer: "#/components/messages/shop.v1.Pet/properties/id"
+    value: { number: 1, type: integer, protoType: int64, jsonName: petId }
+sourceMap:
+  "#/files/shop.proto/syntax": "0:0-0:18"
+  "#/files/shop.proto/package": "1:0-1:16"
+  "#/components/messages/shop.v1.Pet": "2:0-4:1"
+  "#/components/messages/shop.v1.Pet/properties/id": "3:2-3:37"
+  "#/components/messages/shop.v1.Pet/properties/id/type": "3:2-3:7"
+  "#/components/messages/shop.v1.Pet/properties/id/number": "3:13-3:14"
+  "#/components/messages/shop.v1.Pet/properties/id/jsonName": "3:16-3:35"

@@ -1,0 +1,26 @@
+syntax = "proto3";
+package shop.v1;
+service PetService {
+  // Gets a pet.
+  rpc GetPet(GetPetRequest) returns (Pet) {
+    // Not attached to the method.
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
+}
+message Pet {
+  // Kind of pet.
+  oneof kind {
+    string dog = 1; // a dog
+    string cat = 2;
+  }
+  // Lists:
+  //
+  //   * one
+  //   * two
+  string notes = 3;
+  //no space after the marker
+  string raw = 4;
+  // Inner    spaces and a	tab.
+  string spaced = 5;
+}
+message GetPetRequest {}

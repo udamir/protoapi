@@ -1,0 +1,3 @@
+edition = "2023";
+package shop.legacy;
+message Paint { map<string, int32> paints = 1 [features.field_presence = EXPLICIT]; }

@@ -1,0 +1,15 @@
+// Pet shop API, version 1.
+
+syntax = "proto3";
+package shop.v1;
+
+import "google/protobuf/timestamp.proto";
+import public "shop/v1/common.proto";
+import weak "legacy/hints.proto";
+import "acme/opts.proto";
+
+option go_package = "example.com/shop/v1;shopv1";
+option java_package = "com.example.shop.v1";
+option java_multiple_files = true;
+option optimize_for = SPEED;
+option (acme.opts.owner) = "team-pets";

@@ -1,0 +1,8 @@
+# EX-P2-6.implicit (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: a default on an implicit-presence field is an invalid-option issue
+# protoc rejects defaults on implicit-presence fields ("Implicit presence fields can't specify defaults."), but
+# buf 1.75 compiles this file (image: field size has defaultValue "20"), so the set also runs PB-2.
+expect:
+  - pointer: "#/components/messages/shop.v1.Page/properties/size"
+    value: { number: 1, type: integer, protoType: int32, …: true }
+issues: [ "invalid-option @ #/components/messages/shop.v1.Page/properties/size/**" ]

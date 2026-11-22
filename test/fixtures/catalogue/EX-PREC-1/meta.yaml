@@ -1,0 +1,29 @@
+# EX-PREC-1 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: option beats tag, and the conflict is recorded
+expect:
+  - pointer: "#/components/messages/shop.v1.Coupon"
+    value:
+      type: object
+      properties:
+        code:
+          number: 1
+          type: string
+          protoType: string
+          maxLength: 64
+          options: { google.api.field_behavior: [OPTIONAL] }
+          x-annotation-conflicts:
+            - { keyword: maxLength, kept: { source: buf.validate, value: 64 }, dropped: { source: tag, value: 100 } }
+            - { keyword: required, kept: { source: google.api, value: false }, dropped: { source: tag, value: true } }
+        contact:
+          number: 2
+          type: string
+          protoType: string
+          format: uuid
+          x-annotation-conflicts:
+            - { keyword: format, kept: { source: buf.validate, value: uuid }, dropped: { source: tag, value: email } }
+        note: { number: 3, type: string, protoType: string, maxLength: 64 }
+# decision 9 (phase C): every x-annotation-conflicts entry is also an annotation-conflict issue
+issues:
+  - "annotation-conflict @ #/components/messages/shop.v1.Coupon/properties/code/x-annotation-conflicts/0"
+  - "annotation-conflict @ #/components/messages/shop.v1.Coupon/properties/code/x-annotation-conflicts/1"
+  - "annotation-conflict @ #/components/messages/shop.v1.Coupon/properties/contact/x-annotation-conflicts/0"

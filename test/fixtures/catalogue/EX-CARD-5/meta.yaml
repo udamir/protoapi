@@ -1,0 +1,26 @@
+# EX-CARD-5 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: editions presence inherited from a message
+# descriptor.proto declares field_presence with targets FIELD and FILE only; buf: "unsupported option target for
+# field_presence" at the message-level option, so there is no image for this set.
+textOnly: true
+# phase B (IN-5e, validation D-E): the text producer now reports the wrong feature target, as protoc / buf do; the
+# document is unchanged
+issues:
+  - "invalid-option @ #/components/messages/shop.edt.Counter/options/features"
+expect:
+  - pointer: "#/components/messages/shop.edt.Counter"
+    value:
+      type: object
+      properties:
+        label:   { number: 1, type: string, protoType: string }
+        hits:    { number: 2, type: integer, protoType: int32, presence: explicit }
+        next:    { number: 3, $ref: "#/components/messages/shop.edt.Counter" }
+        samples: { number: 4, type: array, items: { type: integer, protoType: int32 } }
+        region:  { number: 5, type: string, protoType: string, oneof: scope }
+        zone:    { number: 6, type: string, protoType: string, oneof: scope }
+      oneofs: { scope: {} }
+      options: { features: { field_presence: IMPLICIT } }
+  - pointer: "#/components/messages/shop.edt.Other"
+    value:
+      type: object
+      properties: { label: { number: 1, type: string, protoType: string, presence: explicit } }

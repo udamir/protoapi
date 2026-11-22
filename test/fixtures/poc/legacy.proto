@@ -1,0 +1,64 @@
+syntax = "proto2";
+
+package shop.legacy;
+
+import "google/protobuf/descriptor.proto";
+
+// Closed enum (proto2); first value need not be zero.
+enum Color {
+  RED = 1;
+  GREEN = 2;
+}
+
+// Legacy order (proto2).
+message Order {
+  // Required id.
+  required int64 id = 1;
+  optional string note = 2 [default = "none"];
+  optional int32 qty = 3 [default = 1];
+  optional bool rush = 4 [default = true];
+  optional Color color = 5 [default = GREEN];
+  optional double weight = 6 [default = 1.5];
+  repeated int32 codes = 7 [packed = true];
+  repeated Item items = 8;
+  // Shipping group (deprecated syntax).
+  optional group Shipping = 9 {
+    optional string carrier = 1;
+  }
+  oneof payer {
+    string user = 10;
+    string company = 11;
+  }
+  map<string, int32> counters = 12;
+  extensions 100 to 199;
+  extensions 1000 to max;
+  reserved 20, 21;
+  // Nested extend block.
+  extend Order {
+    optional string nested_ext = 150;
+  }
+}
+
+message Item {
+  required string sku = 1;
+  optional uint32 count = 2 [default = 1];
+}
+
+// Top-level extensions of Order.
+extend Order {
+  optional bool priority = 100;
+  optional Color tint = 101;
+}
+
+extend google.protobuf.MessageOptions {
+  optional string table = 60001;
+}
+
+message Tagged {
+  option (shop.legacy.table) = "tagged";
+  optional int32 x = 1;
+}
+
+service LegacyService {
+  rpc Place(Order) returns (Item);
+}

@@ -1,0 +1,16 @@
+# EX-MAP-1 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: map key and value kinds
+expect:
+  - pointer: "#/components/messages/shop.v1.Maps"
+    value:
+      type: object
+      properties:
+        counts: { number: 1, type: object, propertyNames: { type: string, protoType: string }, additionalProperties: { type: integer, protoType: int32 } }
+        by_id:  { number: 2, type: object, propertyNames: { type: integer, protoType: int64 }, additionalProperties: { $ref: "#/components/messages/shop.v1.Pet" } }
+        flags:  { number: 3, type: object, propertyNames: { type: boolean, protoType: bool }, additionalProperties: { $ref: "#/components/enums/shop.v1.Status" } }
+        blobs:  { number: 4, type: object, propertyNames: { type: integer, protoType: uint32 }, additionalProperties: { type: string, protoType: bytes } }
+absent:
+  - "#/components/messages/shop.v1.Maps.CountsEntry"
+  - "#/components/messages/shop.v1.Maps.ByIdEntry"
+  - "#/components/messages/shop.v1.Maps.FlagsEntry"
+  - "#/components/messages/shop.v1.Maps.BlobsEntry"

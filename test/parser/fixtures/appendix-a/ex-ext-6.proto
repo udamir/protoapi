@@ -1,0 +1,12 @@
+enum Tier { TIER_UNSPECIFIED = 0; LOW = 1; HIGH = 2; }
+message Range { int32 lo = 1; int32 hi = 2; }
+message Limits {
+  int64 max = 1;
+  double ratio = 2;
+  bytes blob = 3;
+  Tier tier = 4;
+  repeated Range ranges = 5;
+  sint32 delta = 6;
+  float scale = 7;
+}
+extend google.protobuf.MessageOptions { Limits limits = 50200; }

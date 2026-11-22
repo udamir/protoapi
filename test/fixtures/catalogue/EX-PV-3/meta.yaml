@@ -1,0 +1,15 @@
+# EX-PV-3 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: protovalidate rules that stay under options
+expect:
+  - pointer: "#/components/messages/shop.v1.Range"
+    value:
+      type: object
+      properties:
+        start: { number: 1, type: integer, protoType: int32, exclusiveMinimum: 0, options: { buf.validate.field: { ignore: IGNORE_IF_ZERO_VALUE } } }
+        end:   { number: 2, type: integer, protoType: int32, options: { buf.validate.field: { cel: [{ id: end_even, expression: "this % 2 == 0" }] } } }
+        min:   { number: 3, type: integer, protoType: int32, oneof: bound }
+        max:   { number: 4, type: integer, protoType: int32, oneof: bound }
+      oneofs:
+        bound: { options: { buf.validate.oneof: { required: true } } }
+      options:
+        buf.validate.message: { cel: [{ id: range, message: start must be before end, expression: this.start < this.end }] }

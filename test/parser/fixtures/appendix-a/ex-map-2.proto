@@ -1,0 +1,2 @@
+message AttrsEntry { string key = 1; int32 value = 2; }
+message Pet { repeated AttrsEntry attrs = 1; }

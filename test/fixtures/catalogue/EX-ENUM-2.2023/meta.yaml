@@ -1,0 +1,9 @@
+# EX-ENUM-2.2023 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: editions enum_type CLOSED / OPEN
+expect:
+  - pointer: "#/files/shop.proto"
+    value: { syntax: "2023", package: shop.edt, options: { features: { enum_type: CLOSED } } }
+  - pointer: "#/components/enums/shop.edt.Kind"
+    value: { type: string, closed: true, values: { KIND_UNKNOWN: { number: 0 }, KIND_A: { number: 1 } } }
+  - pointer: "#/components/enums/shop.edt.Mode"
+    value: { type: string, values: { MODE_UNKNOWN: { number: 0 } } }

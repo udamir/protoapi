@@ -1,0 +1,7 @@
+edition = "2023";
+package shop.edt;
+message Raw {
+  option features.json_format = LEGACY_BEST_EFFORT;
+  string data = 1 [features.utf8_validation = NONE];
+  repeated int32 ids = 2 [features.repeated_field_encoding = EXPANDED];
+}

@@ -1,0 +1,10 @@
+syntax = "proto3";
+package shop.v1;
+message Odd {
+  string message  = 5;
+  int32  optional = 1;
+  bool   stream   = 3;
+  string type     = 2;
+  bytes  syntax   = 4;
+  string reserved = 6;
+}

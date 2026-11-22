@@ -1,0 +1,16 @@
+# EX-FILE-1 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: file header, package, imports, file options
+options: { entry: [shop.proto] }
+expect:
+  - pointer: "#/files/shop.proto"
+    value:
+      syntax: proto3
+      package: shop.v1
+      description: Pet shop API, version 1.
+      imports: [google/protobuf/timestamp.proto, shop/v1/common.proto, legacy/hints.proto, acme/opts.proto]
+      importFlags: { shop/v1/common.proto: public, legacy/hints.proto: weak }
+      options:
+        go_package: example.com/shop/v1;shopv1
+        java_package: com.example.shop.v1
+        java_multiple_files: true
+        acme.opts.owner: team-pets

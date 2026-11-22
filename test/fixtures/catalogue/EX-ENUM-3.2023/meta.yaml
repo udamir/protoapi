@@ -1,0 +1,5 @@
+# EX-ENUM-3.2023 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: editions reserved names are identifiers
+expect:
+  - pointer: "#/components/enums/shop.edt.Code/reserved"
+    value: { names: [LEGACY, OLD] }

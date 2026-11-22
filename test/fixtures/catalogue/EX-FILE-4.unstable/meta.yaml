@@ -1,0 +1,12 @@
+# EX-FILE-4.unstable (validation decision D-C): an edition protoapi does not know.
+title: an unknown edition is written verbatim, reported, and resolved with the newest known defaults
+textOnly: true   # buf rejects the edition; the descriptor half is in test/versions.test.ts
+expect:
+  - pointer: "#/files/shop.proto"
+    value: { syntax: UNSTABLE, package: shop.v1 }
+  - pointer: "#/components/messages/shop.v1.Pet/properties"
+    value:
+      name: { number: 1, type: string, protoType: string, presence: explicit }
+      ids: { number: 2, type: array, items: { type: integer, protoType: int32 } }
+issues:
+  - "unsupported @ #/files/shop.proto/syntax"

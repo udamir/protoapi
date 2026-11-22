@@ -1,0 +1,3 @@
+syntax = "proto2";
+package shop.v1;
+extend Missing { optional int32 x = 100; }

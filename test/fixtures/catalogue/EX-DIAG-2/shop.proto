@@ -1,0 +1,4 @@
+syntax = "proto3";
+package shop.v1;
+import "money/amount.proto";
+message Price { money.Amount amount = 1; Currency currency = 2; }

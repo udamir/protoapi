@@ -1,0 +1,10 @@
+edition = "2023";
+package shop.v1;
+option features.field_presence = IMPLICIT;
+message Pet {
+  string name = 1;
+  int32 age = 2 [features.field_presence = EXPLICIT];
+  repeated int32 ids = 3;
+  Kind kind = 4;
+}
+enum Kind { KIND_UNSPECIFIED = 0; DOG = 1; }

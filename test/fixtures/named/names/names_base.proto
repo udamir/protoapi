@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package named.names.base;
+
+message Common {
+  message Part {
+    string id = 1;
+  }
+  Part part = 1;
+}

@@ -1,0 +1,8 @@
+# EX-RES-3 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: negative and open-ended enum ranges
+expect:
+  - pointer: "#/components/enums/shop.v1.Delta"
+    value:
+      type: string
+      values: { DELTA_ZERO: { number: 0 }, DELTA_UP: { number: 1 } }
+      reserved: { numbers: [[-10, -1], [2, 9], [1000, 2147483647]] }

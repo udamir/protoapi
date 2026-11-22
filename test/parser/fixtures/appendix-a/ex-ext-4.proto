@@ -1,0 +1,2 @@
+import "other/flags.proto";
+message Pet { string name = 1 [(other.flags.hidden) = true]; }

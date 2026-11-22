@@ -1,0 +1,10 @@
+// Comments after the last token of a file (IN-10, Q0-P phase C): buf 1.75 attributes them to nothing, also a same-line comment after a `;` (protoc: its trailing comment).
+
+syntax = "proto3";
+
+package named.comments.ateof;
+
+message Pet {}
+
+option java_package = "com.example.pets"; // Not attached.
+// Not attached either.

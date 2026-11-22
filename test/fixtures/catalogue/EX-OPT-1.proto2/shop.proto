@@ -1,0 +1,7 @@
+syntax = "proto2";
+package shop.legacy;
+message Opts {
+  repeated int32 a = 1;
+  repeated int32 b = 2 [packed = true];
+  repeated int32 c = 3 [packed = false];
+}

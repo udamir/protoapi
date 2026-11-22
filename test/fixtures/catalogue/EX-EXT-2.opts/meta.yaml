@@ -1,0 +1,13 @@
+# EX-EXT-2.opts (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: custom option definitions, built with acme/opts.proto as an entry file
+options: { entry: [acme/opts.proto] }
+expect:
+  - pointer: "#/components/messages"
+    value:
+      acme.opts.Table: { type: object, properties: { name: { number: 1, type: string, protoType: string }, indexes: { number: 2, type: array, items: { type: string, protoType: string } } } }
+  - pointer: "#/components/extensions"
+    value:
+      acme.opts.owner:         { extendee: google.protobuf.FileOptions, number: 50000, type: string, protoType: string, presence: explicit }
+      acme.opts.sensitivity:   { extendee: google.protobuf.FieldOptions, number: 50001, type: string, protoType: string, presence: explicit }
+      acme.opts.table:         { extendee: google.protobuf.MessageOptions, number: 50002, $ref: "#/components/messages/acme.opts.Table" }
+      acme.opts.internal_note: { extendee: google.protobuf.FieldOptions, number: 50010, type: string, protoType: string, presence: explicit, options: { retention: RETENTION_SOURCE, targets: [TARGET_TYPE_FIELD] } }

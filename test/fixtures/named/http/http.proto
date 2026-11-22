@@ -1,0 +1,115 @@
+// Named fixture http.proto (design §13): aggregate options, google.api.http with every rule form,
+// additional_bindings, repeated aggregates and map fields in option values.
+
+syntax = "proto3";
+
+package named.http.v1;
+
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/protobuf/descriptor.proto";
+import "google/protobuf/empty.proto";
+
+option java_package = "dev.named.http.v1";
+option (file_meta) = { owner: "api-team" labels: { key: "tier" value: "gold" } labels: { key: "zone" value: "eu" } };
+
+message Meta {
+  string owner = 1;
+  map<string, string> labels = 2;
+  repeated Limit limits = 3;
+  Level level = 4;
+}
+
+message Limit {
+  string name = 1;
+  int64 max = 2;
+  double ratio = 3;
+}
+
+enum Level {
+  LEVEL_UNSPECIFIED = 0;
+  LEVEL_LOW = 1;
+  LEVEL_HIGH = 2;
+}
+
+extend google.protobuf.FileOptions {
+  Meta file_meta = 51000;
+}
+
+extend google.protobuf.MethodOptions {
+  repeated Limit quota = 51001;
+  Meta method_meta = 51002;
+}
+
+message Pet {
+  string name = 1;
+  int64 id = 2;
+}
+
+message GetPetRequest {
+  string name = 1;
+}
+
+message ListPetsRequest {
+  string parent = 1;
+  int32 page_size = 2;
+}
+
+message ListPetsResponse {
+  repeated Pet pets = 1;
+  string next_page_token = 2;
+}
+
+message UpdatePetRequest {
+  Pet pet = 1;
+}
+
+// Pets over HTTP.
+service PetService {
+  option (google.api.default_host) = "pets.example.com";
+  option (google.api.oauth_scopes) = "https://example.com/auth/pets,https://example.com/auth/admin";
+
+  // Reads one pet.
+  rpc GetPet(GetPetRequest) returns (Pet) {
+    option (google.api.http) = {
+      get: "/v1/{name=pets/*}"
+      additional_bindings { get: "/v1/{name=shelters/*/pets/*}" }
+      additional_bindings { post: "/v1/{name=pets/*}:get" body: "*" }
+    };
+    option (google.api.method_signature) = "name";
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
+
+  rpc ListPets(ListPetsRequest) returns (ListPetsResponse) {
+    option (google.api.http) = { get: "/v1/{parent=shelters/*}/pets" response_body: "pets" };
+    option (quota) = { name: "reads" max: 1000 ratio: 0.5 };
+    option (quota) = { name: "burst" max: 9223372036854775807 ratio: 1e-3 };
+  }
+
+  rpc UpdatePet(UpdatePetRequest) returns (Pet) {
+    option (google.api.http) = { patch: "/v1/{pet.name=pets/*}" body: "pet" };
+    option (method_meta) = {
+      owner: "writes"
+      level: LEVEL_HIGH
+      labels: [ { key: "a" value: "1" }, { key: "b" value: "2" } ]
+      limits: [ { name: "x" max: 1 }, { name: "y" max: -2 } ]
+    };
+    option idempotency_level = IDEMPOTENT;
+  }
+
+  rpc DeletePet(GetPetRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = { delete: "/v1/{name=pets/*}" };
+  }
+
+  rpc PutPet(Pet) returns (Pet) {
+    option (google.api.http) = { put: "/v1/pets/{name}" body: "*" };
+  }
+
+  rpc Watch(GetPetRequest) returns (stream Pet) {
+    option (google.api.http) = { custom: { kind: "WATCH" path: "/v1/{name=pets/*}:watch" } };
+  }
+
+  rpc Upload(stream Pet) returns (Pet) {
+    option (google.api.http) = { post: "/v1/pets:upload" body: "*" };
+  }
+}

@@ -1,0 +1,2 @@
+import "money/amount.proto";
+message Price { money.Amount amount = 1; Currency currency = 2; }

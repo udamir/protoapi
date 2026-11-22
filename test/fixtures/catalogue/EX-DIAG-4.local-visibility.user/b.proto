@@ -1,0 +1,4 @@
+edition = "2024";
+package shop.v2;
+import "a.proto";
+message User { Secret s = 1; }

@@ -1,0 +1,18 @@
+# EX-EXT-2.shop.user (design Appendix A, U3). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: in the default imports "user" the imported option file is emitted in full, the bundled descriptor.proto is not
+options: { entry: [shop.proto] }
+expect:
+  - pointer: "#/files"
+    value:
+      acme/opts.proto: { syntax: proto3, package: acme.opts, imports: [google/protobuf/descriptor.proto] }
+      shop.proto: { syntax: proto3, package: shop.v1, imports: [acme/opts.proto] }
+  - pointer: "#/components/messages/acme.opts.Table"
+    value: { title: Table, file: acme/opts.proto, type: object, properties: { name: { number: 1, type: string, protoType: string }, indexes: { number: 2, type: array, items: { type: string, protoType: string } } } }
+  - pointer: "#/components/extensions"
+    keyOrder: [acme.opts.owner, acme.opts.sensitivity, acme.opts.table, acme.opts.internal_note]
+  - pointer: "#/components/extensions/acme.opts.table"
+    value: { title: table, file: acme/opts.proto, extendee: google.protobuf.MessageOptions, number: 50002, $ref: "#/components/messages/acme.opts.Table" }
+absent:
+  - "#/components/messages/google.protobuf.FieldOptions"
+  - "#/components/messages/google.protobuf.MessageOptions"
+  - "#/files/google~1protobuf~1descriptor.proto"

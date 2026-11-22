@@ -1,0 +1,7 @@
+# EX-DIAG-4.duplicate-message (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: two files declare the same message; the first is kept
+textOnly: true   # protoc rejects the duplicate symbol
+expect:
+  - pointer: "#/components/messages/shop.v1.Pet"
+    value: { file: a.proto, type: object, properties: {} }
+issues: [ "duplicate-name @ #/components/messages/shop.v1.Pet at b.proto:2:0" ]

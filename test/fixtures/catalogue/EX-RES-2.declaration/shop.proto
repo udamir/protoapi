@@ -1,0 +1,6 @@
+edition = "2023";
+package shop.legacy;
+message Order {
+  extensions 4 to 1000 [declaration = { number: 4, full_name: ".shop.legacy.tag", type: "string" }];
+  extensions 1001 to 2000;
+}

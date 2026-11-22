@@ -1,0 +1,12 @@
+edition = "2023";
+package shop.v1;
+import "google/protobuf/go_features.proto";
+option features.(pb.go).api_level = API_OPAQUE;
+message Pet {
+  option features.(pb.go).api_level = API_HYBRID;
+  string name = 1;
+}
+enum Kind {
+  option features.(pb.go).legacy_unmarshal_json_enum = true;
+  KIND_UNSPECIFIED = 0;
+}

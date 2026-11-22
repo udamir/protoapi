@@ -1,0 +1,13 @@
+# EX-FILE-6.includeImports (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: includeImports lists b.proto and e.proto and emits Unused
+textOnly: true   # d.proto does not compile
+sourceOrder: [a.proto, b.proto, c.proto, e.proto, d.proto]
+options: { entry: [c.proto, d.proto], includeImports: true }
+expect:
+  - pointer: "#/files/b.proto"
+    value: { syntax: proto3, package: shop.v1, imports: [a.proto], importFlags: { a.proto: public } }
+  - pointer: "#/files/e.proto"
+    value: { syntax: proto3, package: shop.v1, imports: [a.proto] }
+  - pointer: "#/components/messages/shop.v1.Unused"
+    value: { title: Unused, file: a.proto, type: object, properties: {} }
+issues: [ "unresolved-type @ #/components/messages/shop.v1.Visit/properties/pet" ]

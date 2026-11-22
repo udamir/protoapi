@@ -1,0 +1,17 @@
+# EX-FILE-6.user (design Appendix A, U3). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: the default imports "user" emits every user file reachable through imports in full
+textOnly: true   # d.proto does not compile
+sourceOrder: [a.proto, b.proto, c.proto, e.proto, d.proto]
+options: { entry: [c.proto, d.proto] }
+expect:
+  - pointer: "#/files"
+    keyOrder: [a.proto, b.proto, c.proto, e.proto, d.proto]
+    value:
+      a.proto: { syntax: proto3, package: shop.v1 }
+      b.proto: { syntax: proto3, package: shop.v1, imports: [a.proto], importFlags: { a.proto: public } }
+      c.proto: { syntax: proto3, package: shop.v1, imports: [b.proto] }
+      e.proto: { syntax: proto3, package: shop.v1, imports: [a.proto] }
+      d.proto: { syntax: proto3, package: shop.v1, imports: [e.proto] }
+  - pointer: "#/components/messages/shop.v1.Unused"
+    value: { title: Unused, file: a.proto, type: object, properties: {} }
+issues: [ "unresolved-type @ #/components/messages/shop.v1.Visit/properties/pet" ]

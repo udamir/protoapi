@@ -1,0 +1,4 @@
+syntax = "proto2";
+package shop.legacy;
+enum Color { RED = 1; GREEN = 2; }
+message Paint { map<string, Color> paints = 1; }

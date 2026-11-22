@@ -1,0 +1,18 @@
+# EX-FILE-6 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: public, plain and weak imports in name resolution; the emission closure
+textOnly: true   # d.proto does not compile (Pet is not visible through a non-public import)
+sourceOrder: [a.proto, b.proto, c.proto, e.proto, d.proto]
+options: { entry: [c.proto, d.proto], imports: referenced }   # the closure of the referenced mode; EX-FILE-6.user shows the default
+expect:
+  - pointer: "#/files"
+    value:
+      a.proto: { syntax: proto3, package: shop.v1 }
+      c.proto: { syntax: proto3, package: shop.v1, imports: [b.proto] }
+      d.proto: { syntax: proto3, package: shop.v1, imports: [e.proto] }
+  - pointer: "#/components/messages"
+    value:
+      shop.v1.Pet:      { title: Pet, file: a.proto, type: object, properties: { owner: { number: 1, $ref: "#/components/messages/shop.v1.Owner" } } }
+      shop.v1.Owner:    { title: Owner, file: a.proto, type: object, properties: { name: { number: 1, type: string, protoType: string } } }
+      shop.v1.Adoption: { title: Adoption, file: c.proto, type: object, properties: { pet: { number: 1, $ref: "#/components/messages/shop.v1.Pet" } } }
+      shop.v1.Visit:    { title: Visit, file: d.proto, type: object, properties: { pet: { number: 1, $ref: "#/components/messages/shop.v1.Pet" } } }
+issues: [ "unresolved-type @ #/components/messages/shop.v1.Visit/properties/pet" ]

@@ -1,0 +1,20 @@
+# EX-P2-1 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+# phase C (validation decision F-3): resolved packed / utf8Validation / jsonFormat keywords against the modern baseline
+title: proto2 defaults of every kind (canonical values)
+expect:
+  - pointer: "#/components/messages/shop.legacy.Limits"
+    value:
+      type: object
+      properties:
+        small:    { number: 1,  type: integer, protoType: int32,  presence: explicit, default: 16 }
+        min_id:   { number: 2,  type: integer, protoType: int64,  presence: explicit, default: "-9223372036854775808" }
+        max_id:   { number: 3,  type: integer, protoType: uint64, presence: explicit, default: "18446744073709551615" }
+        ceiling:  { number: 4,  type: number,  protoType: double, presence: explicit, default: "Infinity" }
+        floor:    { number: 5,  type: number,  protoType: double, presence: explicit, default: "-Infinity" }
+        ratio:    { number: 6,  type: number,  protoType: float,  presence: explicit, default: "NaN" }
+        scale:    { number: 7,  type: number,  protoType: double, presence: explicit, default: 0.001 }
+        on:       { number: 8,  type: boolean, protoType: bool,   presence: explicit, default: true }
+        greeting: { number: 9,  type: string,  protoType: string, presence: explicit, default: "hi\tthere", utf8Validation: false }
+        magic:    { number: 10, type: string,  protoType: bytes,  presence: explicit, default: "AQI=" }
+        level:    { number: 11, $ref: "#/components/enums/shop.legacy.Level", presence: explicit, default: HIGH }
+      jsonFormat: LEGACY_BEST_EFFORT

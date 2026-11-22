@@ -1,0 +1,7 @@
+# EX-DIAG-4.unresolved-extendee (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: unresolved extendee is qualified with the package
+textOnly: true   # Missing is not defined
+expect:
+  - pointer: "#/components/extensions/shop.v1.x"
+    value: { extendee: shop.v1.Missing, number: 100, type: integer, protoType: int32, presence: explicit }
+issues: [ "unresolved-extendee @ #/components/extensions/shop.v1.x" ]

@@ -1,0 +1,8 @@
+# EX-EXT-3 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: sub-path and aggregate option spellings give the same tree
+options: { entry: [shop.proto] }
+expect:
+  - pointer: "#/components/messages/shop.v1.A/options"
+    value: { acme.opts.table: { name: a, indexes: [x, y] } }
+  - pointer: "#/components/messages/shop.v1.B/options"
+    value: { acme.opts.table: { name: a, indexes: [x, y] } }

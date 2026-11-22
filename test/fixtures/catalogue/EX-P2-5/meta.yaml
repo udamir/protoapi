@@ -1,0 +1,16 @@
+# EX-P2-5 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+# phase C (validation decision F-3): resolved packed / utf8Validation / jsonFormat keywords against the modern baseline
+title: required groups, and a group type used as an ordinary message
+expect:
+  - pointer: "#/components/messages/shop.legacy.Packet"
+    value:
+      type: object
+      properties:
+        header: { number: 1, $ref: "#/components/messages/shop.legacy.Packet.Header", presence: required, delimited: true }
+        copy:   { number: 2, $ref: "#/components/messages/shop.legacy.Packet.Header" }
+      jsonFormat: LEGACY_BEST_EFFORT
+  - pointer: "#/components/messages/shop.legacy.Packet.Header"
+    value:
+      type: object
+      properties: { version: { number: 1, type: integer, protoType: int32, presence: required } }
+      jsonFormat: LEGACY_BEST_EFFORT

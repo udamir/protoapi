@@ -1,0 +1,13 @@
+syntax = "proto2";
+package shop.legacy;
+message Literals {
+  optional string joined = 1 [default = "multi" "part"];
+  optional string esc    = 2 [default = "\101\x42é\"q\""];
+  optional string empty  = 3 [default = ""];
+  optional bytes  high   = 4 [default = "\377\000"];
+  optional sint32 neg    = 5 [default = -0x7f];
+  optional uint32 oct    = 6 [default = 017];
+  optional float  tenth  = 7 [default = 0.1];
+  optional double huge   = 8 [default = 1e300];
+  optional double whole  = 9 [default = 5];
+}

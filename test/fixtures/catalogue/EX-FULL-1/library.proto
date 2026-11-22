@@ -1,0 +1,107 @@
+// Library API.
+
+syntax = "proto3";
+
+package example.library.v1;
+
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "example.com/library/apiv1/librarypb;librarypb";
+option java_multiple_files = true;
+option java_package = "com.example.library.v1";
+
+// Manages shelves and books.
+service LibraryService {
+  option (google.api.default_host) = "library.example.com";
+
+  // Gets a book.
+  rpc GetBook(GetBookRequest) returns (Book) {
+    option (google.api.http) = { get: "/v1/{name=shelves/*/books/*}" };
+    option (google.api.method_signature) = "name";
+  }
+
+  // Lists books on a shelf.
+  rpc ListBooks(ListBooksRequest) returns (ListBooksResponse) {
+    option (google.api.http) = { get: "/v1/{parent=shelves/*}/books" };
+    option (google.api.method_signature) = "parent";
+  }
+
+  // Updates a book.
+  rpc UpdateBook(UpdateBookRequest) returns (Book) {
+    option (google.api.http) = { patch: "/v1/{book.name=shelves/*/books/*}" body: "book" };
+    option (google.api.method_signature) = "book,update_mask";
+  }
+
+  // Deletes a book.
+  rpc DeleteBook(DeleteBookRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = { delete: "/v1/{name=shelves/*/books/*}" };
+  }
+}
+
+// A book.
+message Book {
+  option (google.api.resource) = {
+    type: "library.example.com/Book"
+    pattern: "shelves/{shelf}/books/{book}"
+  };
+
+  // Format of a book.
+  enum Format {
+    FORMAT_UNSPECIFIED = 0;
+    HARDCOVER = 1;
+    EBOOK = 2;
+  }
+
+  // Identifier. Resource name of the book.
+  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+  // Required. Title of the book.
+  string title = 2 [(google.api.field_behavior) = REQUIRED];
+  repeated string authors = 3;
+  Format format = 4;
+  // Output only. Creation time.
+  google.protobuf.Timestamp create_time = 5 [(google.api.field_behavior) = OUTPUT_ONLY];
+  map<string, string> labels = 6;
+  optional int32 page_count = 7;
+  reserved 8;
+  reserved "isbn";
+}
+
+message GetBookRequest {
+  // Required. Name of the book.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = { type: "library.example.com/Book" }
+  ];
+}
+
+message ListBooksRequest {
+  string parent = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = { child_type: "library.example.com/Book" }
+  ];
+  int32 page_size = 2 [(google.api.field_behavior) = OPTIONAL];
+  string page_token = 3 [(google.api.field_behavior) = OPTIONAL];
+}
+
+message ListBooksResponse {
+  repeated Book books = 1;
+  string next_page_token = 2;
+}
+
+message UpdateBookRequest {
+  Book book = 1 [(google.api.field_behavior) = REQUIRED];
+  google.protobuf.FieldMask update_mask = 2;
+}
+
+message DeleteBookRequest {
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "library.example.com/Book"
+  ];
+}

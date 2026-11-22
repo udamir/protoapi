@@ -1,0 +1,13 @@
+# EX-OPT-3 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: json_name written only when it differs from the default
+expect:
+  - pointer: "#/components/messages/shop.v1.User"
+    value:
+      type: object
+      properties:
+        user_id:      { number: 1, type: string, protoType: string }
+        display_name: { number: 2, type: string, protoType: string }
+        email:        { number: 3, type: string, protoType: string, jsonName: mail }
+        foo_1bar:     { number: 4, type: string, protoType: string }
+        _private:     { number: 5, type: string, protoType: string }
+        legacy_ID:    { number: 6, type: string, protoType: string, jsonName: legacy_ID }

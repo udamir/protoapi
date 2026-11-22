@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+package named.names.v1;
+
+// Re-exports names_reexported.proto to every file that imports this one.
+import public "names_reexported.proto";

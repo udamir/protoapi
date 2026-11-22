@@ -1,0 +1,16 @@
+# EX-OPT-5 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: language-specific file options and file deprecation
+expect:
+  - pointer: "#/files/shop.proto"
+    value:
+      syntax: proto3
+      package: shop.v1
+      options:
+        java_outer_classname: ShopProto
+        csharp_namespace: Example.Shop.V1
+        objc_class_prefix: ESH
+        php_namespace: 'Example\Shop\V1'
+        ruby_package: "Example::Shop::V1"
+        swift_prefix: ESH
+        optimize_for: LITE_RUNTIME
+        deprecated: true

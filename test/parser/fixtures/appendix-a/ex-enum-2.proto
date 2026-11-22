@@ -1,0 +1,5 @@
+edition = "2023";
+package shop.edt;
+option features.enum_type = CLOSED;
+enum Kind { KIND_UNKNOWN = 0; KIND_A = 1; }
+enum Mode { option features.enum_type = OPEN; MODE_UNKNOWN = 0; }

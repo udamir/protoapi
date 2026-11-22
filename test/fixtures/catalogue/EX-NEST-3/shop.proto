@@ -1,0 +1,7 @@
+syntax = "proto3";
+package a;
+message Foo { message Bar {} }
+message M {
+  message Foo {}
+  Foo.Bar f = 1;
+}

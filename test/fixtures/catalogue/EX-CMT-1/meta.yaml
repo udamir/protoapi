@@ -1,0 +1,11 @@
+# EX-CMT-1 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: protoc's comment attachment rules
+expect:
+  - pointer: "#/components/messages/shop.v1.Attach/properties"
+    value:
+      foo:    { number: 1, …, description: Comment attached to foo. }
+      bar:    { number: 2, …, description: Comment attached to bar. }
+      baz:    { number: 3, …, description: "Comment attached to baz.\nAnother line attached to baz." }
+      moo:    { number: 4, …, description: "Comment attached to moo.\n\nAnother line attached to moo." }
+      corge:  { number: 5, …, description: "Block comment attached\nto corge. Leading asterisks\nwill be removed." }
+      grault: { number: 6, …, description: "Block comment attached to\ngrault." }

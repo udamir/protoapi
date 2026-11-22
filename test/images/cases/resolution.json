@@ -1,0 +1,4701 @@
+{
+ "PB-4.1": {
+  "image": {
+   "file": [
+    {
+     "name": "root.proto",
+     "messageType": [
+      {
+       "name": "Foo"
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         1,
+         14
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         18
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         1,
+         0,
+         14
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         1,
+         8,
+         11
+        ]
+       }
+      ]
+     },
+     "syntax": "proto3",
+     "bufExtension": {
+      "isImport": false,
+      "isSyntaxUnspecified": false
+     }
+    },
+    {
+     "name": "a.proto",
+     "package": "x",
+     "dependency": [
+      "root.proto"
+     ],
+     "messageType": [
+      {
+       "name": "A",
+       "field": [
+        {
+         "name": "f",
+         "number": 1,
+         "label": "LABEL_OPTIONAL",
+         "type": "TYPE_MESSAGE",
+         "typeName": ".Foo",
+         "jsonName": "f"
+        }
+       ]
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         3,
+         24
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         18
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         10
+        ]
+       },
+       {
+        "path": [
+         3,
+         0
+        ],
+        "span": [
+         2,
+         0,
+         20
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         3,
+         0,
+         24
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         8,
+         9
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         6
+        ],
+        "span": [
+         3,
+         12,
+         15
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0
+        ],
+        "span": [
+         3,
+         12,
+         22
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         16,
+         17
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         3
+        ],
+        "span": [
+         3,
+         20,
+         21
+        ]
+       }
+      ]
+     },
+     "syntax": "proto3",
+     "bufExtension": {
+      "isImport": false,
+      "isSyntaxUnspecified": false
+     }
+    },
+    {
+     "name": "b.proto",
+     "package": "x",
+     "messageType": [
+      {
+       "name": "Foo"
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         2,
+         14
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         18
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         10
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         2,
+         0,
+         14
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         2,
+         8,
+         11
+        ]
+       }
+      ]
+     },
+     "syntax": "proto3",
+     "bufExtension": {
+      "isImport": false,
+      "isSyntaxUnspecified": false
+     }
+    }
+   ]
+  }
+ },
+ "PB-4.2": {
+  "image": {
+   "file": [
+    {
+     "name": "root.proto",
+     "messageType": [
+      {
+       "name": "y",
+       "nestedType": [
+        {
+         "name": "Foo"
+        }
+       ]
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         1,
+         28
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         18
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         1,
+         0,
+         28
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         1,
+         8,
+         9
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         3,
+         0
+        ],
+        "span": [
+         1,
+         12,
+         26
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         3,
+         0,
+         1
+        ],
+        "span": [
+         1,
+         20,
+         23
+        ]
+       }
+      ]
+     },
+     "syntax": "proto3",
+     "bufExtension": {
+      "isImport": false,
+      "isSyntaxUnspecified": false
+     }
+    },
+    {
+     "name": "a.proto",
+     "package": "x",
+     "dependency": [
+      "root.proto"
+     ],
+     "messageType": [
+      {
+       "name": "A",
+       "field": [
+        {
+         "name": "f",
+         "number": 1,
+         "label": "LABEL_OPTIONAL",
+         "type": "TYPE_MESSAGE",
+         "typeName": ".y.Foo",
+         "jsonName": "f"
+        }
+       ]
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         3,
+         26
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         18
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         10
+        ]
+       },
+       {
+        "path": [
+         3,
+         0
+        ],
+        "span": [
+         2,
+         0,
+         20
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         3,
+         0,
+         26
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         8,
+         9
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         6
+        ],
+        "span": [
+         3,
+         12,
+         17
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0
+        ],
+        "span": [
+         3,
+         12,
+         24
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         18,
+         19
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         3
+        ],
+        "span": [
+         3,
+         22,
+         23
+        ]
+       }
+      ]
+     },
+     "syntax": "proto3",
+     "bufExtension": {
+      "isImport": false,
+      "isSyntaxUnspecified": false
+     }
+    },
+    {
+     "name": "b.proto",
+     "package": "x.y",
+     "messageType": [
+      {
+       "name": "Foo"
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         2,
+         14
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         18
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         12
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         2,
+         0,
+         14
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         2,
+         8,
+         11
+        ]
+       }
+      ]
+     },
+     "syntax": "proto3",
+     "bufExtension": {
+      "isImport": false,
+      "isSyntaxUnspecified": false
+     }
+    }
+   ]
+  }
+ },
+ "PB-4.3": {
+  "error": "src/a.proto:3:13:cannot find `Foo` in this scope"
+ },
+ "PB-4.4": {
+  "image": {
+   "file": [
+    {
+     "name": "d.proto",
+     "package": "s",
+     "messageType": [
+      {
+       "name": "D"
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         2,
+         12
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         18
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         10
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         2,
+         0,
+         12
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         2,
+         8,
+         9
+        ]
+       }
+      ]
+     },
+     "syntax": "proto3",
+     "bufExtension": {
+      "isImport": false,
+      "isSyntaxUnspecified": false
+     }
+    },
+    {
+     "name": "c.proto",
+     "package": "r",
+     "dependency": [
+      "d.proto"
+     ],
+     "messageType": [
+      {
+       "name": "C"
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         3,
+         12
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         18
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         10
+        ]
+       },
+       {
+        "path": [
+         3,
+         0
+        ],
+        "span": [
+         2,
+         0,
+         17
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         3,
+         0,
+         12
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         8,
+         9
+        ]
+       }
+      ]
+     },
+     "syntax": "proto3",
+     "bufExtension": {
+      "isImport": false,
+      "isSyntaxUnspecified": false,
+      "unusedDependency": [
+       0
+      ]
+     }
+    },
+    {
+     "name": "b.proto",
+     "package": "q",
+     "dependency": [
+      "c.proto"
+     ],
+     "publicDependency": [
+      0
+     ],
+     "messageType": [
+      {
+       "name": "B"
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         3,
+         12
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         18
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         10
+        ]
+       },
+       {
+        "path": [
+         3,
+         0
+        ],
+        "span": [
+         2,
+         0,
+         24
+        ]
+       },
+       {
+        "path": [
+         10,
+         0
+        ],
+        "span": [
+         2,
+         7,
+         13
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         3,
+         0,
+         12
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         8,
+         9
+        ]
+       }
+      ]
+     },
+     "syntax": "proto3",
+     "bufExtension": {
+      "isImport": false,
+      "isSyntaxUnspecified": false
+     }
+    },
+    {
+     "name": "a.proto",
+     "package": "p",
+     "dependency": [
+      "b.proto"
+     ],
+     "messageType": [
+      {
+       "name": "A",
+       "field": [
+        {
+         "name": "b",
+         "number": 1,
+         "label": "LABEL_OPTIONAL",
+         "type": "TYPE_MESSAGE",
+         "typeName": ".q.B",
+         "jsonName": "b"
+        },
+        {
+         "name": "c",
+         "number": 2,
+         "label": "LABEL_OPTIONAL",
+         "type": "TYPE_MESSAGE",
+         "typeName": ".r.C",
+         "jsonName": "c"
+        }
+       ]
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         3,
+         35
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         18
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         10
+        ]
+       },
+       {
+        "path": [
+         3,
+         0
+        ],
+        "span": [
+         2,
+         0,
+         17
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         3,
+         0,
+         35
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         8,
+         9
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         6
+        ],
+        "span": [
+         3,
+         12,
+         15
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0
+        ],
+        "span": [
+         3,
+         12,
+         22
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         16,
+         17
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         3
+        ],
+        "span": [
+         3,
+         20,
+         21
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         1,
+         6
+        ],
+        "span": [
+         3,
+         23,
+         26
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         1
+        ],
+        "span": [
+         3,
+         23,
+         33
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         1,
+         1
+        ],
+        "span": [
+         3,
+         27,
+         28
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         1,
+         3
+        ],
+        "span": [
+         3,
+         31,
+         32
+        ]
+       }
+      ]
+     },
+     "syntax": "proto3",
+     "bufExtension": {
+      "isImport": false,
+      "isSyntaxUnspecified": false
+     }
+    }
+   ]
+  }
+ },
+ "PB-4.5": {
+  "error": "src/a.proto:4:13:cannot find `r.C` in this scope"
+ },
+ "PB-4.6": {
+  "image": {
+   "file": [
+    {
+     "name": "b.proto",
+     "package": "p",
+     "messageType": [
+      {
+       "name": "Foo",
+       "visibility": "VISIBILITY_LOCAL"
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         2,
+         20
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         17
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         10
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         2,
+         6,
+         20
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         2,
+         14,
+         17
+        ]
+       }
+      ]
+     },
+     "syntax": "editions",
+     "edition": "EDITION_2024",
+     "bufExtension": {
+      "isImport": true,
+      "isSyntaxUnspecified": false
+     }
+    },
+    {
+     "name": "c.proto",
+     "messageType": [
+      {
+       "name": "Foo",
+       "visibility": "VISIBILITY_EXPORT"
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         1,
+         21
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         17
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         1,
+         7,
+         21
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         1,
+         15,
+         18
+        ]
+       }
+      ]
+     },
+     "syntax": "editions",
+     "edition": "EDITION_2024",
+     "bufExtension": {
+      "isImport": true,
+      "isSyntaxUnspecified": false
+     }
+    },
+    {
+     "name": "a.proto",
+     "package": "p",
+     "dependency": [
+      "b.proto",
+      "c.proto"
+     ],
+     "messageType": [
+      {
+       "name": "A",
+       "field": [
+        {
+         "name": "f",
+         "number": 1,
+         "label": "LABEL_OPTIONAL",
+         "type": "TYPE_MESSAGE",
+         "typeName": ".Foo",
+         "jsonName": "f"
+        }
+       ]
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         4,
+         24
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         17
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         10
+        ]
+       },
+       {
+        "path": [
+         3,
+         0
+        ],
+        "span": [
+         2,
+         0,
+         17
+        ]
+       },
+       {
+        "path": [
+         3,
+         1
+        ],
+        "span": [
+         3,
+         0,
+         17
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         4,
+         0,
+         24
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         4,
+         8,
+         9
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         6
+        ],
+        "span": [
+         4,
+         12,
+         15
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0
+        ],
+        "span": [
+         4,
+         12,
+         22
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         1
+        ],
+        "span": [
+         4,
+         16,
+         17
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         3
+        ],
+        "span": [
+         4,
+         20,
+         21
+        ]
+       }
+      ]
+     },
+     "syntax": "editions",
+     "edition": "EDITION_2024",
+     "bufExtension": {
+      "isImport": false,
+      "isSyntaxUnspecified": false,
+      "unusedDependency": [
+       0
+      ]
+     }
+    }
+   ]
+  }
+ },
+ "PB-4.7": {
+  "error": "src/a.proto:4:13:found unexported message type `q.Outer.Inner`"
+ },
+ "PB-4.8": {
+  "error": "src/a.proto:4:13:found unexported enum type `q.Outer.E`"
+ },
+ "PB-4.9": {
+  "image": {
+   "file": [
+    {
+     "name": "b.proto",
+     "package": "q",
+     "messageType": [
+      {
+       "name": "Outer",
+       "nestedType": [
+        {
+         "name": "Inner",
+         "visibility": "VISIBILITY_EXPORT"
+        }
+       ],
+       "enumType": [
+        {
+         "name": "E",
+         "value": [
+          {
+           "name": "E_UNSPECIFIED",
+           "number": 0
+          }
+         ],
+         "visibility": "VISIBILITY_EXPORT"
+        }
+       ]
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         2,
+         78
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         17
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         10
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         2,
+         0,
+         78
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         2,
+         8,
+         13
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         3,
+         0
+        ],
+        "span": [
+         2,
+         23,
+         39
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         3,
+         0,
+         1
+        ],
+        "span": [
+         2,
+         31,
+         36
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         4,
+         0
+        ],
+        "span": [
+         2,
+         47,
+         76
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         4,
+         0,
+         1
+        ],
+        "span": [
+         2,
+         52,
+         53
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         4,
+         0,
+         2,
+         0,
+         1
+        ],
+        "span": [
+         2,
+         56,
+         69
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         4,
+         0,
+         2,
+         0
+        ],
+        "span": [
+         2,
+         56,
+         74
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         4,
+         0,
+         2,
+         0,
+         2
+        ],
+        "span": [
+         2,
+         72,
+         73
+        ]
+       }
+      ]
+     },
+     "syntax": "editions",
+     "edition": "EDITION_2024",
+     "bufExtension": {
+      "isImport": true,
+      "isSyntaxUnspecified": false
+     }
+    },
+    {
+     "name": "a.proto",
+     "package": "p",
+     "dependency": [
+      "b.proto"
+     ],
+     "messageType": [
+      {
+       "name": "A",
+       "field": [
+        {
+         "name": "i",
+         "number": 1,
+         "label": "LABEL_OPTIONAL",
+         "type": "TYPE_MESSAGE",
+         "typeName": ".q.Outer.Inner",
+         "jsonName": "i"
+        },
+        {
+         "name": "e",
+         "number": 2,
+         "label": "LABEL_OPTIONAL",
+         "type": "TYPE_ENUM",
+         "typeName": ".q.Outer.E",
+         "jsonName": "e"
+        }
+       ]
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         3,
+         51
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         17
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         10
+        ]
+       },
+       {
+        "path": [
+         3,
+         0
+        ],
+        "span": [
+         2,
+         0,
+         17
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         3,
+         0,
+         51
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         8,
+         9
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         6
+        ],
+        "span": [
+         3,
+         12,
+         25
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0
+        ],
+        "span": [
+         3,
+         12,
+         32
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         26,
+         27
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         3
+        ],
+        "span": [
+         3,
+         30,
+         31
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         1,
+         6
+        ],
+        "span": [
+         3,
+         33,
+         42
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         1
+        ],
+        "span": [
+         3,
+         33,
+         49
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         1,
+         1
+        ],
+        "span": [
+         3,
+         43,
+         44
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         1,
+         3
+        ],
+        "span": [
+         3,
+         47,
+         48
+        ]
+       }
+      ]
+     },
+     "syntax": "editions",
+     "edition": "EDITION_2024",
+     "bufExtension": {
+      "isImport": false,
+      "isSyntaxUnspecified": false
+     }
+    }
+   ]
+  }
+ },
+ "PB-4.10": {
+  "error": "src/a.proto:4:13:found unexported message type `q.Outer`"
+ },
+ "PB-4.11": {
+  "error": "src/a.proto:4:13:found unexported message type `q.Outer`"
+ },
+ "PB-4.12": {
+  "image": {
+   "file": [
+    {
+     "name": "b.proto",
+     "package": "q",
+     "messageType": [
+      {
+       "name": "Outer",
+       "visibility": "VISIBILITY_EXPORT"
+      }
+     ],
+     "options": {
+      "features": {
+       "defaultSymbolVisibility": "LOCAL_ALL"
+      }
+     },
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         3,
+         23
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         17
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         10
+        ]
+       },
+       {
+        "path": [
+         8
+        ],
+        "span": [
+         2,
+         0,
+         54
+        ]
+       },
+       {
+        "path": [
+         8,
+         50,
+         8
+        ],
+        "span": [
+         2,
+         0,
+         54
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         3,
+         7,
+         23
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         15,
+         20
+        ]
+       }
+      ]
+     },
+     "syntax": "editions",
+     "edition": "EDITION_2024",
+     "bufExtension": {
+      "isImport": true,
+      "isSyntaxUnspecified": false
+     }
+    },
+    {
+     "name": "c.proto",
+     "package": "r",
+     "messageType": [
+      {
+       "name": "Outer",
+       "nestedType": [
+        {
+         "name": "Inner"
+        }
+       ]
+      }
+     ],
+     "options": {
+      "features": {
+       "defaultSymbolVisibility": "EXPORT_ALL"
+      }
+     },
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         3,
+         34
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         17
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         10
+        ]
+       },
+       {
+        "path": [
+         8
+        ],
+        "span": [
+         2,
+         0,
+         55
+        ]
+       },
+       {
+        "path": [
+         8,
+         50,
+         8
+        ],
+        "span": [
+         2,
+         0,
+         55
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         3,
+         0,
+         34
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         8,
+         13
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         3,
+         0
+        ],
+        "span": [
+         3,
+         16,
+         32
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         3,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         24,
+         29
+        ]
+       }
+      ]
+     },
+     "syntax": "editions",
+     "edition": "EDITION_2024",
+     "bufExtension": {
+      "isImport": true,
+      "isSyntaxUnspecified": false
+     }
+    },
+    {
+     "name": "a.proto",
+     "package": "p",
+     "dependency": [
+      "b.proto",
+      "c.proto"
+     ],
+     "messageType": [
+      {
+       "name": "A",
+       "field": [
+        {
+         "name": "o",
+         "number": 1,
+         "label": "LABEL_OPTIONAL",
+         "type": "TYPE_MESSAGE",
+         "typeName": ".q.Outer",
+         "jsonName": "o"
+        },
+        {
+         "name": "i",
+         "number": 2,
+         "label": "LABEL_OPTIONAL",
+         "type": "TYPE_MESSAGE",
+         "typeName": ".r.Outer.Inner",
+         "jsonName": "i"
+        }
+       ]
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         4,
+         49
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         17
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         10
+        ]
+       },
+       {
+        "path": [
+         3,
+         0
+        ],
+        "span": [
+         2,
+         0,
+         17
+        ]
+       },
+       {
+        "path": [
+         3,
+         1
+        ],
+        "span": [
+         3,
+         0,
+         17
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         4,
+         0,
+         49
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         4,
+         8,
+         9
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         6
+        ],
+        "span": [
+         4,
+         12,
+         19
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0
+        ],
+        "span": [
+         4,
+         12,
+         26
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         1
+        ],
+        "span": [
+         4,
+         20,
+         21
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         3
+        ],
+        "span": [
+         4,
+         24,
+         25
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         1,
+         6
+        ],
+        "span": [
+         4,
+         27,
+         40
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         1
+        ],
+        "span": [
+         4,
+         27,
+         47
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         1,
+         1
+        ],
+        "span": [
+         4,
+         41,
+         42
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         1,
+         3
+        ],
+        "span": [
+         4,
+         45,
+         46
+        ]
+       }
+      ]
+     },
+     "syntax": "editions",
+     "edition": "EDITION_2024",
+     "bufExtension": {
+      "isImport": false,
+      "isSyntaxUnspecified": false
+     }
+    }
+   ]
+  }
+ },
+ "PB-4.13": {
+  "error": "src/a.proto:4:28:found unexported message type `q.Other`"
+ },
+ "PB-4.14": {
+  "error": "src/a.proto:4:28:found unexported message type `q.Other`"
+ },
+ "PB-4.15": {
+  "image": {
+   "file": [
+    {
+     "name": "b.proto",
+     "package": "q",
+     "messageType": [
+      {
+       "name": "Ns",
+       "enumType": [
+        {
+         "name": "E",
+         "value": [
+          {
+           "name": "E_UNSPECIFIED",
+           "number": 0
+          }
+         ],
+         "visibility": "VISIBILITY_EXPORT"
+        }
+       ],
+       "reservedRange": [
+        {
+         "start": 1,
+         "end": 536870912
+        }
+       ]
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         2,
+         70
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         17
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         10
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         2,
+         0,
+         70
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         2,
+         8,
+         10
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         4,
+         0
+        ],
+        "span": [
+         2,
+         20,
+         49
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         4,
+         0,
+         1
+        ],
+        "span": [
+         2,
+         25,
+         26
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         4,
+         0,
+         2,
+         0,
+         1
+        ],
+        "span": [
+         2,
+         29,
+         42
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         4,
+         0,
+         2,
+         0
+        ],
+        "span": [
+         2,
+         29,
+         47
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         4,
+         0,
+         2,
+         0,
+         2
+        ],
+        "span": [
+         2,
+         45,
+         46
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         9
+        ],
+        "span": [
+         2,
+         50,
+         68
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         9,
+         0,
+         1
+        ],
+        "span": [
+         2,
+         59,
+         60
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         9,
+         0
+        ],
+        "span": [
+         2,
+         59,
+         67
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         9,
+         0,
+         2
+        ],
+        "span": [
+         2,
+         64,
+         67
+        ]
+       }
+      ]
+     },
+     "syntax": "editions",
+     "edition": "EDITION_2026",
+     "bufExtension": {
+      "isImport": true,
+      "isSyntaxUnspecified": false
+     }
+    },
+    {
+     "name": "a.proto",
+     "package": "p",
+     "dependency": [
+      "b.proto"
+     ],
+     "messageType": [
+      {
+       "name": "A",
+       "field": [
+        {
+         "name": "e",
+         "number": 1,
+         "label": "LABEL_OPTIONAL",
+         "type": "TYPE_ENUM",
+         "typeName": ".q.Ns.E",
+         "jsonName": "e"
+        }
+       ],
+       "visibility": "VISIBILITY_EXPORT"
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         3,
+         34
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         17
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         10
+        ]
+       },
+       {
+        "path": [
+         3,
+         0
+        ],
+        "span": [
+         2,
+         0,
+         17
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         3,
+         7,
+         34
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         15,
+         16
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         6
+        ],
+        "span": [
+         3,
+         19,
+         25
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0
+        ],
+        "span": [
+         3,
+         19,
+         32
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         26,
+         27
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         3
+        ],
+        "span": [
+         3,
+         30,
+         31
+        ]
+       }
+      ]
+     },
+     "syntax": "editions",
+     "edition": "EDITION_2026",
+     "bufExtension": {
+      "isImport": false,
+      "isSyntaxUnspecified": false
+     }
+    }
+   ]
+  }
+ },
+ "PB-4.16": {
+  "image": {
+   "file": [
+    {
+     "name": "a.proto",
+     "package": "p",
+     "messageType": [
+      {
+       "name": "A",
+       "nestedType": [
+        {
+         "name": "B"
+        }
+       ],
+       "visibility": "VISIBILITY_LOCAL"
+      },
+      {
+       "name": "C",
+       "field": [
+        {
+         "name": "b",
+         "number": 1,
+         "label": "LABEL_OPTIONAL",
+         "type": "TYPE_MESSAGE",
+         "typeName": ".p.A.B",
+         "jsonName": "b"
+        },
+        {
+         "name": "a",
+         "number": 2,
+         "label": "LABEL_OPTIONAL",
+         "type": "TYPE_MESSAGE",
+         "typeName": ".p.A",
+         "jsonName": "a"
+        }
+       ]
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         3,
+         33
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         17
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         10
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         2,
+         6,
+         32
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         2,
+         14,
+         15
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         3,
+         0
+        ],
+        "span": [
+         2,
+         18,
+         30
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         3,
+         0,
+         1
+        ],
+        "span": [
+         2,
+         26,
+         27
+        ]
+       },
+       {
+        "path": [
+         4,
+         1
+        ],
+        "span": [
+         3,
+         0,
+         33
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         1
+        ],
+        "span": [
+         3,
+         8,
+         9
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         0,
+         6
+        ],
+        "span": [
+         3,
+         12,
+         15
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         0
+        ],
+        "span": [
+         3,
+         12,
+         22
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         16,
+         17
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         0,
+         3
+        ],
+        "span": [
+         3,
+         20,
+         21
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         1,
+         6
+        ],
+        "span": [
+         3,
+         23,
+         24
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         1
+        ],
+        "span": [
+         3,
+         23,
+         31
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         1,
+         1
+        ],
+        "span": [
+         3,
+         25,
+         26
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         1,
+         3
+        ],
+        "span": [
+         3,
+         29,
+         30
+        ]
+       }
+      ]
+     },
+     "syntax": "editions",
+     "edition": "EDITION_2024",
+     "bufExtension": {
+      "isImport": false,
+      "isSyntaxUnspecified": false
+     }
+    }
+   ]
+  }
+ },
+ "PB-4.17": {
+  "image": {
+   "file": [
+    {
+     "name": "b.proto",
+     "package": "q",
+     "dependency": [
+      "google/protobuf/descriptor.proto"
+     ],
+     "messageType": [
+      {
+       "name": "B",
+       "field": [
+        {
+         "name": "x",
+         "number": 1,
+         "label": "LABEL_OPTIONAL",
+         "type": "TYPE_INT32",
+         "jsonName": "x"
+        }
+       ]
+      }
+     ],
+     "extension": [
+      {
+       "name": "o",
+       "number": 50001,
+       "label": "LABEL_OPTIONAL",
+       "type": "TYPE_INT32",
+       "extendee": ".google.protobuf.MessageOptions",
+       "jsonName": "o"
+      },
+      {
+       "name": "m",
+       "number": 50002,
+       "label": "LABEL_OPTIONAL",
+       "type": "TYPE_MESSAGE",
+       "typeName": ".q.B",
+       "extendee": ".google.protobuf.MessageOptions",
+       "jsonName": "m"
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         4,
+         26
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         17
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         10
+        ]
+       },
+       {
+        "path": [
+         3,
+         0
+        ],
+        "span": [
+         2,
+         0,
+         42
+        ]
+       },
+       {
+        "path": [
+         7
+        ],
+        "span": [
+         3,
+         0,
+         71
+        ]
+       },
+       {
+        "path": [
+         7,
+         0,
+         2
+        ],
+        "span": [
+         3,
+         7,
+         37
+        ]
+       },
+       {
+        "path": [
+         7,
+         1,
+         2
+        ],
+        "span": [
+         3,
+         7,
+         37
+        ]
+       },
+       {
+        "path": [
+         7,
+         0,
+         5
+        ],
+        "span": [
+         3,
+         40,
+         45
+        ]
+       },
+       {
+        "path": [
+         7,
+         0
+        ],
+        "span": [
+         3,
+         40,
+         56
+        ]
+       },
+       {
+        "path": [
+         7,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         46,
+         47
+        ]
+       },
+       {
+        "path": [
+         7,
+         0,
+         3
+        ],
+        "span": [
+         3,
+         50,
+         55
+        ]
+       },
+       {
+        "path": [
+         7,
+         1,
+         6
+        ],
+        "span": [
+         3,
+         57,
+         58
+        ]
+       },
+       {
+        "path": [
+         7,
+         1
+        ],
+        "span": [
+         3,
+         57,
+         69
+        ]
+       },
+       {
+        "path": [
+         7,
+         1,
+         1
+        ],
+        "span": [
+         3,
+         59,
+         60
+        ]
+       },
+       {
+        "path": [
+         7,
+         1,
+         3
+        ],
+        "span": [
+         3,
+         63,
+         68
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         4,
+         0,
+         26
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         4,
+         8,
+         9
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         5
+        ],
+        "span": [
+         4,
+         12,
+         17
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0
+        ],
+        "span": [
+         4,
+         12,
+         24
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         1
+        ],
+        "span": [
+         4,
+         18,
+         19
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         3
+        ],
+        "span": [
+         4,
+         22,
+         23
+        ]
+       }
+      ]
+     },
+     "syntax": "editions",
+     "edition": "EDITION_2024",
+     "bufExtension": {
+      "isImport": true,
+      "isSyntaxUnspecified": false
+     }
+    },
+    {
+     "name": "a.proto",
+     "package": "p",
+     "messageType": [
+      {
+       "name": "A",
+       "options": {
+        "[q.m]": {
+         "x": 1
+        },
+        "[q.o]": 1
+       }
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         3,
+         56
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         17
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         10
+        ]
+       },
+       {
+        "path": [
+         15,
+         0
+        ],
+        "span": [
+         2,
+         0,
+         24
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         3,
+         0,
+         56
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         8,
+         9
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         7
+        ],
+        "span": [
+         3,
+         12,
+         29
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         7,
+         50001
+        ],
+        "span": [
+         3,
+         12,
+         29
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         7
+        ],
+        "span": [
+         3,
+         30,
+         54
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         7,
+         50002
+        ],
+        "span": [
+         3,
+         37,
+         53
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         7,
+         50002,
+         1
+        ],
+        "span": [
+         3,
+         47,
+         51
+        ]
+       }
+      ]
+     },
+     "syntax": "editions",
+     "edition": "EDITION_2024",
+     "optionDependency": [
+      "b.proto"
+     ],
+     "bufExtension": {
+      "isImport": false,
+      "isSyntaxUnspecified": false
+     }
+    }
+   ]
+  }
+ },
+ "PB-4.18": {
+  "error": "src/a.proto:4:13:`q.B` is only imported for use in options"
+ },
+ "PB-4.19": {
+  "error": "src/a.proto:4:8:`google.protobuf.FieldOptions` is only imported for use in options"
+ },
+ "PB-4.20": {
+  "image": {
+   "file": [
+    {
+     "name": "a.proto",
+     "package": "p.q",
+     "dependency": [
+      "google/protobuf/descriptor.proto"
+     ],
+     "messageType": [
+      {
+       "name": "Outer",
+       "enumType": [
+        {
+         "name": "E",
+         "value": [
+          {
+           "name": "E0",
+           "number": 0
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "M",
+       "field": [
+        {
+         "name": "e",
+         "number": 3,
+         "label": "LABEL_OPTIONAL",
+         "type": "TYPE_ENUM",
+         "typeName": ".p.q.Outer.E",
+         "jsonName": "e"
+        },
+        {
+         "name": "o",
+         "number": 4,
+         "label": "LABEL_OPTIONAL",
+         "type": "TYPE_MESSAGE",
+         "typeName": ".p.q.Outer",
+         "jsonName": "o"
+        },
+        {
+         "name": "x",
+         "number": 5,
+         "label": "LABEL_OPTIONAL",
+         "type": "TYPE_INT32",
+         "jsonName": "x",
+         "options": {
+          "[p.q.opts.flag]": true
+         }
+        }
+       ]
+      },
+      {
+       "name": "opts",
+       "extension": [
+        {
+         "name": "flag",
+         "number": 50001,
+         "label": "LABEL_OPTIONAL",
+         "type": "TYPE_BOOL",
+         "extendee": ".google.protobuf.FieldOptions",
+         "jsonName": "flag"
+        }
+       ]
+      }
+     ],
+     "service": [
+      {
+       "name": "S",
+       "method": [
+        {
+         "name": "A",
+         "inputType": ".p.q.M",
+         "outputType": ".p.q.M"
+        }
+       ]
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         10,
+         56
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         18
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         30
+        ]
+       },
+       {
+        "path": [
+         3,
+         0
+        ],
+        "span": [
+         2,
+         0,
+         42
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         3,
+         0,
+         36
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         8,
+         13
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         4,
+         0
+        ],
+        "span": [
+         3,
+         16,
+         34
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         4,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         21,
+         22
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         4,
+         0,
+         2,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         25,
+         27
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         4,
+         0,
+         2,
+         0
+        ],
+        "span": [
+         3,
+         25,
+         32
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         4,
+         0,
+         2,
+         0,
+         2
+        ],
+        "span": [
+         3,
+         30,
+         31
+        ]
+       },
+       {
+        "path": [
+         4,
+         1
+        ],
+        "span": [
+         4,
+         0,
+         8,
+         1
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         1
+        ],
+        "span": [
+         4,
+         8,
+         9
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         0,
+         6
+        ],
+        "span": [
+         5,
+         2,
+         17
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         0
+        ],
+        "span": [
+         5,
+         2,
+         24
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         0,
+         1
+        ],
+        "span": [
+         5,
+         18,
+         19
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         0,
+         3
+        ],
+        "span": [
+         5,
+         22,
+         23
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         1,
+         6
+        ],
+        "span": [
+         6,
+         2,
+         14
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         1
+        ],
+        "span": [
+         6,
+         2,
+         21
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         1,
+         1
+        ],
+        "span": [
+         6,
+         15,
+         16
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         1,
+         3
+        ],
+        "span": [
+         6,
+         19,
+         20
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         2,
+         5
+        ],
+        "span": [
+         7,
+         2,
+         7
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         2
+        ],
+        "span": [
+         7,
+         2,
+         44
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         2,
+         1
+        ],
+        "span": [
+         7,
+         8,
+         9
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         2,
+         3
+        ],
+        "span": [
+         7,
+         12,
+         13
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         2,
+         8
+        ],
+        "span": [
+         7,
+         14,
+         43
+        ]
+       },
+       {
+        "path": [
+         4,
+         1,
+         2,
+         2,
+         8,
+         50001
+        ],
+        "span": [
+         7,
+         15,
+         42
+        ]
+       },
+       {
+        "path": [
+         4,
+         2
+        ],
+        "span": [
+         9,
+         0,
+         75
+        ]
+       },
+       {
+        "path": [
+         4,
+         2,
+         1
+        ],
+        "span": [
+         9,
+         8,
+         12
+        ]
+       },
+       {
+        "path": [
+         4,
+         2,
+         6
+        ],
+        "span": [
+         9,
+         15,
+         73
+        ]
+       },
+       {
+        "path": [
+         4,
+         2,
+         6,
+         0,
+         2
+        ],
+        "span": [
+         9,
+         22,
+         50
+        ]
+       },
+       {
+        "path": [
+         4,
+         2,
+         6,
+         0,
+         5
+        ],
+        "span": [
+         9,
+         53,
+         57
+        ]
+       },
+       {
+        "path": [
+         4,
+         2,
+         6,
+         0
+        ],
+        "span": [
+         9,
+         53,
+         71
+        ]
+       },
+       {
+        "path": [
+         4,
+         2,
+         6,
+         0,
+         1
+        ],
+        "span": [
+         9,
+         58,
+         62
+        ]
+       },
+       {
+        "path": [
+         4,
+         2,
+         6,
+         0,
+         3
+        ],
+        "span": [
+         9,
+         65,
+         70
+        ]
+       },
+       {
+        "path": [
+         6,
+         0
+        ],
+        "span": [
+         10,
+         0,
+         56
+        ]
+       },
+       {
+        "path": [
+         6,
+         0,
+         1
+        ],
+        "span": [
+         10,
+         8,
+         9
+        ]
+       },
+       {
+        "path": [
+         6,
+         0,
+         2,
+         0
+        ],
+        "span": [
+         10,
+         12,
+         54
+        ]
+       },
+       {
+        "path": [
+         6,
+         0,
+         2,
+         0,
+         1
+        ],
+        "span": [
+         10,
+         16,
+         17
+        ]
+       },
+       {
+        "path": [
+         6,
+         0,
+         2,
+         0,
+         2
+        ],
+        "span": [
+         10,
+         19,
+         33
+        ]
+       },
+       {
+        "path": [
+         6,
+         0,
+         2,
+         0,
+         3
+        ],
+        "span": [
+         10,
+         44,
+         52
+        ]
+       }
+      ]
+     },
+     "syntax": "proto3",
+     "bufExtension": {
+      "isImport": false,
+      "isSyntaxUnspecified": false
+     }
+    }
+   ]
+  }
+ },
+ "PB-4.21": {
+  "image": {
+   "file": [
+    {
+     "name": "a.proto",
+     "package": "p",
+     "dependency": [
+      "google/protobuf/descriptor.proto"
+     ],
+     "messageType": [
+      {
+       "name": "M",
+       "field": [
+        {
+         "name": "a",
+         "number": 1,
+         "label": "LABEL_OPTIONAL",
+         "type": "TYPE_INT32",
+         "oneofIndex": 0,
+         "jsonName": "a"
+        }
+       ],
+       "nestedType": [
+        {
+         "name": "foo"
+        },
+        {
+         "name": "bar"
+        },
+        {
+         "name": "baz"
+        }
+       ],
+       "extensionRange": [
+        {
+         "start": 100,
+         "end": 201,
+         "options": {
+          "[p.baz]": 3
+         }
+        }
+       ],
+       "oneofDecl": [
+        {
+         "name": "o",
+         "options": {
+          "[p.bar]": 2
+         }
+        }
+       ],
+       "options": {
+        "[p.foo]": 1
+       }
+      }
+     ],
+     "extension": [
+      {
+       "name": "foo",
+       "number": 50001,
+       "label": "LABEL_OPTIONAL",
+       "type": "TYPE_INT32",
+       "extendee": ".google.protobuf.MessageOptions",
+       "jsonName": "foo"
+      },
+      {
+       "name": "bar",
+       "number": 50002,
+       "label": "LABEL_OPTIONAL",
+       "type": "TYPE_INT32",
+       "extendee": ".google.protobuf.OneofOptions",
+       "jsonName": "bar"
+      },
+      {
+       "name": "baz",
+       "number": 50003,
+       "label": "LABEL_OPTIONAL",
+       "type": "TYPE_INT32",
+       "extendee": ".google.protobuf.ExtensionRangeOptions",
+       "jsonName": "baz"
+      }
+     ],
+     "sourceCodeInfo": {
+      "location": [
+       {
+        "span": [
+         0,
+         0,
+         13,
+         1
+        ]
+       },
+       {
+        "path": [
+         12
+        ],
+        "span": [
+         0,
+         0,
+         18
+        ]
+       },
+       {
+        "path": [
+         2
+        ],
+        "span": [
+         1,
+         0,
+         10
+        ]
+       },
+       {
+        "path": [
+         3,
+         0
+        ],
+        "span": [
+         2,
+         0,
+         42
+        ]
+       },
+       {
+        "path": [
+         7
+        ],
+        "span": [
+         3,
+         0,
+         69
+        ]
+       },
+       {
+        "path": [
+         7,
+         0,
+         2
+        ],
+        "span": [
+         3,
+         7,
+         37
+        ]
+       },
+       {
+        "path": [
+         7,
+         0,
+         4
+        ],
+        "span": [
+         3,
+         40,
+         48
+        ]
+       },
+       {
+        "path": [
+         7,
+         0
+        ],
+        "span": [
+         3,
+         40,
+         67
+        ]
+       },
+       {
+        "path": [
+         7,
+         0,
+         5
+        ],
+        "span": [
+         3,
+         49,
+         54
+        ]
+       },
+       {
+        "path": [
+         7,
+         0,
+         1
+        ],
+        "span": [
+         3,
+         55,
+         58
+        ]
+       },
+       {
+        "path": [
+         7,
+         0,
+         3
+        ],
+        "span": [
+         3,
+         61,
+         66
+        ]
+       },
+       {
+        "path": [
+         7
+        ],
+        "span": [
+         4,
+         0,
+         67
+        ]
+       },
+       {
+        "path": [
+         7,
+         1,
+         2
+        ],
+        "span": [
+         4,
+         7,
+         35
+        ]
+       },
+       {
+        "path": [
+         7,
+         1,
+         4
+        ],
+        "span": [
+         4,
+         38,
+         46
+        ]
+       },
+       {
+        "path": [
+         7,
+         1
+        ],
+        "span": [
+         4,
+         38,
+         65
+        ]
+       },
+       {
+        "path": [
+         7,
+         1,
+         5
+        ],
+        "span": [
+         4,
+         47,
+         52
+        ]
+       },
+       {
+        "path": [
+         7,
+         1,
+         1
+        ],
+        "span": [
+         4,
+         53,
+         56
+        ]
+       },
+       {
+        "path": [
+         7,
+         1,
+         3
+        ],
+        "span": [
+         4,
+         59,
+         64
+        ]
+       },
+       {
+        "path": [
+         7
+        ],
+        "span": [
+         5,
+         0,
+         76
+        ]
+       },
+       {
+        "path": [
+         7,
+         2,
+         2
+        ],
+        "span": [
+         5,
+         7,
+         44
+        ]
+       },
+       {
+        "path": [
+         7,
+         2,
+         4
+        ],
+        "span": [
+         5,
+         47,
+         55
+        ]
+       },
+       {
+        "path": [
+         7,
+         2
+        ],
+        "span": [
+         5,
+         47,
+         74
+        ]
+       },
+       {
+        "path": [
+         7,
+         2,
+         5
+        ],
+        "span": [
+         5,
+         56,
+         61
+        ]
+       },
+       {
+        "path": [
+         7,
+         2,
+         1
+        ],
+        "span": [
+         5,
+         62,
+         65
+        ]
+       },
+       {
+        "path": [
+         7,
+         2,
+         3
+        ],
+        "span": [
+         5,
+         68,
+         73
+        ]
+       },
+       {
+        "path": [
+         4,
+         0
+        ],
+        "span": [
+         6,
+         0,
+         13,
+         1
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         1
+        ],
+        "span": [
+         6,
+         8,
+         9
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         3,
+         0
+        ],
+        "span": [
+         7,
+         2,
+         16
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         3,
+         0,
+         1
+        ],
+        "span": [
+         7,
+         10,
+         13
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         3,
+         1
+        ],
+        "span": [
+         8,
+         2,
+         16
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         3,
+         1,
+         1
+        ],
+        "span": [
+         8,
+         10,
+         13
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         3,
+         2
+        ],
+        "span": [
+         9,
+         2,
+         16
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         3,
+         2,
+         1
+        ],
+        "span": [
+         9,
+         10,
+         13
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         7
+        ],
+        "span": [
+         10,
+         2,
+         19
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         7,
+         50001
+        ],
+        "span": [
+         10,
+         2,
+         19
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         8,
+         0
+        ],
+        "span": [
+         11,
+         2,
+         44
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         8,
+         0,
+         1
+        ],
+        "span": [
+         11,
+         8,
+         9
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         8,
+         0,
+         2
+        ],
+        "span": [
+         11,
+         12,
+         29
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         8,
+         0,
+         2,
+         50002
+        ],
+        "span": [
+         11,
+         12,
+         29
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         5
+        ],
+        "span": [
+         11,
+         30,
+         35
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0
+        ],
+        "span": [
+         11,
+         30,
+         42
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         1
+        ],
+        "span": [
+         11,
+         36,
+         37
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         2,
+         0,
+         3
+        ],
+        "span": [
+         11,
+         40,
+         41
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         5
+        ],
+        "span": [
+         12,
+         2,
+         36
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         5,
+         0,
+         1
+        ],
+        "span": [
+         12,
+         13,
+         16
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         5,
+         0
+        ],
+        "span": [
+         12,
+         13,
+         23
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         5,
+         0,
+         2
+        ],
+        "span": [
+         12,
+         20,
+         23
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         5,
+         0,
+         3
+        ],
+        "span": [
+         12,
+         24,
+         35
+        ]
+       },
+       {
+        "path": [
+         4,
+         0,
+         5,
+         0,
+         3,
+         50003
+        ],
+        "span": [
+         12,
+         25,
+         34
+        ]
+       }
+      ]
+     },
+     "bufExtension": {
+      "isImport": false,
+      "isSyntaxUnspecified": false
+     }
+    }
+   ]
+  }
+ },
+ "PB-4.22": {
+  "error": "src/a.proto:5:48:expected message extension, found message type `p.M.foo`"
+ },
+ "PB-4.23": {
+  "error": "src/a.proto:5:37:expected `google.protobuf.FieldOptions` extension, found message field in `p.M`"
+ },
+ "PB-4.24": {
+  "error": "src/a.proto:6:47:expected message extension, found service method `p.S.foo`"
+ },
+ "PB-4.25": {
+  "error": "src/a.proto:5:9:expected message extension, found message type `p.foo`"
+ },
+ "PB-4.26": {
+  "error": "src/a.proto:4:13:expected type, found service definition `p.S`\nsrc/a.proto:4:22:expected type, found `package` declaration `p`"
+ },
+ "PB-4.27": {
+  "error": "src/a.proto:5:20:expected message type, found enum type `p.E`\nsrc/a.proto:5:55:expected message type, found enum type `p.E`"
+ },
+ "PB-4.28": {
+  "error": "src/a.proto:5:8:expected message type, found enum type `p.E`"
+ },
+ "PB-4.29": {
+  "error": "src/a.proto:4:28:cannot find `Foo.Bar` in this scope"
+ }
+}

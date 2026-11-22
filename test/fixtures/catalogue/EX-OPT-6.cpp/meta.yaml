@@ -1,0 +1,8 @@
+# EX-OPT-6.cpp (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: compilable part of EX-OPT-6 (feature extension on a field)
+expect:
+  - pointer: "#/components/messages/shop.edt.Doc"
+    value:
+      type: object
+      properties:
+        body: { number: 1, type: string, protoType: string, presence: explicit, options: { features: { pb.cpp: { string_type: CORD } } } }

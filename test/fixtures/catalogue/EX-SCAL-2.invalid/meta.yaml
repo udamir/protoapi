@@ -1,0 +1,18 @@
+# EX-SCAL-2.invalid (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: invalid field numbers are reported and kept as written
+textOnly: true   # protoc rejects these numbers
+expect:
+  - pointer: "#/components/messages/shop.v1.Bad"
+    value:
+      type: object
+      properties:
+        ok:      { number: 1, type: integer, protoType: int32 }
+        impl_lo: { number: 19000, type: integer, protoType: int32 }
+        impl_hi: { number: 19999, type: integer, protoType: int32 }
+        zero:    { number: 0, type: integer, protoType: int32 }
+        big:     { number: 536870912, type: integer, protoType: int32 }
+issues:
+  - "invalid-number @ #/components/messages/shop.v1.Bad/properties/impl_lo"
+  - "invalid-number @ #/components/messages/shop.v1.Bad/properties/impl_hi"
+  - "invalid-number @ #/components/messages/shop.v1.Bad/properties/zero"
+  - "invalid-number @ #/components/messages/shop.v1.Bad/properties/big"

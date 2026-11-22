@@ -1,0 +1,26 @@
+# EX-AIP-3 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: resource definitions and references stay as typed trees
+expect:
+  - pointer: "#/files/shop.proto"
+    value:
+      …: true
+      options:
+        google.api.resource_definition: [{ type: library.example.com/Shelf, pattern: ["shelves/{shelf}"] }]
+  - pointer: "#/components/messages/shop.v1.Book"
+    value:
+      type: object
+      properties:
+        name: { number: 1, type: string, protoType: string, options: { google.api.field_behavior: [IDENTIFIER] } }
+      options:
+        google.api.resource: { type: library.example.com/Book, pattern: ["shelves/{shelf}/books/{book}"], plural: books, singular: book }
+  - pointer: "#/components/messages/shop.v1.GetBookRequest"
+    value:
+      type: object
+      properties:
+        name: { number: 1, type: string, protoType: string, required: true, options: { google.api.resource_reference: { type: library.example.com/Book } } }
+  - pointer: "#/components/messages/shop.v1.ListBooksRequest"
+    value:
+      type: object
+      properties:
+        parent:    { number: 1, type: string, protoType: string, options: { google.api.resource_reference: { child_type: library.example.com/Book } } }
+        page_size: { number: 2, type: integer, protoType: int32, options: { google.api.field_behavior: [OPTIONAL] } }

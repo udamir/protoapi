@@ -1,0 +1,9 @@
+# EX-RES-2.declaration (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: editions extension declarations, never merged with neighbours
+expect:
+  - pointer: "#/components/messages/shop.legacy.Order"
+    value:
+      type: object
+      properties: {}
+      extensions: [[4, 1000], [1001, 2000]]
+      options: { extension_declarations: { "4-1000": [{ number: 4, full_name: .shop.legacy.tag, type: string }] } }

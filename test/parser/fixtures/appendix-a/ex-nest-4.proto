@@ -1,0 +1,1 @@
+message Node { string id = 1; repeated Node children = 2; Node parent = 3; }

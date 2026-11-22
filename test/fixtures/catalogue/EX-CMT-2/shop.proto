@@ -1,0 +1,18 @@
+syntax = "proto3";
+package shop.v1;
+
+/**
+ * A pet.
+ */
+message Pet { // pets are animals
+  // The name.
+  string name = 1; // shown in the UI
+}
+// Status of a pet.
+enum Status {
+  STATUS_UNSPECIFIED = 0; // not set
+}
+service PetService {
+  // Gets one pet.
+  rpc GetPet(Pet) returns (Pet); // cheap
+}

@@ -1,0 +1,21 @@
+# EX-EXT-5 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: custom options on services, methods, enums and enum values
+options: { entry: [shop.proto] }
+expect:
+  - pointer: "#/services/shop.v1.Admin"
+    value:
+      title: Admin
+      file: shop.proto
+      options: { acme.opts.api_group: internal }
+      methods:
+        Purge:
+          request:  { schema: { $ref: "#/components/messages/shop.v1.PurgeRequest" } }
+          response: { schema: { $ref: "#/components/messages/shop.v1.PurgeResponse" } }
+          options:  { acme.opts.audit: { log: true, roles: [admin, sre], level: FULL } }
+  - pointer: "#/components/enums/shop.v1.Perm"
+    value:
+      type: string
+      values:
+        PERM_NONE: { number: 0, options: { acme.opts.label: None } }
+        PERM_READ: { number: 1 }
+      options: { acme.opts.bit_flags: true }

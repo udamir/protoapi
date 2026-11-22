@@ -1,0 +1,11 @@
+// A block comment after a block's closing `}`, followed by a newline (IN-10, Q0-P phase C): buf 1.75 makes it the leading comment of the next declaration (protoc: trailing comment of the `}`, hence dropped).
+
+syntax = "proto3";
+
+package named.comments.blockafterclose;
+
+message Owner {} /* A pet. */
+message Pet {
+  enum Kind { KIND_UNSPECIFIED = 0; } /* The kind of pet. */
+  Kind kind = 1;
+}

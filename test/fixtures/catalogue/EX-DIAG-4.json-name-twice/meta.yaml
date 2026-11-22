@@ -1,0 +1,7 @@
+# EX-DIAG-4.json-name-twice (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: json_name set twice; the last wins
+textOnly: true   # protoc rejects an option set twice
+expect:
+  - pointer: "#/components/messages/shop.v1.M/properties/s"
+    value: { number: 1, type: string, protoType: string, jsonName: b }
+issues: [ "invalid-option @ #/components/messages/shop.v1.M/properties/s" ]

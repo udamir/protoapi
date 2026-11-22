@@ -1,0 +1,31 @@
+syntax = "proto3";
+package acme.opts;
+import "google/protobuf/descriptor.proto";
+message Table { string name = 1; repeated string indexes = 2; }
+extend google.protobuf.FileOptions    { string owner = 50000; }
+extend google.protobuf.FieldOptions   { string sensitivity = 50001; }
+extend google.protobuf.MessageOptions { Table table = 50002; }
+extend google.protobuf.FieldOptions   { string internal_note = 50010 [retention = RETENTION_SOURCE, targets = TARGET_TYPE_FIELD]; }
+message Audit {
+  enum Level { LEVEL_UNSPECIFIED = 0; FULL = 1; }
+  bool log = 1;
+  repeated string roles = 2;
+  Level level = 3;
+}
+extend google.protobuf.ServiceOptions   { string api_group = 50100; }
+extend google.protobuf.MethodOptions    { Audit audit = 50101; }
+extend google.protobuf.EnumOptions      { bool bit_flags = 50102; }
+extend google.protobuf.EnumValueOptions { string label = 50103; }
+extend google.protobuf.OneofOptions     { string group = 50104; }
+enum Tier { TIER_UNSPECIFIED = 0; LOW = 1; HIGH = 2; }
+message Range { int32 lo = 1; int32 hi = 2; }
+message Limits {
+  int64 max = 1;
+  double ratio = 2;
+  bytes blob = 3;
+  Tier tier = 4;
+  repeated Range ranges = 5;
+  sint32 delta = 6;
+  float scale = 7;
+}
+extend google.protobuf.MessageOptions { Limits limits = 50200; }

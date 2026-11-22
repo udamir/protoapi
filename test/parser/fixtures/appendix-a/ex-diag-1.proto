@@ -1,0 +1,8 @@
+message Bad {
+  reserved 3;
+  reserved "old";
+  int32 a   = 1;
+  int32 b   = 1;
+  int32 c   = 3;
+  int32 old = 4;
+}

@@ -1,0 +1,124 @@
+# EX-FULL-1 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: a googleapis-style resource API, whole document
+expect:
+  - pointer: "#"
+    value:
+      protoapi: "0.1"
+      files:
+        library.proto:
+          description: Library API.
+          syntax: proto3
+          package: example.library.v1
+          imports:
+            - google/api/annotations.proto
+            - google/api/client.proto
+            - google/api/field_behavior.proto
+            - google/api/resource.proto
+            - google/protobuf/empty.proto
+            - google/protobuf/field_mask.proto
+            - google/protobuf/timestamp.proto
+          options:
+            go_package: example.com/library/apiv1/librarypb;librarypb
+            java_multiple_files: true
+            java_package: com.example.library.v1
+        google/protobuf/empty.proto:      { syntax: proto3, package: google.protobuf, options: { … }, bundled: true }
+        google/protobuf/field_mask.proto: { syntax: proto3, package: google.protobuf, options: { … }, bundled: true }
+        google/protobuf/timestamp.proto:  { syntax: proto3, package: google.protobuf, options: { … }, bundled: true }
+      services:
+        example.library.v1.LibraryService:
+          title: LibraryService
+          file: library.proto
+          description: Manages shelves and books.
+          methods:
+            GetBook:
+              description: Gets a book.
+              request:  { schema: { $ref: "#/components/messages/example.library.v1.GetBookRequest" } }
+              response: { schema: { $ref: "#/components/messages/example.library.v1.Book" } }
+              http: { method: GET, path: "/v1/{name=shelves/*/books/*}" }
+              options: { google.api.method_signature: [name] }
+            ListBooks:
+              description: Lists books on a shelf.
+              request:  { schema: { $ref: "#/components/messages/example.library.v1.ListBooksRequest" } }
+              response: { schema: { $ref: "#/components/messages/example.library.v1.ListBooksResponse" } }
+              http: { method: GET, path: "/v1/{parent=shelves/*}/books" }
+              options: { google.api.method_signature: [parent] }
+            UpdateBook:
+              description: Updates a book.
+              request:  { schema: { $ref: "#/components/messages/example.library.v1.UpdateBookRequest" } }
+              response: { schema: { $ref: "#/components/messages/example.library.v1.Book" } }
+              http: { method: PATCH, path: "/v1/{book.name=shelves/*/books/*}", body: book }
+              options: { google.api.method_signature: ["book,update_mask"] }
+            DeleteBook:
+              description: Deletes a book.
+              request:  { schema: { $ref: "#/components/messages/example.library.v1.DeleteBookRequest" } }
+              response: { schema: { $ref: "#/components/messages/google.protobuf.Empty" } }
+              http: { method: DELETE, path: "/v1/{name=shelves/*/books/*}" }
+          options: { google.api.default_host: library.example.com }
+      components:
+        messages:
+          example.library.v1.Book:
+            title: Book
+            file: library.proto
+            description: A book.
+            type: object
+            properties:
+              name:        { description: Resource name of the book., number: 1, type: string, protoType: string, options: { google.api.field_behavior: [IDENTIFIER] } }
+              title:       { description: Title of the book., number: 2, type: string, protoType: string, required: true }
+              authors:     { number: 3, type: array, items: { type: string, protoType: string } }
+              format:      { number: 4, $ref: "#/components/enums/example.library.v1.Book.Format" }
+              create_time: { description: Creation time., number: 5, $ref: "#/components/messages/google.protobuf.Timestamp", readOnly: true }
+              labels:      { number: 6, type: object, additionalProperties: { type: string, protoType: string }, propertyNames: { type: string, protoType: string } }
+              page_count:  { number: 7, type: integer, protoType: int32, presence: explicit }
+            reserved: { numbers: [[8, 8]], names: [isbn] }
+            options:
+              google.api.resource: { type: library.example.com/Book, pattern: ["shelves/{shelf}/books/{book}"] }
+          example.library.v1.GetBookRequest:
+            title: GetBookRequest
+            file: library.proto
+            type: object
+            properties:
+              name: { description: Name of the book., number: 1, type: string, protoType: string, required: true, options: { google.api.resource_reference: { type: library.example.com/Book } } }
+          example.library.v1.ListBooksRequest:
+            title: ListBooksRequest
+            file: library.proto
+            type: object
+            properties:
+              parent:     { number: 1, type: string, protoType: string, required: true, options: { google.api.resource_reference: { child_type: library.example.com/Book } } }
+              page_size:  { number: 2, type: integer, protoType: int32, options: { google.api.field_behavior: [OPTIONAL] } }
+              page_token: { number: 3, type: string, protoType: string, options: { google.api.field_behavior: [OPTIONAL] } }
+          example.library.v1.ListBooksResponse:
+            title: ListBooksResponse
+            file: library.proto
+            type: object
+            properties:
+              books:           { number: 1, type: array, items: { $ref: "#/components/messages/example.library.v1.Book" } }
+              next_page_token: { number: 2, type: string, protoType: string }
+          example.library.v1.UpdateBookRequest:
+            title: UpdateBookRequest
+            file: library.proto
+            type: object
+            properties:
+              book:        { number: 1, $ref: "#/components/messages/example.library.v1.Book", required: true }
+              update_mask: { number: 2, $ref: "#/components/messages/google.protobuf.FieldMask" }
+          example.library.v1.DeleteBookRequest:
+            title: DeleteBookRequest
+            file: library.proto
+            type: object
+            properties:
+              name: { number: 1, type: string, protoType: string, required: true, options: { google.api.resource_reference: { type: library.example.com/Book } } }
+          google.protobuf.Empty:
+            { title: Empty, file: google/protobuf/empty.proto, description: …, type: object, properties: {} }
+          google.protobuf.FieldMask:
+            { title: FieldMask, file: google/protobuf/field_mask.proto, description: …, type: object, properties: { paths: { description: …, number: 1, type: array, items: { type: string, protoType: string } } } }
+          google.protobuf.Timestamp:
+            { title: Timestamp, file: google/protobuf/timestamp.proto, description: …, type: object, properties: { seconds: { description: …, number: 1, type: integer, protoType: int64 }, nanos: { description: …, number: 2, type: integer, protoType: int32 } } }
+        enums:
+          example.library.v1.Book.Format:
+            title: Format
+            file: library.proto
+            description: Format of a book.
+            type: string
+            values:
+              FORMAT_UNSPECIFIED: { number: 0 }
+              HARDCOVER: { number: 1 }
+              EBOOK: { number: 2 }

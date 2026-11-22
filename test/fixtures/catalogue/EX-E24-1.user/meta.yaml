@@ -1,0 +1,12 @@
+# EX-E24-1.user (design Appendix A, U3). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: a file imported with import option is a user file and is emitted in full in the default imports "user"
+options: { entry: [shop.proto] }
+expect:
+  - pointer: "#/files"
+    value:
+      acme/opts.proto: { syntax: proto3, package: acme.opts, imports: [google/protobuf/descriptor.proto] }
+      shop.proto: { syntax: "2024", package: shop.v2, imports: [acme/opts.proto], importFlags: { acme/opts.proto: option } }
+  - pointer: "#/components/messages"
+    keyOrder: [acme.opts.Table, shop.v2.Pet, shop.v2.Pet.Secret, shop.v2.Plain]
+  - pointer: "#/components/extensions"
+    keyOrder: [acme.opts.owner, acme.opts.sensitivity, acme.opts.table, acme.opts.internal_note]

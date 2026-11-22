@@ -1,0 +1,48 @@
+# EX-SVC-3 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: service options, long-running operations and empty method bodies
+options: { entry: [shop.proto] }
+expect:
+  - pointer: "#/services/shop.v1.ShelfService"
+    value:
+      title: ShelfService
+      file: shop.proto
+      deprecation: {}
+      options:
+        google.api.default_host: shelves.example.com
+        google.api.oauth_scopes: https://www.googleapis.com/auth/cloud-platform
+      methods:
+        ArchiveShelf:
+          request:  { schema: { $ref: "#/components/messages/shop.v1.ArchiveShelfRequest" } }
+          response: { schema: { $ref: "#/components/messages/google.longrunning.Operation" } }
+          options:  { google.longrunning.operation_info: { response_type: Shelf, metadata_type: ArchiveMetadata } }
+        Noop:
+          request:  { schema: { $ref: "#/components/messages/shop.v1.NoopRequest" } }
+          response: { schema: { $ref: "#/components/messages/shop.v1.NoopResponse" } }
+  - pointer: "#/components/messages/google.longrunning.Operation"
+    value:
+      title: Operation
+      file: google/longrunning/operations.proto
+      description: …
+      type: object
+      properties:
+        name:     { number: 1, description: …, type: string, protoType: string }
+        metadata: { number: 2, description: …, $ref: "#/components/messages/google.protobuf.Any" }
+        done:     { number: 3, description: …, type: boolean, protoType: bool }
+        error:    { number: 4, description: …, $ref: "#/components/messages/google.rpc.Status", oneof: result }
+        response: { number: 5, description: …, $ref: "#/components/messages/google.protobuf.Any", oneof: result }
+      oneofs: { result: { description: … } }
+  - pointer: "#/components/messages/google.rpc.Status"
+    value:
+      title: Status
+      file: google/rpc/status.proto
+      description: …
+      type: object
+      properties:
+        code:    { number: 1, description: …, type: integer, protoType: int32 }
+        message: { number: 2, description: …, type: string, protoType: string }
+        details: { number: 3, description: …, type: array, items: { $ref: "#/components/messages/google.protobuf.Any" } }
+  - pointer: "#/components/messages/google.protobuf.Any"
+    value: { … }
+absent:
+  - "#/components/messages/shop.v1.Shelf"
+  - "#/components/messages/shop.v1.ArchiveMetadata"

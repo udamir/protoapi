@@ -1,0 +1,33 @@
+syntax = "proto3";
+package shop.v1;
+message Search {
+  // Search phrase.
+  // @MinLength 1
+  // @MaxLength 200
+  // @Example "golden retriever"
+  string query = 1;
+  // @MaxItems 5
+  // @Pattern ^[a-z]+$
+  repeated string tags = 2;
+  // @Minimum 0
+  map<string, int32> weights = 3;
+  // @Default 20
+  // @Maximum 100
+  // @MultipleOf 10
+  int32 page_size = 4;
+  // @Format date-time
+  string since = 5;
+  // @Enum asc, desc
+  string order = 6;
+  // @ReadOnly
+  // @since 2.1
+  string cursor = 7;
+  // @WriteOnly
+  string token = 8;
+  // @Required
+  // @Title Shop id
+  // @ExclusiveMinimum 0
+  int64 shop_id = 9;
+  // @Format email
+  int32 count = 10;
+}

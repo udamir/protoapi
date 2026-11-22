@@ -1,0 +1,3 @@
+edition = "2024";
+package shop.v2;
+local message Secret {}

@@ -1,0 +1,10 @@
+import "google/type/money.proto";
+import "google/type/date.proto";
+import "google/rpc/status.proto";
+import "google/protobuf/wrappers.proto";
+message Invoice {
+  google.type.Money           total      = 1;
+  google.type.Date            due        = 2;
+  google.rpc.Status           last_error = 3;
+  google.protobuf.StringValue memo       = 4;
+}

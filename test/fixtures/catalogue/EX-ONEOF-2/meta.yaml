@@ -1,0 +1,16 @@
+# EX-ONEOF-2 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+# phase C (validation decision F-3): resolved packed / utf8Validation / jsonFormat keywords against the modern baseline
+title: proto2 oneof members carry no presence
+options: { entry: [shop.proto] }
+expect:
+  - pointer: "#/components/messages/shop.v1.Payment"
+    value:
+      type: object
+      properties:
+        card_token: { number: 1, type: string, protoType: string, oneof: method, utf8Validation: false }
+        bank:       { number: 2, $ref: "#/components/messages/shop.v1.BankAccount", oneof: method }
+        status:     { number: 3, $ref: "#/components/enums/shop.v1.Status", oneof: method }
+        note:       { number: 4, type: string, protoType: string, presence: explicit, utf8Validation: false }
+      oneofs:
+        method: { description: How the payment is made., options: { acme.opts.group: billing } }
+      jsonFormat: LEGACY_BEST_EFFORT

@@ -1,0 +1,13 @@
+# EX-FILE-6.public (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: compilable part of EX-FILE-6 (public import chain, closure without Unused)
+options: { entry: [c.proto], imports: referenced }   # EX-FILE-6.public.user shows the default mode
+expect:
+  - pointer: "#/files"
+    value:
+      a.proto: { syntax: proto3, package: shop.v1 }
+      c.proto: { syntax: proto3, package: shop.v1, imports: [b.proto] }
+  - pointer: "#/components/messages"
+    value:
+      shop.v1.Pet:      { title: Pet, file: a.proto, type: object, properties: { owner: { number: 1, $ref: "#/components/messages/shop.v1.Owner" } } }
+      shop.v1.Owner:    { title: Owner, file: a.proto, type: object, properties: { name: { number: 1, type: string, protoType: string } } }
+      shop.v1.Adoption: { title: Adoption, file: c.proto, type: object, properties: { pet: { number: 1, $ref: "#/components/messages/shop.v1.Pet" } } }

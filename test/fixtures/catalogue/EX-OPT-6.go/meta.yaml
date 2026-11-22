@@ -1,0 +1,9 @@
+# EX-OPT-6.go (validation C-13, decision 17): go_features.proto is bundled from protobuf-go.
+title: Go feature extensions are typed in text as in descriptors
+expect:
+  - pointer: "#/files/shop.proto/options"
+    value: { features: { pb.go: { api_level: API_OPAQUE } } }
+  - pointer: "#/components/messages/shop.v1.Pet/options"
+    value: { features: { pb.go: { api_level: API_HYBRID } } }
+  - pointer: "#/components/enums/shop.v1.Kind/options"
+    value: { features: { pb.go: { legacy_unmarshal_json_enum: true } } }

@@ -1,0 +1,7 @@
+# EX-DIAG-4.duplicate-field (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: duplicate field name; the first field is kept
+textOnly: true   # protoc rejects the duplicate field name
+expect:
+  - pointer: "#/components/messages/shop.v1.M"
+    value: { type: object, properties: { name: { number: 1, type: string, protoType: string } } }
+issues: [ "duplicate-name @ #/components/messages/shop.v1.M/properties/name at shop.proto:2:29" ]

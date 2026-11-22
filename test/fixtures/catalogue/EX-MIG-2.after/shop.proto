@@ -1,0 +1,16 @@
+edition = "2023";
+package shop.legacy;
+option features.enum_type = CLOSED;
+option features.repeated_field_encoding = EXPANDED;
+option features.utf8_validation = NONE;
+option features.json_format = LEGACY_BEST_EFFORT;
+enum Color { RED = 1; GREEN = 2; }
+message Order {
+  int64 id = 1 [features.field_presence = LEGACY_REQUIRED];
+  string note = 2 [default = "none"];
+  repeated int32 codes = 3;
+  repeated int32 packed_codes = 4 [features.repeated_field_encoding = PACKED];
+  Color color = 5 [default = GREEN];
+  message Meta { int32 total = 1; }
+  Meta meta = 6 [features.message_encoding = DELIMITED];
+}

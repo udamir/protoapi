@@ -1,0 +1,12 @@
+syntax = "proto3";
+package shop.v1;
+import "google/protobuf/timestamp.proto";
+message Lists {
+  repeated Status                    statuses = 1;
+  repeated bytes                     chunks   = 2;
+  repeated Pet.Tag                   tags     = 3;
+  repeated google.protobuf.Timestamp seen     = 4;
+  repeated double                    weights  = 5 [packed = false];
+}
+enum Status { STATUS_UNSPECIFIED = 0; }
+message Pet { message Tag {} }

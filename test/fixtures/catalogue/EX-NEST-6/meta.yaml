@@ -1,0 +1,24 @@
+# EX-NEST-6 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: deep nesting, forward references and references into nested scopes
+expect:
+  - pointer: "#/components/messages"
+    value:
+      shop.v1.Catalog:         { title: Catalog, type: object, properties: { sections: { number: 1, type: array, items: { $ref: "#/components/messages/shop.v1.Catalog.Section" } } } }
+      shop.v1.Catalog.Section: { title: Section, type: object, properties: { entries: { number: 1, type: array, items: { $ref: "#/components/messages/shop.v1.Catalog.Section.Entry" } } } }
+      shop.v1.Catalog.Section.Entry:
+        title: Entry
+        type: object
+        properties:
+          kind:   { number: 1, $ref: "#/components/enums/shop.v1.Catalog.Section.Kind" }
+          parent: { number: 2, $ref: "#/components/messages/shop.v1.Catalog.Section" }
+          root:   { number: 3, $ref: "#/components/messages/shop.v1.Catalog" }
+      shop.v1.Shelf:
+        title: Shelf
+        type: object
+        properties:
+          featured: { number: 1, $ref: "#/components/messages/shop.v1.Catalog.Section.Entry" }
+          kind:     { number: 2, $ref: "#/components/enums/shop.v1.Catalog.Section.Kind" }
+    keyOrder: [shop.v1.Catalog, shop.v1.Catalog.Section, shop.v1.Catalog.Section.Entry, shop.v1.Shelf]
+  - pointer: "#/components/enums"
+    value:
+      shop.v1.Catalog.Section.Kind: { title: Kind, type: string, values: { KIND_UNSPECIFIED: { number: 0 }, BOOK: { number: 1 } } }

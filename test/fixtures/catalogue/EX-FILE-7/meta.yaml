@@ -1,0 +1,12 @@
+# EX-FILE-7 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: building without file boundaries (files false)
+options: { files: false }
+expect:
+  - pointer: "#/components/messages"
+    value:
+      shop.v1.Pet:   { title: Pet, type: object, properties: {} }
+      shop.v1.Owner: { title: Owner, type: object, properties: { pet: { number: 1, $ref: "#/components/messages/shop.v1.Pet" } } }
+absent:
+  - "#/files"
+  - "#/components/messages/shop.v1.Pet/file"
+  - "#/components/messages/shop.v1.Owner/file"

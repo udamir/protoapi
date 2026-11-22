@@ -1,0 +1,10 @@
+// A block comment and a `//` comment after a declaration's `;` on the same line (IN-10, Q0-P phase C): buf 1.75 makes the block comment the trailing comment of that declaration and the `//` comment the leading comment of the next one (protoc drops both).
+
+syntax = "proto3";
+
+package named.comments.blockthenline;
+
+message Pet {
+  int32 age = 6; /* Age in years. */ // Number of legs.
+  int32 legs = 7;
+}

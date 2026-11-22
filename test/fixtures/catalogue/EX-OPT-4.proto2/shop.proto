@@ -1,0 +1,6 @@
+syntax = "proto2";
+package shop.legacy;
+message Bag {
+  option message_set_wire_format = true;
+  extensions 4 to max;
+}

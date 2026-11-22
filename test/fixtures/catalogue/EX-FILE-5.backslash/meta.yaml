@@ -1,0 +1,12 @@
+# EX-FILE-5.backslash (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: source key shop\v1\pet.proto is normalised
+sources: { shop/v1/pet.proto: 'shop\v1\pet.proto' }
+expect:
+  - pointer: "#/files"
+    value:
+      shop/v1/pet.proto: { syntax: proto3, package: shop.v1 }
+      shop.proto: { syntax: proto3, package: shop.v1, imports: [shop/v1/pet.proto] }
+  - pointer: "#/components/messages/shop.v1.Pet"
+    value: { title: Pet, file: shop/v1/pet.proto, type: object, properties: {} }
+  - pointer: "#/components/messages/shop.v1.Owner/properties/pet"
+    value: { number: 1, $ref: "#/components/messages/shop.v1.Pet" }

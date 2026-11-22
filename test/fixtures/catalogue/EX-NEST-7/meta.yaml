@@ -1,0 +1,14 @@
+# EX-NEST-7 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: a local type shadowing a well-known type name
+expect:
+  - pointer: "#/components/messages/shop.v1.Event"
+    value:
+      type: object
+      properties:
+        local:  { number: 1, $ref: "#/components/messages/shop.v1.Timestamp" }
+        global: { number: 2, $ref: "#/components/messages/google.protobuf.Timestamp" }
+        same:   { number: 3, $ref: "#/components/messages/shop.v1.Timestamp" }
+  - pointer: "#/components/messages/shop.v1.Timestamp"
+    value: { type: object, properties: { iso: { number: 1, type: string, protoType: string } } }
+  - pointer: "#/components/messages/google.protobuf.Timestamp"
+    value: { … }

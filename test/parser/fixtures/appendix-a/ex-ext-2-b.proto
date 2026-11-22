@@ -1,0 +1,5 @@
+// shop.proto, imports acme/opts.proto
+message Customer {
+  option (acme.opts.table) = { name: "customers" indexes: ["email"] };
+  string email = 1 [(acme.opts.sensitivity) = "pii"];
+}

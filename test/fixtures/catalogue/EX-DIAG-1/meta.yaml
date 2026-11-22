@@ -1,0 +1,17 @@
+# EX-DIAG-1 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: duplicate number and reserved conflicts
+textOnly: true   # protoc rejects duplicate and reserved numbers / names
+expect:
+  - pointer: "#/components/messages/shop.v1.Bad"
+    value:
+      type: object
+      properties:
+        a:   { number: 1, type: integer, protoType: int32 }
+        b:   { number: 1, type: integer, protoType: int32 }
+        c:   { number: 3, type: integer, protoType: int32 }
+        old: { number: 4, type: integer, protoType: int32 }
+      reserved: { numbers: [[3, 3]], names: [old] }
+issues:
+  - "duplicate-number @ #/components/messages/shop.v1.Bad/properties/b"
+  - "reserved-conflict @ #/components/messages/shop.v1.Bad/properties/c"
+  - "reserved-conflict @ #/components/messages/shop.v1.Bad/properties/old"

@@ -1,0 +1,6 @@
+# EX-ENUM-2.proto2 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+# phase C (validation decision F-3): resolved packed / utf8Validation / jsonFormat keywords against the modern baseline
+title: proto2 enums are closed
+expect:
+  - pointer: "#/components/enums/shop.legacy.Color"
+    value: { type: string, closed: true, jsonFormat: LEGACY_BEST_EFFORT, values: { RED: { number: 1 }, GREEN: { number: 2 } } }

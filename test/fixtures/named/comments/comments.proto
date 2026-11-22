@@ -1,0 +1,84 @@
+// Named fixture comments.proto (design §13): every comment attachment case of protoc's SourceCodeInfo, plus tags
+// and AIP prefixes in leading, trailing and block comments.
+//
+// This header is detached from the syntax statement.
+
+// A second detached paragraph.
+
+syntax = "proto3"; // trailing comment of the syntax statement
+
+// Package comment.
+package named.comments.v1;
+
+import "google/protobuf/timestamp.proto"; // trailing comment of an import
+
+// Leading comment of Pet.
+// Second line, with  two  spaces and a tab	inside.
+message Pet {
+  // Leading comment of id.
+  int64 id = 1; // Trailing comment of id.
+
+  // Detached comment between id and name.
+
+  /* Block comment attached
+   * to name. Leading asterisks are removed. */
+  string name = 2;
+
+  /** Doc-block comment
+   *  of nickname. */
+  string nickname = 3;
+
+  string color = 4;
+  // Trailing comment of color on the next line (a blank line follows).
+
+  // Required. The owner of the pet.
+  // @MinLength 1
+  string owner = 5;
+
+  int32 age = 6; // Output only. Trailing prefix and tag
+  // @Maximum 30
+
+  /* @Minimum 1 */
+  int32 legs = 7;
+
+  google.protobuf.Timestamp born = 8; /* trailing block */
+
+  // Leading comment of the oneof.
+  oneof contact {
+    // Leading comment of email.
+    string email = 9;
+    string phone = 10; // Trailing comment of phone.
+  }
+
+  // Leading comment of the nested enum.
+  enum Size {
+    // The zero value.
+    SIZE_UNSPECIFIED = 0;
+    SIZE_SMALL = 1; // Trailing comment of a value.
+    // Deprecated: use SIZE_SMALL.
+    SIZE_TINY = 2;
+  }
+
+  //
+  //   Indented    comment body.
+  //
+  Size size = 11;
+
+  //nospace comment
+  string tight = 12;
+} // Trailing comment of Pet.
+
+// Leading comment of the service.
+service PetService {
+  // Leading comment of the method.
+  rpc GetPet(Pet) returns (Pet); // Trailing comment of the method.
+
+  rpc Watch(Pet) returns (stream Pet) {
+    // Comment inside the method body.
+    option deprecated = true;
+  }
+}
+
+/*
+ * A detached block comment at the end of the file.
+ */

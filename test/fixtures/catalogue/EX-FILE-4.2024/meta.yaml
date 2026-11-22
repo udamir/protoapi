@@ -1,0 +1,5 @@
+# EX-FILE-4.2024 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: edition 2024 gives syntax "2024"
+expect:
+  - pointer: "#/files/shop.proto/syntax"
+    value: "2024"

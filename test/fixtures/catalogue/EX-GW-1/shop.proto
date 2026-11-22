@@ -1,0 +1,15 @@
+syntax = "proto3";
+package shop.v1;
+import "protoc-gen-openapiv2/options/annotations.proto";
+message Item {
+  string sku = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "SKU"
+    description: "ignored, comments win"
+    example: "\"AB-123\""
+    pattern: "^[A-Z]{2}-[0-9]+$"
+    min_length: 4
+    default: "\"XX-0\""
+    read_only: true
+  }];
+  int32 qty = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = { minimum: 1, exclusive_minimum: true }];
+}

@@ -1,0 +1,5 @@
+# EX-ENUM-3.proto3 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: proto3 quoted reserved names give the same list
+expect:
+  - pointer: "#/components/enums/shop.v1.Code/reserved"
+    value: { names: [LEGACY, OLD] }
