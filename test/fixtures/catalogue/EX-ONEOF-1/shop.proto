@@ -1,0 +1,15 @@
+syntax = "proto3";
+package shop.v1;
+import "acme/opts.proto";
+message Payment {
+  // How the payment is made.
+  oneof method {
+    option (acme.opts.group) = "billing";
+    string      card_token = 1;
+    BankAccount bank       = 2;
+    Status      status     = 3;
+  }
+  optional string note = 4;
+}
+message BankAccount {}
+enum Status { STATUS_UNSPECIFIED = 0; }

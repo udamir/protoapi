@@ -1,0 +1,13 @@
+syntax = "proto3";
+package shop.v1;
+import "acme/opts.proto";
+enum Level {
+  option allow_alias = true;
+  LEVEL_UNSPECIFIED = 0;
+  LOW = 1;
+  MINOR = 1 [deprecated = true];  // alias of LOW
+  HIGH = 2 [(acme.opts.label) = "High"];
+  BELOW = -1;
+  reserved 5, 10 to 12, 100 to max;
+  reserved "OLD";
+}

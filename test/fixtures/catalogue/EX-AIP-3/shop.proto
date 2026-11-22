@@ -1,0 +1,29 @@
+syntax = "proto3";
+package shop.v1;
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+
+option (google.api.resource_definition) = {
+  type: "library.example.com/Shelf"
+  pattern: "shelves/{shelf}"
+};
+
+message Book {
+  option (google.api.resource) = {
+    type: "library.example.com/Book"
+    pattern: "shelves/{shelf}/books/{book}"
+    plural: "books"
+    singular: "book"
+  };
+  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+}
+message GetBookRequest {
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = { type: "library.example.com/Book" }
+  ];
+}
+message ListBooksRequest {
+  string parent = 1 [(google.api.resource_reference).child_type = "library.example.com/Book"];
+  int32 page_size = 2 [(google.api.field_behavior) = OPTIONAL];
+}

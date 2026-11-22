@@ -1,0 +1,10 @@
+message Presence {
+  string          plain   = 1;
+  optional string opt     = 2;
+  Status          status  = 3;
+  optional Status st      = 4;
+  Pet             pet     = 5;
+  optional Pet    opt_pet = 6;
+  repeated string tags    = 7;
+  repeated Pet    pets    = 8;
+}

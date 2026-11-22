@@ -1,0 +1,8 @@
+import "google/protobuf/timestamp.proto";
+message Inventory {
+  // Stock per SKU.
+  map<string, int32> stock = 1 [json_name = "stockBySku", deprecated = true];
+  map<sfixed64, google.protobuf.Timestamp> seen = 2;
+  map<int32, Pet.Size> sizes = 3;
+  map<fixed32, Inventory> children = 4;
+}

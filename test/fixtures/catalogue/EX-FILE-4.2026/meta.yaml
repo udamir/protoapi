@@ -1,0 +1,25 @@
+# EX-FILE-4.2026 (validation decision D-C): edition 2026, with the 2026 features of protobuf v36.2.
+title: edition 2026 gives syntax "2026"; its features are typed and its defaults resolve
+expect:
+  - pointer: "#/files/shop.proto"
+    value:
+      syntax: "2026"
+      package: shop.v1
+      options: { features: { enforce_naming_style: STYLE_LEGACY } }
+  - pointer: "#/components/messages/shop.v1.Pet"
+    value:
+      title: Pet
+      description: A pet.
+      type: object
+      properties:
+        name: { number: 1, type: string, protoType: string, presence: explicit }
+        legacy_count: { number: 2, type: integer, protoType: int32 }
+        ids: { number: 3, type: array, items: { type: integer, protoType: int32 } }
+        kind: { number: 4, $ref: "#/components/enums/shop.v1.Kind", presence: explicit }
+      options: { visibility: export }
+  - pointer: "#/components/messages/shop.v1.Pet.Limits/options"
+    value: { features: { enforce_proto_limits: LEGACY_NO_EXPLICIT_LIMITS } }
+  - pointer: "#/components/enums/shop.v1.Kind"
+    value: { type: string, values: { KIND_UNSPECIFIED: { number: 0 }, KIND_DOG: { number: 1 } }, options: { visibility: export } }
+absent:
+  - "#/components/enums/shop.v1.Kind/closed"

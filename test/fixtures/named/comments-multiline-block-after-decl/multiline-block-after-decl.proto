@@ -1,0 +1,12 @@
+// A multi-line block comment that starts after a declaration's `;` (IN-10, Q0-P phase C): buf 1.75 makes it the leading comment of the next declaration (protoc: trailing comment of the previous one).
+
+syntax = "proto3";
+
+package named.comments.multilineblockafterdecl;
+
+message Pet {
+  int32 age = 6; /* Number of legs,
+                  * counted at birth.
+                  */
+  int32 legs = 7;
+}

@@ -1,0 +1,8 @@
+syntax = "proto3";
+package shop.v1;
+import "buf/validate/validate.proto";
+message Signup {
+  // Required. The e-mail.
+  // @MaxLength 254
+  string email = 1 [(buf.validate.field).string.email = true];
+}

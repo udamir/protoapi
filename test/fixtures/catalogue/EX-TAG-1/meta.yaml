@@ -1,0 +1,18 @@
+# EX-TAG-1 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: every value tag, its position rules, and an unknown tag
+expect:
+  - pointer: "#/components/messages/shop.v1.Search"
+    value:
+      type: object
+      properties:
+        query:     { number: 1, type: string, protoType: string, description: Search phrase., minLength: 1, maxLength: 200, examples: [golden retriever] }
+        tags:      { number: 2, type: array, items: { type: string, protoType: string, pattern: "^[a-z]+$" }, maxItems: 5 }
+        weights:   { number: 3, type: object, propertyNames: { type: string, protoType: string }, additionalProperties: { type: integer, protoType: int32, minimum: 0 } }
+        page_size: { number: 4, type: integer, protoType: int32, maximum: 100, multipleOf: 10, x-default: 20 }
+        since:     { number: 5, type: string, protoType: string, format: date-time }
+        order:     { number: 6, type: string, protoType: string, enum: [asc, desc] }
+        cursor:    { number: 7, type: string, protoType: string, description: "@since 2.1", readOnly: true }
+        token:     { number: 8, type: string, protoType: string, writeOnly: true }
+        shop_id:   { number: 9, title: Shop id, type: integer, protoType: int64, required: true, exclusiveMinimum: "0" }
+        count:     { number: 10, type: integer, protoType: int32 }
+issues: [ "invalid-tag @ #/components/messages/shop.v1.Search/properties/count" ]

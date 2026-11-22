@@ -1,0 +1,6 @@
+syntax = "proto3";
+package shop.v1;
+enum Code {
+  CODE_UNSPECIFIED = 0;
+  reserved "OLD", "LEGACY";
+}

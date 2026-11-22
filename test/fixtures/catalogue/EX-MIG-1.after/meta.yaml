@@ -1,0 +1,18 @@
+# EX-MIG-1.after (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: proto3 to edition 2023, after
+expect:
+  - pointer: "#/components/messages"
+    value:
+      shop.v1.Pet:
+        type: object
+        properties:
+          name: { number: 1, type: string, protoType: string }
+          age:  { number: 2, type: integer, protoType: int32, presence: explicit }
+          ids:  { number: 3, type: array, items: { type: integer, protoType: int32 } }
+          kind: { number: 4, $ref: "#/components/enums/shop.v1.Kind" }
+  - pointer: "#/components/enums"
+    value:
+      shop.v1.Kind: { type: string, values: { KIND_UNSPECIFIED: { number: 0 }, DOG: { number: 1 } } }
+  - pointer: "#/files"
+    value:
+      shop.proto: { syntax: "2023", package: shop.v1, options: { features: { field_presence: IMPLICIT } } }

@@ -1,0 +1,12 @@
+# EX-OPT-1.proto2 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+# phase C (validation decision F-3): resolved packed / utf8Validation / jsonFormat keywords against the modern baseline
+title: "proto2 keeps packed = true and drops packed = false (resolved: EXPANDED is packed: false)"
+expect:
+  - pointer: "#/components/messages/shop.legacy.Opts"
+    value:
+      type: object
+      properties:
+        a: { number: 1, type: array, items: { type: integer, protoType: int32 }, packed: false }
+        b: { number: 2, type: array, items: { type: integer, protoType: int32 } }
+        c: { number: 3, type: array, items: { type: integer, protoType: int32 }, packed: false }
+      jsonFormat: LEGACY_BEST_EFFORT

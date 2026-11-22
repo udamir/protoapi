@@ -1,0 +1,14 @@
+# EX-CARD-2 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+# phase C (validation decision F-3): resolved packed / utf8Validation / jsonFormat keywords against the modern baseline
+title: proto2 labels
+expect:
+  - pointer: "#/components/messages/shop.legacy.Order"
+    value:
+      type: object
+      properties:
+        id:    { number: 1, type: integer, protoType: int64, presence: required }
+        note:  { number: 2, type: string, protoType: string, presence: explicit, utf8Validation: false }
+        tags:  { number: 3, type: array, items: { type: string, protoType: string, utf8Validation: false } }
+        item:  { number: 4, $ref: "#/components/messages/shop.legacy.Item", presence: required }
+        extra: { number: 5, $ref: "#/components/messages/shop.legacy.Item" }
+      jsonFormat: LEGACY_BEST_EFFORT

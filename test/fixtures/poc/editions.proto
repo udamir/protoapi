@@ -1,0 +1,11 @@
+edition = "2023";
+
+package shop.edt;
+
+// Editions message.
+message Thing {
+  // Legacy required field.
+  string name = 1 [features.field_presence = LEGACY_REQUIRED];
+  int32 count = 2 [features.field_presence = IMPLICIT];
+  repeated int32 ids = 3 [features.repeated_field_encoding = EXPANDED];
+}

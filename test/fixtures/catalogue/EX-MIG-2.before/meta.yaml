@@ -1,0 +1,27 @@
+# EX-MIG-2.before (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+# phase C (decision F-3): the same document as EX-MIG-2.after except `files` (syntax, file-level features); packed,
+# utf8Validation and jsonFormat are resolved keywords, so the migration diffs clean on them
+title: proto2 to edition 2023, before
+expect:
+  - pointer: "#/components/messages"
+    value:
+      shop.legacy.Order:
+        type: object
+        properties:
+          id:           { number: 1, type: integer, protoType: int64, presence: required }
+          note:         { number: 2, type: string, protoType: string, presence: explicit, default: none, utf8Validation: false }
+          codes:        { number: 3, type: array, items: { type: integer, protoType: int32 }, packed: false }
+          packed_codes: { number: 4, type: array, items: { type: integer, protoType: int32 } }
+          color:        { number: 5, $ref: "#/components/enums/shop.legacy.Color", presence: explicit, default: GREEN }
+          meta:         { number: 6, $ref: "#/components/messages/shop.legacy.Order.Meta", delimited: true }
+        jsonFormat: LEGACY_BEST_EFFORT
+      shop.legacy.Order.Meta:
+        type: object
+        properties: { total: { number: 1, type: integer, protoType: int32, presence: explicit } }
+        jsonFormat: LEGACY_BEST_EFFORT
+  - pointer: "#/components/enums"
+    value:
+      shop.legacy.Color: { type: string, closed: true, jsonFormat: LEGACY_BEST_EFFORT, values: { RED: { number: 1 }, GREEN: { number: 2 } } }
+  - pointer: "#/files"
+    value:
+      shop.proto: { syntax: proto2, package: shop.legacy }

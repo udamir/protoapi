@@ -1,0 +1,17 @@
+# EX-PV-1 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: protovalidate scalar, string, bytes and bool rules
+expect:
+  - pointer: "#/components/messages/shop.v1.Signup"
+    value:
+      type: object
+      properties:
+        age:   { number: 1, type: integer, protoType: int32, exclusiveMinimum: 0, maximum: 150 }
+        ref:   { number: 2, type: integer, protoType: int64, minimum: "1" }
+        score: { number: 3, type: number, protoType: double, minimum: 0, exclusiveMaximum: 1 }
+        email: { number: 4, type: string, protoType: string, required: true, format: email }
+        name:  { number: 5, type: string, protoType: string, minLength: 1, maxLength: 64, pattern: "^[A-Za-z ]+$" }
+        code:  { number: 6, type: string, protoType: string, minLength: 6, maxLength: 6, pattern: "^SH" }
+        uri:   { number: 7, type: string, protoType: string, format: uri-reference }
+        kind:  { number: 8, type: string, protoType: string, enum: [cat, dog] }
+        token: { number: 9, type: string, protoType: bytes, minLength: 16, maxLength: 16 }
+        tos:   { number: 10, type: boolean, protoType: bool, const: true }

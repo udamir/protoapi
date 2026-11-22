@@ -1,0 +1,4 @@
+syntax = "proto3";
+package other.v1;
+message LookupRequest { string key = 1; }
+message LookupResponse { string value = 1; }

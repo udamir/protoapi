@@ -1,0 +1,7 @@
+# EX-TAG-2 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: element-level tags
+expect:
+  - pointer: "#/components/messages/shop.v1.Pet"
+    value: { title: Pet (legacy), deprecation: { reason: replaced by PetV2 }, type: object, properties: {} }
+  - pointer: "#/components/enums/shop.v1.Old"
+    value: { title: Old, deprecation: {}, type: string, values: { OLD_UNSPECIFIED: { number: 0 } } }

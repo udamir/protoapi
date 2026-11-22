@@ -1,0 +1,10 @@
+# EX-DIAG-4.local-visibility.user (design Appendix A, U3). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: a local message of an imported user file is emitted with its file in the default imports "user"
+textOnly: true   # protoc rejects the reference to a local symbol
+options: { entry: [b.proto] }
+expect:
+  - pointer: "#/components/messages/shop.v2.User/properties/s"
+    value: { number: 1, $ref: "#/components/messages/shop.v2.Secret" }
+  - pointer: "#/components/messages/shop.v2.Secret"
+    value: { title: Secret, file: a.proto, type: object, properties: {}, options: { visibility: local } }
+issues: [ "unresolved-type @ #/components/messages/shop.v2.User/properties/s" ]

@@ -1,0 +1,3 @@
+syntax = "proto2";
+package shop.legacy;
+enum Color { RED = 1; GREEN = 2; }

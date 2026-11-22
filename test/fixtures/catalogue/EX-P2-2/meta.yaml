@@ -1,0 +1,23 @@
+# EX-P2-2 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+# phase C (validation decision F-3): resolved packed / utf8Validation / jsonFormat keywords against the modern baseline
+title: proto2 groups
+expect:
+  - pointer: "#/components/messages/shop.legacy.SearchResponse"
+    value:
+      type: object
+      properties:
+        result: { number: 1, type: array, items: { $ref: "#/components/messages/shop.legacy.SearchResponse.Result" }, delimited: true }
+        meta:   { number: 4, $ref: "#/components/messages/shop.legacy.SearchResponse.Meta", delimited: true }
+      jsonFormat: LEGACY_BEST_EFFORT
+  - pointer: "#/components/messages/shop.legacy.SearchResponse.Result"
+    value:
+      type: object
+      properties:
+        url:   { number: 2, type: string, protoType: string, presence: required, utf8Validation: false }
+        title: { number: 3, type: string, protoType: string, presence: explicit, utf8Validation: false }
+      jsonFormat: LEGACY_BEST_EFFORT
+  - pointer: "#/components/messages/shop.legacy.SearchResponse.Meta"
+    value:
+      type: object
+      properties: { total: { number: 1, type: integer, protoType: int32, presence: explicit } }
+      jsonFormat: LEGACY_BEST_EFFORT

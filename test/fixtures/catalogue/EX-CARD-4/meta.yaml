@@ -1,0 +1,13 @@
+# EX-CARD-4 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+# phase C (validation decision F-3): resolved packed / utf8Validation / jsonFormat keywords against the modern baseline
+title: repeated element kinds
+expect:
+  - pointer: "#/components/messages/shop.v1.Lists"
+    value:
+      type: object
+      properties:
+        statuses: { number: 1, type: array, items: { $ref: "#/components/enums/shop.v1.Status" } }
+        chunks:   { number: 2, type: array, items: { type: string, protoType: bytes } }
+        tags:     { number: 3, type: array, items: { $ref: "#/components/messages/shop.v1.Pet.Tag" } }
+        seen:     { number: 4, type: array, items: { $ref: "#/components/messages/google.protobuf.Timestamp" } }
+        weights:  { number: 5, type: array, items: { type: number, protoType: double }, packed: false }

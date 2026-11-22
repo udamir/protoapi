@@ -1,0 +1,8 @@
+edition = "2024";
+package shop.v1.pets;
+
+import "acme/opts.proto";
+
+message Cat {
+  string name = 1 [(acme.owner) = "team-cats"];
+}

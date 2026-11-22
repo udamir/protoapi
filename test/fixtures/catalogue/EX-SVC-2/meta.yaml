@@ -1,0 +1,25 @@
+# EX-SVC-2 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: HTTP bindings and method signatures
+expect:
+  - pointer: "#/services/shop.v1.ShelfService/methods"
+    value:
+      GetShelf:
+        http: { method: GET, path: "/v1/{name=shelves/*}", additionalBindings: [{ method: GET, path: "/v1/{name=projects/*/shelves/*}" }] }
+        request:  { schema: { $ref: "#/components/messages/shop.v1.GetShelfRequest" } }
+        response: { schema: { $ref: "#/components/messages/shop.v1.Shelf" } }
+      CreateShelf:
+        http: { method: POST, path: /v1/shelves, body: shelf }
+        request:  { schema: { $ref: "#/components/messages/shop.v1.CreateShelfRequest" } }
+        response: { schema: { $ref: "#/components/messages/shop.v1.Shelf" } }
+      Search:
+        http: { method: POST, path: "/v1/shelves:search", body: "*", responseBody: results }
+        request:  { schema: { $ref: "#/components/messages/shop.v1.SearchRequest" } }
+        response: { schema: { $ref: "#/components/messages/shop.v1.SearchResponse" } }
+      Probe:
+        http: { method: HEAD, path: /v1/probe }
+        request:  { schema: { $ref: "#/components/messages/shop.v1.ProbeRequest" } }
+        response: { schema: { $ref: "#/components/messages/shop.v1.ProbeResponse" } }
+      Rename:
+        options: { google.api.method_signature: ["name,new_name", name] }
+        request:  { schema: { $ref: "#/components/messages/shop.v1.RenameRequest" } }
+        response: { schema: { $ref: "#/components/messages/shop.v1.Shelf" } }

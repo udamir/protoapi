@@ -1,0 +1,18 @@
+syntax = "proto3";
+package shop.v1;
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+message Booking {
+  option (buf.validate.message).oneof = { fields: ["email", "phone"], required: true };
+  Pet pet = 1 [(buf.validate.field).required = true];
+  google.protobuf.Timestamp start  = 2 [(buf.validate.field).timestamp.gt_now = true];
+  google.protobuf.Duration  length = 3 [(buf.validate.field).duration = { gte: { seconds: 60 }, lte: { seconds: 86400 } }];
+  string ref    = 4 [(buf.validate.field).string.const = "fixed"];
+  string region = 5 [(buf.validate.field).string = { not_in: ["xx"], max_len: 2 }];
+  double ratio  = 6 [(buf.validate.field).double.finite = true];
+  uint64 big    = 7 [(buf.validate.field).uint64 = { gt: 0, lt: 18446744073709551615 }];
+  string email  = 8;
+  string phone  = 9;
+}
+message Pet {}

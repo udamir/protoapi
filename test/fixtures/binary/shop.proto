@@ -1,0 +1,23 @@
+// Binary-path fixture (validation C-2, C-3): custom options from googleapis, protovalidate and the set itself.
+syntax = "proto3";
+package shop.v1;
+
+import "acme/opts.proto";
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+
+service PetService {
+  rpc GetPet(GetPetRequest) returns (Pet) {
+    option (google.api.http) = { get: "/v1/{name=pets/*}" };
+  }
+}
+
+message GetPetRequest {
+  string name = 1 [(google.api.field_behavior) = REQUIRED, (buf.validate.field).string.min_len = 3];
+}
+
+message Pet {
+  string name = 1 [(acme.owner) = "team-pets"];
+  repeated string tags = 2 [(buf.validate.field).repeated.max_items = 10];
+}

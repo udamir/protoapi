@@ -1,0 +1,15 @@
+syntax = "proto3";
+package shop.v1;
+import "buf/validate/validate.proto";
+message Signup {
+  int32  age   = 1  [(buf.validate.field).int32 = { gt: 0, lte: 150 }];
+  int64  ref   = 2  [(buf.validate.field).int64.gte = 1];
+  double score = 3  [(buf.validate.field).double = { gte: 0, lt: 1 }];
+  string email = 4  [(buf.validate.field).string.email = true, (buf.validate.field).required = true];
+  string name  = 5  [(buf.validate.field).string = { min_len: 1, max_len: 64, pattern: "^[A-Za-z ]+$" }];
+  string code  = 6  [(buf.validate.field).string = { len: 6, prefix: "SH" }];
+  string uri   = 7  [(buf.validate.field).string.uri_ref = true];
+  string kind  = 8  [(buf.validate.field).string = { in: ["cat", "dog"] }];
+  bytes  token = 9  [(buf.validate.field).bytes = { min_len: 16, max_len: 16 }];
+  bool   tos   = 10 [(buf.validate.field).bool.const = true];
+}

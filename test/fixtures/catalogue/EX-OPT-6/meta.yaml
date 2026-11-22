@@ -1,0 +1,20 @@
+# EX-OPT-6 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: language feature extensions in editions
+# java_features.proto declares legacy_closed_enum with targets FIELD and FILE only; buf: "unsupported option target
+# for legacy_closed_enum" on the enum-level option, so there is no image for this set (see EX-OPT-6.cpp).
+textOnly: true
+# phase B (IN-5e, validation D-E): the text producer now reports the wrong feature target, as protoc / buf do; the
+# document is unchanged
+issues:
+  - "invalid-option @ #/components/enums/shop.edt.Legacy/options/features"
+expect:
+  - pointer: "#/components/messages/shop.edt.Doc"
+    value:
+      type: object
+      properties:
+        body: { number: 1, type: string, protoType: string, presence: explicit, options: { features: { pb.cpp: { string_type: CORD } } } }
+  - pointer: "#/components/enums/shop.edt.Legacy"
+    value:
+      type: string
+      values: { LEGACY_UNKNOWN: { number: 0 } }
+      options: { features: { pb.java: { legacy_closed_enum: true } } }

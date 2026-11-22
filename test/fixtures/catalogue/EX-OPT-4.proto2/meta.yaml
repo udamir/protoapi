@@ -1,0 +1,5 @@
+# EX-OPT-4.proto2 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: proto2 message_set_wire_format is kept under options
+expect:
+  - pointer: "#/components/messages/shop.legacy.Bag/options"
+    value: { message_set_wire_format: true }

@@ -1,0 +1,48 @@
+# EX-WKT-1 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: fields of well-known types and the emitted closure
+expect:
+  - pointer: "#/components/messages"
+    ignoreKeys: [description]   # "The bundled files' comments become descriptions and are omitted here"
+    value:
+      shop.v1.Event:
+        type: object
+        properties:
+          at:      { number: 1, $ref: "#/components/messages/google.protobuf.Timestamp" }
+          ttl:     { number: 2, $ref: "#/components/messages/google.protobuf.Duration" }
+          payload: { number: 3, $ref: "#/components/messages/google.protobuf.Any" }
+          attrs:   { number: 4, $ref: "#/components/messages/google.protobuf.Struct" }
+          count:   { number: 5, $ref: "#/components/messages/google.protobuf.Int64Value" }
+          mask:    { number: 6, $ref: "#/components/messages/google.protobuf.FieldMask" }
+      google.protobuf.Timestamp:  { type: object, properties: { seconds: { number: 1, type: integer, protoType: int64 }, nanos: { number: 2, type: integer, protoType: int32 } } }
+      google.protobuf.Duration:   { type: object, properties: { seconds: { number: 1, type: integer, protoType: int64 }, nanos: { number: 2, type: integer, protoType: int32 } } }
+      google.protobuf.Any:        { type: object, properties: { type_url: { number: 1, type: string, protoType: string }, value: { number: 2, type: string, protoType: bytes } } }
+      google.protobuf.Struct:     { type: object, properties: { fields: { number: 1, type: object, propertyNames: { type: string, protoType: string }, additionalProperties: { $ref: "#/components/messages/google.protobuf.Value" } } } }
+      google.protobuf.Value:
+        type: object
+        properties:
+          null_value:   { number: 1, $ref: "#/components/enums/google.protobuf.NullValue", oneof: kind }
+          number_value: { number: 2, type: number, protoType: double, oneof: kind }
+          string_value: { number: 3, type: string, protoType: string, oneof: kind }
+          bool_value:   { number: 4, type: boolean, protoType: bool, oneof: kind }
+          struct_value: { number: 5, $ref: "#/components/messages/google.protobuf.Struct", oneof: kind }
+          list_value:   { number: 6, $ref: "#/components/messages/google.protobuf.ListValue", oneof: kind }
+        oneofs: { kind: {} }
+      google.protobuf.ListValue:  { type: object, properties: { values: { number: 1, type: array, items: { $ref: "#/components/messages/google.protobuf.Value" } } } }
+      google.protobuf.Int64Value: { type: object, properties: { value: { number: 1, type: integer, protoType: int64 } } }
+      google.protobuf.FieldMask:  { type: object, properties: { paths: { number: 1, type: array, items: { type: string, protoType: string } } } }
+  - pointer: "#/components/enums"
+    ignoreKeys: [description]
+    value:
+      google.protobuf.NullValue:  { type: string, values: { NULL_VALUE: { number: 0 } } }
+  - pointer: "#/files/google~1protobuf~1timestamp.proto"
+    value: { syntax: proto3, package: google.protobuf, options: { java_package: com.google.protobuf, go_package: …, … }, … }
+  - pointer: "#/files/google~1protobuf~1duration.proto"
+    value: { syntax: proto3, package: google.protobuf, options: { … }, … }
+  - pointer: "#/files/google~1protobuf~1any.proto"
+    value: { syntax: proto3, package: google.protobuf, options: { … }, … }
+  - pointer: "#/files/google~1protobuf~1struct.proto"
+    value: { syntax: proto3, package: google.protobuf, options: { … }, … }
+  - pointer: "#/files/google~1protobuf~1wrappers.proto"
+    value: { syntax: proto3, package: google.protobuf, options: { … }, … }
+  - pointer: "#/files/google~1protobuf~1field_mask.proto"
+    value: { syntax: proto3, package: google.protobuf, options: { … }, … }

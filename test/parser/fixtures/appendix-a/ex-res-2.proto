@@ -1,0 +1,7 @@
+syntax = "proto2";
+package shop.legacy;
+message Order {
+  extensions 100 to 199;
+  extensions 200 to 299;
+  extensions 1000 to max;
+}

@@ -1,0 +1,63 @@
+// Detached file comment.
+
+syntax = "proto3";
+
+package shop.v1;
+
+import "google/protobuf/timestamp.proto";
+import "shop/ext.proto";
+
+// Pet status.
+enum Status {
+  STATUS_UNSPECIFIED = 0;
+  // Available for sale
+  AVAILABLE = 1;
+  SOLD = 2 [deprecated = true];
+}
+
+/**
+ * A pet in the shop.
+ * @since 1.2
+ */
+message Pet {
+  reserved 5, 7 to 9;
+  reserved "legacy_name";
+  // Required. Unique id.
+  // @Default 0
+  int64 id = 1 [(shop.ext.rules).int64.gt = 0];
+  // Owner e-mail address.
+  // @Required
+  // @Format email
+  // @MaxLength 254
+  string owner_email = 2 [(shop.ext.rules).string.email = true, (shop.ext.behavior) = REQUIRED, (shop.ext.behavior) = IMMUTABLE];
+  optional string nickname = 3; // trailing comment
+  repeated string tags = 4 [json_name = "petTags"];
+  map<string, int32> attrs = 6;
+  oneof kind {
+    Dog dog = 10;
+    Cat cat = 11;
+  }
+  // Output only. Creation time.
+  google.protobuf.Timestamp created_at = 12 [(shop.ext.behavior) = OUTPUT_ONLY];
+  // Deprecated: use `state` instead.
+  Status status = 13 [deprecated = true];
+  message Dog { bool good_boy = 1; }
+  message Cat { int32 lives = 1; }
+}
+
+service PetService {
+  // Get a pet.
+  // @Deprecated use GetPetV2
+  rpc GetPet(GetPetRequest) returns (Pet) { option deprecated = true; }
+  // Lists pets.
+  rpc ListPets(ListPetsRequest) returns (stream Pet) { option idempotency_level = NO_SIDE_EFFECTS; }
+  // Uploads photos (client streaming).
+  rpc UploadPhotos(stream Photo) returns (UploadResult);
+  // Chat (bidirectional streaming).
+  rpc Chat(stream ChatMessage) returns (stream ChatMessage);
+}
+message Photo { bytes chunk = 1; }
+message UploadResult { int32 count = 1; }
+message ChatMessage { string text = 1; }
+message GetPetRequest { int64 id = 1; }
+message ListPetsRequest { int32 page_size = 1; }

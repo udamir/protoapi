@@ -1,0 +1,10 @@
+# EX-CMT-2 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: leading plus trailing comments, doc blocks, every element kind
+expect:
+  - pointer: "#/components/messages/shop.v1.Pet"
+    value: { description: "A pet.\npets are animals", properties: { name: { …, description: "The name.\nshown in the UI" } }, … }
+  - pointer: "#/components/enums/shop.v1.Status"
+    value: { description: Status of a pet., values: { STATUS_UNSPECIFIED: { number: 0, description: not set } }, … }
+  - pointer: "#/services/shop.v1.PetService"
+    value: { methods: { GetPet: { description: "Gets one pet.\ncheap", … } }, … }
+absent: [ "#/files/shop.proto/description" ]

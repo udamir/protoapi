@@ -1,0 +1,9 @@
+// Pet shop API, legacy part.
+// Licensed under the MIT License.
+
+import "google/protobuf/empty.proto";
+
+message Pet {
+  optional string name = 1;
+  optional google.protobuf.Empty marker = 2;
+}

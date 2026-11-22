@@ -1,0 +1,5 @@
+// @Deprecated replaced by PetV2
+// @Title Pet (legacy)
+message Pet {}
+// @Deprecated
+enum Old { OLD_UNSPECIFIED = 0; }

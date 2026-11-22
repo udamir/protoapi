@@ -1,0 +1,5 @@
+# EX-P2-6 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: defaults in editions
+expect:
+  - pointer: "#/components/messages/shop.v1.Page/properties/size"
+    value: { number: 1, type: integer, protoType: int32, presence: explicit, default: 20 }

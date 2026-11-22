@@ -1,0 +1,25 @@
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+// wrapped: the catalogue shows bare rpc declarations
+service Wrapped {
+
+rpc GetShelf(GetShelfRequest) returns (Shelf) {
+  option (google.api.http) = {
+    get: "/v1/{name=shelves/*}"
+    additional_bindings { get: "/v1/{name=projects/*/shelves/*}" }
+  };
+}
+rpc CreateShelf(CreateShelfRequest) returns (Shelf) {
+  option (google.api.http) = { post: "/v1/shelves" body: "shelf" };
+}
+rpc Search(SearchRequest) returns (SearchResponse) {
+  option (google.api.http) = { post: "/v1/shelves:search" body: "*" response_body: "results" };
+}
+rpc Probe(ProbeRequest) returns (ProbeResponse) {
+  option (google.api.http) = { custom: { kind: "HEAD" path: "/v1/probe" } };
+}
+rpc Rename(RenameRequest) returns (Shelf) {
+  option (google.api.method_signature) = "name,new_name";
+  option (google.api.method_signature) = "name";
+}
+}

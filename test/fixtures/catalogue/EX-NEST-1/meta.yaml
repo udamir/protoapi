@@ -1,0 +1,10 @@
+# EX-NEST-1 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: nested message and enum, flattened keys
+expect:
+  - pointer: "#/components/messages"
+    value:
+      shop.v1.Pet:     { title: Pet, type: object, properties: { tags: { number: 1, type: array, items: { $ref: "#/components/messages/shop.v1.Pet.Tag" } }, size: { number: 2, $ref: "#/components/enums/shop.v1.Pet.Size" } } }
+      shop.v1.Pet.Tag: { title: Tag, type: object, properties: { value: { number: 1, type: string, protoType: string } } }
+  - pointer: "#/components/enums"
+    value:
+      shop.v1.Pet.Size: { title: Size, type: string, values: { SIZE_UNSPECIFIED: { number: 0 }, SMALL: { number: 1 } } }

@@ -1,0 +1,11 @@
+syntax = "proto3";
+package a.b;
+import "c.proto";
+message Outer {
+  message Inner {}
+  Inner       x = 1;
+  b.T         y = 2;
+  .c.U        z = 3;
+  Outer.Inner w = 4;
+}
+message T {}

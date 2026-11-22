@@ -1,0 +1,15 @@
+syntax = "proto3";
+package shop.v1;
+import "acme/opts.proto";
+message Quota {
+  option (acme.opts.limits) = {
+    tier: HIGH
+    max: 9007199254740993
+    ratio: inf
+    blob: "\x00\x01"
+    ranges { lo: 1 hi: 2 }
+    ranges: [{ lo: 5 hi: 9 }]
+    delta: -0x10
+    scale: 2.5
+  };
+}

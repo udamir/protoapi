@@ -1,0 +1,10 @@
+// A block comment before the first token of an element on the same line (PB-2.7, final cleanup): buf 1.75 attaches it to nothing, and so does the text producer (`minimum` is not lifted).
+
+syntax = "proto3";
+
+package named.comments.sameline;
+
+message Pet {
+  int32 age = 6;
+  /* @Minimum 1 */ int32 legs = 7;
+}

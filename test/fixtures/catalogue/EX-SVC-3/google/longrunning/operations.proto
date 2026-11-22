@@ -1,0 +1,45 @@
+// Minimal stand-in for googleapis google/longrunning/operations.proto (not bundled).
+
+syntax = "proto3";
+
+package google.longrunning;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/descriptor.proto";
+import "google/rpc/status.proto";
+
+extend google.protobuf.MethodOptions {
+  // Additional information regarding long-running operations.
+  google.longrunning.OperationInfo operation_info = 1049;
+}
+
+// This resource represents a long-running operation that is the result of a
+// network API call.
+message Operation {
+  // The server-assigned name.
+  string name = 1;
+
+  // Service-specific metadata associated with the operation.
+  google.protobuf.Any metadata = 2;
+
+  // If the value is `false`, it means the operation is still in progress.
+  bool done = 3;
+
+  // The operation result, which can be either an `error` or a valid `response`.
+  oneof result {
+    // The error result of the operation in case of failure or cancellation.
+    google.rpc.Status error = 4;
+
+    // The normal, successful response of the operation.
+    google.protobuf.Any response = 5;
+  }
+}
+
+// A message representing the message types used by a long-running operation.
+message OperationInfo {
+  // The message name of the primary return type for this long-running operation.
+  string response_type = 1;
+
+  // The message name of the metadata type for this long-running operation.
+  string metadata_type = 2;
+}

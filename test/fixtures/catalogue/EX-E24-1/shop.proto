@@ -1,0 +1,9 @@
+edition = "2024";
+package shop.v2;
+import option "acme/opts.proto";
+export message Pet {
+  local message Secret { string s = 1; }
+  Secret secret = 1;
+}
+local enum Internal { INTERNAL_UNKNOWN = 0; }
+message Plain {}

@@ -1,0 +1,12 @@
+syntax = "proto3";
+package shop.v1;
+message Old {
+  option deprecated = true;
+}
+message NoAccessor {
+  option no_standard_descriptor_accessor = true;
+}
+enum OldEnum {
+  option deprecated = true;
+  OLD_ENUM_UNSPECIFIED = 0;
+}

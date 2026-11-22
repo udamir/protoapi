@@ -1,0 +1,4 @@
+edition = "2023";
+package shop.edt;
+message Envelope { Payload body = 1 [features.message_encoding = DELIMITED]; }
+message Payload {}

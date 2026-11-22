@@ -1,0 +1,5 @@
+syntax = "proto3";
+package shop.v1;
+message Lists {
+  repeated bytes chunks = 2 [packed = true];
+}

@@ -1,0 +1,69 @@
+// Named fixture validate.proto (design §13): protovalidate rules at every position, enum rules, CEL, the outside
+// range (A-9), wrappers (A-11), examples (A-13).
+
+syntax = "proto3";
+
+package named.validate.v1;
+
+import "buf/validate/validate.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+enum Status {
+  STATUS_UNSPECIFIED = 0;
+  STATUS_ACTIVE = 1;
+  STATUS_PAUSED = 2;
+  STATUS_DELETED = 3;
+}
+
+message Rules {
+  option (buf.validate.message).cel = {
+    id: "range"
+    message: "low must not exceed high"
+    expression: "this.low <= this.high"
+  };
+
+  int32 low = 1 [(buf.validate.field).int32 = { gte: 0, lte: 100 }];
+  int32 high = 2 [(buf.validate.field).int32 = { gt: -1, lt: 1000, not_in: [13] }];
+  int64 big = 3 [(buf.validate.field).int64 = { gte: -9223372036854775808, lte: 9223372036854775807 }];
+  uint64 ubig = 4 [(buf.validate.field).uint64 = { gt: 0, lt: 18446744073709551615 }];
+  uint32 outside = 5 [(buf.validate.field).uint32 = { gt: 100, lt: 10 }];
+  float ratio = 6 [(buf.validate.field).float = { gte: 0.1, lte: 1, finite: true }];
+  double score = 7 [(buf.validate.field).double = { gt: -inf, lt: inf }];
+  sint32 delta = 8 [(buf.validate.field).sint32 = { in: [-1, 0, 1] }];
+  fixed64 stamp = 9 [(buf.validate.field).fixed64.const = 42];
+  string email = 10 [(buf.validate.field).string = { email: true, max_len: 254, example: "a@example.com" }];
+  string code = 11 [(buf.validate.field).string = { len: 6, pattern: "^[A-Z0-9]+$" }];
+  string prefixed = 12 [(buf.validate.field).string.prefix = "pre_"];
+  string choice = 13 [(buf.validate.field).string = { in: ["a", "b,c"], not_in: ["z"] }];
+  bytes blob = 14 [(buf.validate.field).bytes = { min_len: 1, max_len: 1024 }];
+  bool agreed = 15 [(buf.validate.field).bool.const = true];
+  Status status = 16 [(buf.validate.field).enum = { defined_only: true, in: [1, 2], not_in: [3] }];
+  Status fixed = 17 [(buf.validate.field).enum.const = 1];
+  repeated string tags = 18 [(buf.validate.field).repeated = {
+    min_items: 1
+    max_items: 10
+    unique: true
+    items: { string: { min_len: 2, max_len: 32 } }
+  }];
+  repeated Status statuses = 19 [(buf.validate.field).repeated.items.enum.defined_only = true];
+  map<string, int32> weights = 20 [(buf.validate.field).map = {
+    min_pairs: 1
+    max_pairs: 50
+    keys: { string: { pattern: "^[a-z]+$" } }
+    values: { int32: { gte: 0 } }
+  }];
+  google.protobuf.StringValue nick = 21 [(buf.validate.field).string.min_len = 3];
+  google.protobuf.Int64Value cap = 22 [(buf.validate.field).int64.lte = 99];
+  google.protobuf.Duration ttl = 23 [(buf.validate.field).duration = { gt: { seconds: 0 }, lte: { seconds: 3600 } }];
+  google.protobuf.Timestamp at = 24 [(buf.validate.field).timestamp.lt_now = true];
+  string id = 25 [(buf.validate.field).required = true, (buf.validate.field).string.uuid = true];
+  string cel = 26 [(buf.validate.field).cel = { id: "lower", message: "must be lower case", expression: "this == this.lowerAscii()" }];
+
+  oneof contact {
+    option (buf.validate.oneof).required = true;
+    string phone = 27 [(buf.validate.field).string.pattern = "^\\+[0-9]+$"];
+    string mail = 28 [(buf.validate.field).string.email = true];
+  }
+}

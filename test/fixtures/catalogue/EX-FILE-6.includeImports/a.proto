@@ -1,0 +1,5 @@
+syntax = "proto3";
+package shop.v1;
+message Pet { Owner owner = 1; }
+message Owner { string name = 1; }
+message Unused {}

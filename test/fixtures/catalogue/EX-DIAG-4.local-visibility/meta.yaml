@@ -1,0 +1,9 @@
+# EX-DIAG-4.local-visibility (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: a local message is not visible from another file
+textOnly: true   # protoc rejects the reference to a local symbol
+options: { entry: [b.proto], imports: referenced }   # EX-DIAG-4.local-visibility.user shows the default mode
+expect:
+  - pointer: "#/components/messages/shop.v2.User/properties/s"
+    value: { number: 1, $ref: "#/components/messages/shop.v2.Secret" }
+absent: [ "#/components/messages/shop.v2.Secret" ]
+issues: [ "unresolved-type @ #/components/messages/shop.v2.User/properties/s" ]

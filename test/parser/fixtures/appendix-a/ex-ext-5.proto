@@ -1,0 +1,11 @@
+message Audit {
+  enum Level { LEVEL_UNSPECIFIED = 0; FULL = 1; }
+  bool log = 1;
+  repeated string roles = 2;
+  Level level = 3;
+}
+extend google.protobuf.ServiceOptions   { string api_group = 50100; }
+extend google.protobuf.MethodOptions    { Audit audit = 50101; }
+extend google.protobuf.EnumOptions      { bool bit_flags = 50102; }
+extend google.protobuf.EnumValueOptions { string label = 50103; }
+extend google.protobuf.OneofOptions     { string group = 50104; }

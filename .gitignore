@@ -1,0 +1,7 @@
+node_modules
+/dist
+/browser
+/coverage
+.tmp
+*.log
+.DS_Store

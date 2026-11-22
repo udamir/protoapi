@@ -1,0 +1,11 @@
+edition = "2024";
+
+package named.ed2024;
+
+// Imported normally: the type is used as a field type.
+message Dep {
+  string ref = 1;
+  local message Hidden {
+    int32 y = 1;
+  }
+}

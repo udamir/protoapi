@@ -1,0 +1,9 @@
+# EX-PREC-2 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: deprecation sources merge
+expect:
+  - pointer: "#/services/shop.v1.S/methods"
+    value:
+      A: { deprecation: { reason: use V2. }, request: { schema: { $ref: "#/components/messages/shop.v1.Req" } }, response: { schema: { $ref: "#/components/messages/shop.v1.Res" } } }
+      B: { deprecation: { reason: use V3 }, request: { schema: { $ref: "#/components/messages/shop.v1.Req" } }, response: { schema: { $ref: "#/components/messages/shop.v1.Res" } } }
+      C: { deprecation: {}, request: { schema: { $ref: "#/components/messages/shop.v1.Req" } }, response: { schema: { $ref: "#/components/messages/shop.v1.Res" } } }
+      D: { deprecation: { reason: use V4. }, request: { schema: { $ref: "#/components/messages/shop.v1.Req" } }, response: { schema: { $ref: "#/components/messages/shop.v1.Res" } } }

@@ -1,0 +1,12 @@
+// before
+syntax = "proto2";
+package shop.legacy;
+enum Color { RED = 1; GREEN = 2; }
+message Order {
+  required int64 id = 1;
+  optional string note = 2 [default = "none"];
+  repeated int32 codes = 3;
+  repeated int32 packed_codes = 4 [packed = true];
+  optional Color color = 5 [default = GREEN];
+  optional group Meta = 6 { optional int32 total = 1; }
+}

@@ -1,0 +1,11 @@
+# EX-PV-2 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: protovalidate repeated, map and enum rules
+expect:
+  - pointer: "#/components/messages/shop.v1.Filter"
+    value:
+      type: object
+      properties:
+        labels:   { number: 1, type: array, items: { type: string, protoType: string, maxLength: 32 }, minItems: 1, maxItems: 10, uniqueItems: true }
+        quotas:   { number: 2, type: object, propertyNames: { type: string, protoType: string, minLength: 1 }, additionalProperties: { type: integer, protoType: int32, minimum: 0 }, minProperties: 1 }
+        status:   { number: 3, $ref: "#/components/enums/shop.v1.Status", enum: [AVAILABLE, SOLD], options: { buf.validate.field: { enum: { defined_only: true } } } }
+        not_sold: { number: 4, $ref: "#/components/enums/shop.v1.Status", options: { buf.validate.field: { enum: { not_in: [2] } } } }

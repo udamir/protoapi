@@ -1,0 +1,10 @@
+message Range {
+  option (buf.validate.message).cel = { id: "range", message: "start must be before end", expression: "this.start < this.end" };
+  int32 start = 1 [(buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE, (buf.validate.field).int32.gt = 0];
+  int32 end   = 2 [(buf.validate.field).cel = { id: "end_even", expression: "this % 2 == 0" }];
+  oneof bound {
+    option (buf.validate.oneof).required = true;
+    int32 min = 3;
+    int32 max = 4;
+  }
+}

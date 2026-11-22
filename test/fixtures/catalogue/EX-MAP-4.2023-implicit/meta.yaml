@@ -1,0 +1,5 @@
+# EX-MAP-4.2023-implicit (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: edition 2023 map field has no presence (inherits IMPLICIT from the file)
+expect:
+  - pointer: "#/components/messages/shop.legacy.Paint/properties/paints"
+    value: { number: 1, type: object, propertyNames: { type: string, protoType: string }, additionalProperties: { $ref: "#/components/enums/shop.legacy.Color" } }

@@ -1,0 +1,61 @@
+// Named fixture edition2024.proto (design §13): symbol visibility (`export` / `local`, the edition's default
+// EXPORT_TOP_LEVEL), `import option`, features at every level.
+
+edition = "2024";
+
+package named.ed2024;
+
+import "dep2024.proto";
+import option "opts2024.proto";
+
+option features.field_presence = EXPLICIT;
+option (named.ed2024.opts.owner) = "platform";
+
+// Exported top-level message (the edition default).
+message Order {
+  option (named.ed2024.opts.table) = "orders";
+
+  // Nested types are local by default in 2024.
+  message Line {
+    string sku = 1;
+    int32 qty = 2 [features.field_presence = IMPLICIT];
+  }
+
+  export message Shared {
+    string note = 1;
+  }
+
+  local enum Kind {
+    option features.enum_type = CLOSED;
+    KIND_UNSPECIFIED = 0;
+    KIND_RUSH = 1;
+  }
+
+  string id = 1 [(named.ed2024.opts.sensitive) = true];
+  repeated Line lines = 2;
+  Kind kind = 3;
+  Dep dep = 4;
+  repeated int32 codes = 5 [features.repeated_field_encoding = EXPANDED];
+  string raw = 6 [features.utf8_validation = NONE];
+  Line inline = 7 [features.message_encoding = DELIMITED];
+  map<string, Dep> deps = 8;
+}
+
+local message Internal {
+  int32 x = 1;
+}
+
+export enum Color {
+  COLOR_UNSPECIFIED = 0;
+  COLOR_RED = 1;
+}
+
+message Legacy {
+  option features.json_format = LEGACY_BEST_EFFORT;
+  int32 a = 1;
+  Internal internal = 2;
+}
+
+service Orders {
+  rpc Get(Order) returns (Order.Shared);
+}

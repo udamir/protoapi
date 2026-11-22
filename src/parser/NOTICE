@@ -1,0 +1,40 @@
+protoapi .proto parser (src/parser)
+
+This directory contains code derived from pbkit 0.0.72
+(https://github.com/pbkit/pbkit, npm package "pbkit", version 0.0.72),
+Copyright (c) JongChan Choi <jong@chan.moe>, dual licensed under the MIT
+licence (LICENSE-MIT) or the Apache License, Version 2.0 (LICENSE-APACHE),
+at your option. The derived files are used under the MIT licence; both licence
+texts are reproduced in this directory as published with pbkit 0.0.72.
+
+Derived files (origin in pbkit 0.0.72):
+  recursive-descent-parser.ts   core/parser/recursive-descent-parser.{js,d.ts}
+  misc.ts                       core/parser/misc.{js,d.ts}
+  proto.ts                      core/parser/proto.{js,d.ts}
+  textproto.ts                  core/parser/textproto.{js,d.ts}
+  location.ts                   core/parser/location.d.ts
+  ast/*.ts                      core/ast/*.d.ts
+
+New files (not derived from pbkit): index.ts, position.ts, literals.ts.
+
+Summary of modifications (each derived file lists its own in its header):
+- Reconstructed as strict TypeScript from the compiled JavaScript and type
+  declarations of 0.0.72 (no TypeScript source of that version is published);
+  function names, file split and AST node shapes are kept.
+- The event-emitter dependency (core/runtime/async/event-emitter) is removed;
+  comments are collected in an array on the parser, each comment once.
+- Tokens are matched with sticky regular expressions compiled once instead of
+  exec() on input.substr(loc); keywords require a word boundary; the global
+  per-accept loop counter is replaced by progress checks; the linear
+  offsetToColRow / getAroundText helpers are removed (see position.ts).
+- Comment attachment (leading / trailing / detached groups) re-implemented
+  after protoc's tokenizer and parser rules; block statements take their
+  trailing comment after "{" instead of after "}".
+- Grammar extensions: edition 2024 "export" / "local" visibility on messages
+  and enums, "import option", identifiers in "reserved", options on oneof
+  groups, "\u" / "\U" string escapes, hexadecimal values in text-format
+  aggregates, "map" and "stream" usable as type names, dotted option names
+  mixing plain and parenthesised segments split into separate segments.
+- Error handling: parsing never throws; a syntax error (including pbkit's
+  recovered "malformed-field" and trailing input) is returned with the offset
+  of the unexpected token and an empty AST.

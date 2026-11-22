@@ -1,0 +1,6 @@
+message A { option (acme.opts.table) = { name: "a" indexes: "x" indexes: "y" }; }
+message B {
+  option (acme.opts.table).name = "a";
+  option (acme.opts.table).indexes = "x";
+  option (acme.opts.table).indexes = "y";
+}

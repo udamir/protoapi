@@ -1,0 +1,11 @@
+edition = "2023";
+package shop.edt;
+import "google/protobuf/cpp_features.proto";
+import "google/protobuf/java_features.proto";
+message Doc {
+  string body = 1 [features.(pb.cpp).string_type = CORD];
+}
+enum Legacy {
+  option features.(pb.java).legacy_closed_enum = true;
+  LEGACY_UNKNOWN = 0;
+}

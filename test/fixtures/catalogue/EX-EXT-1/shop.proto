@@ -1,0 +1,11 @@
+syntax = "proto2";
+package shop.legacy;
+message Order { extensions 100 to 199; }
+extend Order {
+  optional bool   priority = 100;
+  repeated string notes    = 101;
+}
+message Shipping {
+  extend Order { optional Shipping shipping = 150; }
+  optional string carrier = 1;
+}

@@ -1,0 +1,30 @@
+syntax = "proto2";
+package shop.v1;
+message Attach {
+  optional int32 foo = 1;  // Comment attached to foo.
+  // Comment attached to bar.
+  optional int32 bar = 2;
+
+  optional string baz = 3;
+  // Comment attached to baz.
+  // Another line attached to baz.
+
+  // Comment attached to moo.
+  //
+  // Another line attached to moo.
+  optional double moo = 4;
+
+  // Detached comment for corge. This is not leading or trailing comments
+  // to moo or corge because there are blank lines separating it from
+  // both.
+
+  // Detached comment for corge paragraph 2.
+
+  optional string corge = 5;
+  /* Block comment attached
+   * to corge.  Leading asterisks
+   * will be removed. */
+  /* Block comment attached to
+   * grault. */
+  optional int32 grault = 6;
+}

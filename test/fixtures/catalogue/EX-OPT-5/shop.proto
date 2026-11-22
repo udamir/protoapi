@@ -1,0 +1,11 @@
+syntax = "proto3";
+package shop.v1;
+option java_outer_classname = "ShopProto";
+option csharp_namespace = "Example.Shop.V1";
+option objc_class_prefix = "ESH";
+option php_namespace = "Example\\Shop\\V1";
+option ruby_package = "Example::Shop::V1";
+option swift_prefix = "ESH";
+option cc_enable_arenas = true;
+option optimize_for = LITE_RUNTIME;
+option deprecated = true;

@@ -1,0 +1,16 @@
+syntax = "proto3";
+package shop.v1;
+import "acme/opts.proto";
+service Admin {
+  option (acme.opts.api_group) = "internal";
+  rpc Purge(PurgeRequest) returns (PurgeResponse) {
+    option (acme.opts.audit) = { log: true roles: ["admin", "sre"] level: FULL };
+  }
+}
+enum Perm {
+  option (acme.opts.bit_flags) = true;
+  PERM_NONE = 0 [(acme.opts.label) = "None"];
+  PERM_READ = 1;
+}
+message PurgeRequest {}
+message PurgeResponse {}

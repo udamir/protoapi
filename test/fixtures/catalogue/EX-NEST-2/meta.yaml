@@ -1,0 +1,12 @@
+# EX-NEST-2 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: relative, partially qualified and absolute names
+options: { entry: [shop.proto] }
+expect:
+  - pointer: "#/components/messages/a.b.Outer"
+    value:
+      type: object
+      properties:
+        x: { number: 1, $ref: "#/components/messages/a.b.Outer.Inner" }
+        y: { number: 2, $ref: "#/components/messages/a.b.T" }
+        z: { number: 3, $ref: "#/components/messages/c.U" }
+        w: { number: 4, $ref: "#/components/messages/a.b.Outer.Inner" }

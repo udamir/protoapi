@@ -1,0 +1,12 @@
+# EX-SVC-3.missing (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: without google/longrunning/operations.proto the build reports three issues
+textOnly: true   # the import is missing
+expect:
+  - pointer: "#/services/shop.v1.ShelfService/methods/Noop"
+    value:
+      request:  { schema: { $ref: "#/components/messages/shop.v1.NoopRequest" } }
+      response: { schema: { $ref: "#/components/messages/shop.v1.NoopResponse" } }
+issues:
+  - "missing-import @ #/files/shop.proto/imports/1"
+  - "unresolved-type @ #/services/shop.v1.ShelfService/methods/ArchiveShelf/response"
+  - "unknown-option @ #/services/shop.v1.ShelfService/methods/ArchiveShelf/options/google.longrunning.operation_info"

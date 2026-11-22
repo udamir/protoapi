@@ -1,0 +1,90 @@
+// Named fixture values.proto (design §13): canonical values (D7): 64-bit integers, inf / nan, float32 narrowing,
+// negative zero, bytes and string escapes, enum defaults, option values of every scalar type.
+
+syntax = "proto2";
+
+package named.values;
+
+import "google/protobuf/descriptor.proto";
+
+enum Mode {
+  MODE_A = 1;
+  MODE_B = 2;
+}
+
+message Scalars {
+  optional int32 i32 = 1 [default = -2147483648];
+  optional uint32 u32 = 2 [default = 4294967295];
+  optional int64 i64 = 3 [default = -9223372036854775808];
+  optional uint64 u64 = 4 [default = 18446744073709551615];
+  optional sint64 s64 = 5 [default = 0x7fffffffffffffff];
+  optional fixed32 f32 = 6 [default = 0777];
+  optional double inf = 7 [default = inf];
+  optional double ninf = 8 [default = -inf];
+  optional double nan = 9 [default = nan];
+  optional float narrow = 10 [default = 0.1];
+  optional float big = 11 [default = 16777217];
+  optional double nzero = 12 [default = -0.0];
+  optional double exp = 13 [default = 1.5e-300];
+  optional bool flag = 14 [default = true];
+  optional string text = 15 [default = "tab\tquote\" backslash\\ unicode é \U0001F600 octal \101"];
+  optional bytes raw = 16 [default = "\000\001\377\x7f abc"];
+  optional Mode mode = 17 [default = MODE_B];
+  optional string empty = 18 [default = ""];
+  optional sfixed64 neg = 19 [default = -1];
+}
+
+message OptionValues {
+  optional int32 i = 1;
+  optional int64 l = 2;
+  optional uint64 u = 3;
+  optional double d = 4;
+  optional float f = 5;
+  optional bool b = 6;
+  optional string s = 7;
+  optional bytes y = 8;
+  optional Mode m = 9;
+  repeated int64 ls = 10;
+  repeated Mode ms = 11;
+  optional OptionValues child = 12;
+}
+
+extend google.protobuf.MessageOptions {
+  optional int64 o_i64 = 53000;
+  optional uint64 o_u64 = 53001;
+  optional double o_double = 53002;
+  optional float o_float = 53003;
+  optional bytes o_bytes = 53004;
+  optional string o_string = 53005;
+  optional Mode o_mode = 53006;
+  optional OptionValues o_agg = 53007;
+  optional bool o_bool = 53008;
+  optional sint32 o_sint = 53009;
+}
+
+message Annotated {
+  option (o_i64) = -9223372036854775808;
+  option (o_u64) = 18446744073709551615;
+  option (o_double) = -inf;
+  option (o_float) = 3.4028235e38;
+  option (o_bytes) = "\x00\xff\n";
+  option (o_string) = "line\nbreak";
+  option (o_mode) = MODE_A;
+  option (o_bool) = false;
+  option (o_sint) = -7;
+  option (o_agg) = {
+    i: -1
+    l: 9007199254740993
+    u: 18446744073709551615
+    d: nan
+    f: 0.2
+    b: true
+    s: "A"
+    y: "\x01\x02"
+    m: MODE_B
+    ls: [1, -2, 9223372036854775807]
+    ms: [MODE_A, MODE_B]
+    child { i: 2 child { s: "deep" } }
+  };
+  optional int32 x = 1;
+}

@@ -1,0 +1,9 @@
+# EX-OPT-4 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: message and enum options
+expect:
+  - pointer: "#/components/messages/shop.v1.Old"
+    value: { type: object, properties: {}, deprecation: {} }
+  - pointer: "#/components/messages/shop.v1.NoAccessor"
+    value: { type: object, properties: {}, options: { no_standard_descriptor_accessor: true } }
+  - pointer: "#/components/enums/shop.v1.OldEnum"
+    value: { type: string, values: { OLD_ENUM_UNSPECIFIED: { number: 0 } }, deprecation: {} }

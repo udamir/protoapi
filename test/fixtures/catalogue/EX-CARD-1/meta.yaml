@@ -1,0 +1,16 @@
+# EX-CARD-1 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: proto3 presence
+expect:
+  - pointer: "#/components/messages/shop.v1.Presence"
+    value:
+      type: object
+      properties:
+        plain:   { number: 1, type: string, protoType: string }
+        opt:     { number: 2, type: string, protoType: string, presence: explicit }
+        status:  { number: 3, $ref: "#/components/enums/shop.v1.Status" }
+        st:      { number: 4, $ref: "#/components/enums/shop.v1.Status", presence: explicit }
+        pet:     { number: 5, $ref: "#/components/messages/shop.v1.Pet" }
+        opt_pet: { number: 6, $ref: "#/components/messages/shop.v1.Pet" }
+        tags:    { number: 7, type: array, items: { type: string, protoType: string } }
+        pets:    { number: 8, type: array, items: { $ref: "#/components/messages/shop.v1.Pet" } }
+absent: [ "#/components/messages/shop.v1.Presence/oneofs" ]

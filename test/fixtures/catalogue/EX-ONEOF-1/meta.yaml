@@ -1,0 +1,14 @@
+# EX-ONEOF-1 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: scalar, message and enum members, with a description and options
+options: { entry: [shop.proto] }
+expect:
+  - pointer: "#/components/messages/shop.v1.Payment"
+    value:
+      type: object
+      properties:
+        card_token: { number: 1, type: string, protoType: string, oneof: method }
+        bank:       { number: 2, $ref: "#/components/messages/shop.v1.BankAccount", oneof: method }
+        status:     { number: 3, $ref: "#/components/enums/shop.v1.Status", oneof: method }
+        note:       { number: 4, type: string, protoType: string, presence: explicit }
+      oneofs:
+        method: { description: How the payment is made., options: { acme.opts.group: billing } }

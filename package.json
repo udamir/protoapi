@@ -1,0 +1,93 @@
+{
+  "name": "protoapi",
+  "version": "0.1.0",
+  "description": "ProtoApi: a JSON document format for Protocol Buffers APIs, with builders from .proto text and FileDescriptorSet, a printer and a source map",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/types/index.d.ts",
+  "browser": "./dist/index.mjs",
+  "unpkg": "./browser/protoapi.min.js",
+  "jsdelivr": "./browser/protoapi.min.js",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./core": {
+      "types": "./dist/types/core.d.ts",
+      "import": "./dist/core.mjs",
+      "require": "./dist/core.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "core": [
+        "./dist/types/core.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist",
+    "browser",
+    "bundle/LICENSES",
+    "bundle/VERSIONS.md",
+    "src/parser/NOTICE",
+    "src/parser/LICENSE-MIT",
+    "src/parser/LICENSE-APACHE",
+    "LICENSE",
+    "NOTICE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "bun run scripts/build.ts",
+    "test": "bun test",
+    "check": "biome check",
+    "typecheck": "tsc --noEmit",
+    "bundle:fetch": "bun run scripts/fetch-bundle.ts",
+    "bundle:gen": "bun run scripts/gen-bundle.ts",
+    "images": "bun run scripts/images.ts",
+    "prepublishOnly": "bun run typecheck && bun test && bun run build && bun run test:dist",
+    "test:dist": "node test/dist/smoke.cjs && node test/dist/smoke.mjs"
+  },
+  "keywords": [
+    "protobuf",
+    "proto",
+    "grpc",
+    "protoapi",
+    "descriptor",
+    "schema",
+    "api",
+    "diff"
+  ],
+  "author": "Damir Yusipov",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/udamir/protoapi"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "peerDependencies": {
+    "@bufbuild/protobuf": "^2.8.0"
+  },
+  "peerDependenciesMeta": {
+    "@bufbuild/protobuf": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.8.3",
+    "@bufbuild/buf": "^1.75.0",
+    "@bufbuild/protobuf": "^2.16.0",
+    "@types/bun": "^1.2.18",
+    "@types/js-yaml": "^4.0.9",
+    "esbuild": "^0.25.0",
+    "js-yaml": "^4.1.0",
+    "typescript": "^5.8.0"
+  }
+}

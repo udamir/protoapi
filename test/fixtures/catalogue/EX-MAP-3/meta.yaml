@@ -1,0 +1,11 @@
+# EX-MAP-3 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: field options, comments and value kinds on maps
+expect:
+  - pointer: "#/components/messages/shop.v1.Inventory"
+    value:
+      type: object
+      properties:
+        stock:    { number: 1, description: Stock per SKU., deprecation: {}, type: object, propertyNames: { type: string, protoType: string }, additionalProperties: { type: integer, protoType: int32 }, jsonName: stockBySku }
+        seen:     { number: 2, type: object, propertyNames: { type: integer, protoType: sfixed64 }, additionalProperties: { $ref: "#/components/messages/google.protobuf.Timestamp" } }
+        sizes:    { number: 3, type: object, propertyNames: { type: integer, protoType: int32 }, additionalProperties: { $ref: "#/components/enums/shop.v1.Pet.Size" } }
+        children: { number: 4, type: object, propertyNames: { type: integer, protoType: fixed32 }, additionalProperties: { $ref: "#/components/messages/shop.v1.Inventory" } }

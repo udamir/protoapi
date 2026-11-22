@@ -1,0 +1,10 @@
+syntax = "proto3";
+package shop.v1;
+message User {
+  string user_id      = 1;
+  string display_name = 2 [json_name = "displayName"];
+  string email        = 3 [json_name = "mail"];
+  string foo_1bar     = 4 [json_name = "foo1bar"];
+  string _private     = 5;
+  string legacy_ID    = 6 [json_name = "legacy_ID"];
+}

@@ -1,0 +1,9 @@
+# EX-SCAL-2 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: field number limits (valid bounds)
+expect:
+  - pointer: "#/components/messages/shop.v1.Limits"
+    value:
+      type: object
+      properties:
+        a: { number: 1, type: integer, protoType: int32 }
+        z: { number: 536870911, type: integer, protoType: int32 }

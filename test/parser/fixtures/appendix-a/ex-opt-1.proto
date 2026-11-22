@@ -1,0 +1,10 @@
+message Opts {
+  repeated int32 a = 1;
+  repeated int32 b = 2 [packed = true];
+  repeated int32 c = 3 [packed = false];
+  int64  d = 4 [jstype = JS_STRING];
+  string e = 5 [deprecated = false];
+  string f = 6 [debug_redact = true];
+  string g = 7 [ctype = CORD];
+  Opts   h = 8 [lazy = true];
+}

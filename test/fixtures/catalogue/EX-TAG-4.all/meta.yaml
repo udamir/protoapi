@@ -1,0 +1,6 @@
+# EX-TAG-4.all (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: annotation mode all
+options: { annotations: all }
+expect:
+  - pointer: "#/components/messages/shop.v1.Signup"
+    value: { type: object, properties: { email: { number: 1, description: The e-mail., type: string, protoType: string, required: true, format: email, maxLength: 254 } } }

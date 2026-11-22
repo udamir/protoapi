@@ -1,0 +1,18 @@
+// a.proto
+message Pet { Owner owner = 1; }
+message Owner { string name = 1; }
+message Unused {}
+
+// b.proto
+import public "a.proto";
+
+// c.proto
+import "b.proto";
+message Adoption { Pet pet = 1; }
+
+// e.proto
+import "a.proto";
+
+// d.proto
+import "e.proto";
+message Visit { Pet pet = 1; }

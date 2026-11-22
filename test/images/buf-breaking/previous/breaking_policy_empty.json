@@ -1,0 +1,1 @@
+{"file":[{"name":"a.proto","package":"a","messageType":[{"name":"B"}],"sourceCodeInfo":{"location":[{"span":[0,0,4,12]},{"path":[12],"span":[0,0,18]},{"path":[2],"span":[2,0,10]},{"path":[4,0],"span":[4,0,12]},{"path":[4,0,1],"span":[4,8,9]}]},"syntax":"proto3","bufExtension":{"isImport":false,"isSyntaxUnspecified":false}}]}

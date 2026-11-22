@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package named.names.v1;
+
+message Reexported {
+  bool ok = 1;
+}

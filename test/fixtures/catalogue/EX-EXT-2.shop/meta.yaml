@@ -1,0 +1,16 @@
+# EX-EXT-2.shop (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: custom option use, built with shop.proto as the entry file
+options: { entry: [shop.proto], imports: referenced }   # EX-EXT-2.shop.user shows the default mode
+expect:
+  - pointer: "#/components/messages/shop.v1.Customer"
+    value:
+      type: object
+      properties:
+        email: { number: 1, type: string, protoType: string, options: { acme.opts.sensitivity: pii } }
+      options: { acme.opts.table: { name: customers, indexes: [email] } }
+absent:
+  - "#/components/messages/acme.opts.Table"
+  - "#/components/extensions"
+  - "#/components/messages/google.protobuf.FieldOptions"
+  - "#/components/messages/google.protobuf.MessageOptions"
+  - "#/files/acme~1opts.proto"

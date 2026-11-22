@@ -1,0 +1,8 @@
+# EX-RES-1 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: reserved merging and sorting
+expect:
+  - pointer: "#/components/messages/shop.v1.Pet"
+    value:
+      type: object
+      properties: { name: { number: 1, type: string, protoType: string } }
+      reserved: { numbers: [[2, 2], [9, 12], [15, 15], [1000, 536870911]], names: [bar, foo] }

@@ -1,0 +1,8 @@
+# EX-FILE-1.no-syntax (validation C-12): the header rule without a syntax or package statement.
+title: the header is the detached comment of the first statement, also without syntax and package
+expect:
+  - pointer: "#/files/shop.proto"
+    value:
+      description: "Pet shop API, legacy part.\nLicensed under the MIT License."
+      syntax: proto2
+      imports: [google/protobuf/empty.proto]

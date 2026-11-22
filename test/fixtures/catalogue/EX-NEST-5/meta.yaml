@@ -1,0 +1,9 @@
+# EX-NEST-5 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: empty message and namespace-only message
+expect:
+  - pointer: "#/components/messages/shop.v1.Empty"
+    value: { type: object, properties: {} }
+  - pointer: "#/components/messages/shop.v1.Ns"
+    value: { type: object, properties: {} }
+  - pointer: "#/components/messages/shop.v1.Ns.A"
+    value: { type: object, properties: {} }

@@ -1,0 +1,13 @@
+syntax = "proto3";
+package shop.v1;
+import "buf/validate/validate.proto";
+import "google/api/field_behavior.proto";
+message Coupon {
+  // @MaxLength 100
+  // @Required
+  string code = 1 [(buf.validate.field).string.max_len = 64, (google.api.field_behavior) = OPTIONAL];
+  // @Format email
+  string contact = 2 [(buf.validate.field).string.uuid = true];
+  // @MaxLength 64
+  string note = 3 [(buf.validate.field).string.max_len = 64];
+}

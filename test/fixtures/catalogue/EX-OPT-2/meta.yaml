@@ -1,0 +1,11 @@
+# EX-OPT-2 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+# phase C (validation decision F-3): resolved packed / utf8Validation / jsonFormat keywords against the modern baseline
+title: "editions features that are not lifted (now resolved keywords)"
+expect:
+  - pointer: "#/components/messages/shop.edt.Raw"
+    value:
+      type: object
+      properties:
+        data: { number: 1, type: string, protoType: string, presence: explicit, utf8Validation: false }
+        ids:  { number: 2, type: array, items: { type: integer, protoType: int32 }, packed: false }
+      jsonFormat: LEGACY_BEST_EFFORT

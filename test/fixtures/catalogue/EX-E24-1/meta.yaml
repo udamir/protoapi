@@ -1,0 +1,14 @@
+# EX-E24-1 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: symbol visibility and option imports
+options: { entry: [shop.proto], imports: referenced }   # EX-E24-1.user shows the default mode
+expect:
+  - pointer: "#/files/shop.proto"
+    value: { syntax: "2024", package: shop.v2, imports: [acme/opts.proto], importFlags: { acme/opts.proto: option } }
+  - pointer: "#/components/messages"
+    value:
+      shop.v2.Pet:        { type: object, properties: { secret: { number: 1, $ref: "#/components/messages/shop.v2.Pet.Secret" } }, options: { visibility: export } }
+      shop.v2.Pet.Secret: { type: object, properties: { s: { number: 1, type: string, protoType: string, presence: explicit } }, options: { visibility: local } }
+      shop.v2.Plain:      { type: object, properties: {} }
+  - pointer: "#/components/enums"
+    value:
+      shop.v2.Internal:   { type: string, values: { INTERNAL_UNKNOWN: { number: 0 } }, options: { visibility: local } }

@@ -1,0 +1,18 @@
+edition = "2024";
+
+package named.ed2024.opts;
+
+import "google/protobuf/descriptor.proto";
+
+// Option definitions, imported with `import option`.
+extend google.protobuf.FileOptions {
+  string owner = 52000;
+}
+
+extend google.protobuf.MessageOptions {
+  string table = 52001;
+}
+
+extend google.protobuf.FieldOptions {
+  bool sensitive = 52002;
+}

@@ -1,0 +1,15 @@
+# EX-FILE-6.public.user (design Appendix A, U3). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: an import public chain of user files is emitted in full in the default imports "user"
+options: { entry: [c.proto] }
+expect:
+  - pointer: "#/files"
+    value:
+      a.proto: { syntax: proto3, package: shop.v1 }
+      b.proto: { syntax: proto3, package: shop.v1, imports: [a.proto], importFlags: { a.proto: public } }
+      c.proto: { syntax: proto3, package: shop.v1, imports: [b.proto] }
+  - pointer: "#/components/messages"
+    value:
+      shop.v1.Pet:      { title: Pet, file: a.proto, type: object, properties: { owner: { number: 1, $ref: "#/components/messages/shop.v1.Owner" } } }
+      shop.v1.Owner:    { title: Owner, file: a.proto, type: object, properties: { name: { number: 1, type: string, protoType: string } } }
+      shop.v1.Unused:   { title: Unused, file: a.proto, type: object, properties: {} }
+      shop.v1.Adoption: { title: Adoption, file: c.proto, type: object, properties: { pet: { number: 1, $ref: "#/components/messages/shop.v1.Pet" } } }

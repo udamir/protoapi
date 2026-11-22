@@ -1,0 +1,10 @@
+# EX-NEST-3 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: protoc's first-component rule, no backtracking
+textOnly: true   # protoc rejects Foo.Bar (a.M.Foo has no Bar)
+expect:
+  - pointer: "#/components/messages/a.M"
+    value:
+      type: object
+      properties:
+        f: { number: 1, $ref: "#/components/messages/Foo.Bar" }
+issues: [ "unresolved-type @ #/components/messages/a.M/properties/f" ]

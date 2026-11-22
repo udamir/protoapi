@@ -1,0 +1,10 @@
+// before
+syntax = "proto3";
+package shop.v1;
+message Pet {
+  string name = 1;
+  optional int32 age = 2;
+  repeated int32 ids = 3;
+  Kind kind = 4;
+}
+enum Kind { KIND_UNSPECIFIED = 0; DOG = 1; }

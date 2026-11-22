@@ -1,0 +1,12 @@
+# EX-EXT-6 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: typed option values and key order
+options: { entry: [shop.proto] }
+expect:
+  - pointer: "#/components/messages/shop.v1.Quota"
+    value:
+      type: object
+      properties: {}
+      options:
+        acme.opts.limits: { max: "9007199254740993", ratio: Infinity, blob: AAE=, tier: HIGH, ranges: [{ lo: 1, hi: 2 }, { lo: 5, hi: 9 }], delta: -16, scale: 2.5 }
+  - pointer: "#/components/messages/shop.v1.Quota/options/acme.opts.limits"
+    keyOrder: [max, ratio, blob, tier, ranges, delta, scale]

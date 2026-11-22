@@ -1,0 +1,4 @@
+edition = "2023";
+package shop.v1;
+option features.field_presence = IMPLICIT;
+message Page { int32 size = 1 [default = 20]; }

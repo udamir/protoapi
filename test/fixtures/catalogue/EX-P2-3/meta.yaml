@@ -1,0 +1,5 @@
+# EX-P2-3 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: delimited encoding in editions
+expect:
+  - pointer: "#/components/messages/shop.edt.Envelope"
+    value: { type: object, properties: { body: { number: 1, $ref: "#/components/messages/shop.edt.Payload", delimited: true } } }

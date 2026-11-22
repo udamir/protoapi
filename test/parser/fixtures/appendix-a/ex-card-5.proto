@@ -1,0 +1,11 @@
+edition = "2023";
+package shop.edt;
+message Counter {
+  option features.field_presence = IMPLICIT;
+  string label = 1;
+  int32  hits  = 2 [features.field_presence = EXPLICIT];
+  Counter next = 3;
+  repeated int32 samples = 4;
+  oneof scope { string region = 5; string zone = 6; }
+}
+message Other { string label = 1; }

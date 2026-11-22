@@ -1,0 +1,61 @@
+// Named fixture names.proto (design §13): name resolution corner cases: relative and absolute names, protoc's
+// first-component rule, shadowing, nested scopes, names across packages, `import public`.
+
+syntax = "proto3";
+
+package named.names.v1;
+
+import "names_base.proto";
+import "names_public.proto";
+
+message Outer {
+  message Inner {
+    // `Inner` inside Inner resolves to itself.
+    Inner self = 1;
+    // `Leaf` is found in the enclosing scope.
+    Leaf leaf = 2;
+    message Nested {
+      Inner up = 1;
+    }
+  }
+
+  message Leaf {
+    int32 v = 1;
+  }
+
+  // Shadows the package-level `Shadow`.
+  message Shadow {
+    string inner = 1;
+  }
+
+  Inner inner = 1;
+  // The nested Shadow wins inside Outer.
+  Shadow nested_shadow = 2;
+  // The leading dot names the package-level Shadow.
+  .named.names.v1.Shadow top_shadow = 3;
+  // A partly qualified name: the first component `Outer` resolves here first.
+  Outer.Leaf leaf = 4;
+  // A type of the parent package, found by walking up the scopes.
+  base.Common common = 5;
+  // Fully qualified with the package of another file.
+  named.names.base.Common common_fq = 6;
+  // Through `import public` of names_public.proto.
+  Reexported reexported = 7;
+  // A nested type of another package.
+  named.names.base.Common.Part part = 8;
+  map<string, Inner> inners = 9;
+  repeated Outer.Inner.Nested deep = 10;
+}
+
+message Shadow {
+  int32 top = 1;
+}
+
+// A type used before its declaration point in the file.
+message Holder {
+  Outer.Inner inner = 1;
+}
+
+service Names {
+  rpc Get(Outer.Inner) returns (base.Common);
+}

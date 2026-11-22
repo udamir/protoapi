@@ -1,0 +1,16 @@
+# EX-ONEOF-3 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: several oneofs, member options, comments, well-known types, proto3 optional
+expect:
+  - pointer: "#/components/messages/shop.v1.Notification"
+    value:
+      type: object
+      properties:
+        id:       { number: 1, type: string, protoType: string }
+        user_id:  { number: 2, description: Send to one user., type: string, protoType: string, oneof: target, jsonName: uid }
+        group_id: { number: 3, deprecation: {}, type: string, protoType: string, oneof: target }
+        at:       { number: 4, $ref: "#/components/messages/google.protobuf.Timestamp", oneof: schedule }
+        after:    { number: 5, $ref: "#/components/messages/google.protobuf.Duration", oneof: schedule }
+        priority: { number: 6, type: integer, protoType: int32, presence: explicit }
+      oneofs: { target: {}, schedule: {} }
+  - pointer: "#/components/messages/shop.v1.Notification/oneofs"
+    keyOrder: [target, schedule]

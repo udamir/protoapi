@@ -1,0 +1,10 @@
+edition = "2023";
+package shop.edt;
+option features.field_presence = IMPLICIT;
+
+message Item {
+  string name = 1;
+  int32  qty  = 2 [features.field_presence = EXPLICIT];
+  string code = 3 [features.field_presence = LEGACY_REQUIRED];
+  Item   next = 4;
+}

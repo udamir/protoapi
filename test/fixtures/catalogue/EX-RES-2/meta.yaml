@@ -1,0 +1,6 @@
+# EX-RES-2 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+# phase C (validation decision F-3): resolved packed / utf8Validation / jsonFormat keywords against the modern baseline
+title: extension ranges are merged
+expect:
+  - pointer: "#/components/messages/shop.legacy.Order"
+    value: { type: object, properties: {}, extensions: [[100, 299], [1000, 536870911]], jsonFormat: LEGACY_BEST_EFFORT }

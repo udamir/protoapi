@@ -1,0 +1,4142 @@
+{
+ "binary|all": {
+  "hash": "329971653c9eadce",
+  "buf": "ok"
+ },
+ "binary|referenced": {
+  "hash": "329971653c9eadce",
+  "buf": "ok"
+ },
+ "binary|user": {
+  "hash": "329971653c9eadce",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_custom_plugins|all": {
+  "hash": "8b00f0cfb712629f",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_custom_plugins|referenced": {
+  "hash": "8b00f0cfb712629f",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_custom_plugins|user": {
+  "hash": "8b00f0cfb712629f",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_enum_no_delete|all": {
+  "hash": "ad89b5cb07a3d15e",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_enum_no_delete|referenced": {
+  "hash": "ad89b5cb07a3d15e",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_enum_no_delete|user": {
+  "hash": "ad89b5cb07a3d15e",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_enum_same_json_format|all": {
+  "hash": "fc1bdff3aa127ab5",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_enum_same_json_format|referenced": {
+  "hash": "fc1bdff3aa127ab5",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_enum_same_json_format|user": {
+  "hash": "fc1bdff3aa127ab5",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_enum_same_type|all": {
+  "hash": "bd20f8b3872984c1",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_enum_same_type|referenced": {
+  "hash": "bd20f8b3872984c1",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_enum_same_type|user": {
+  "hash": "bd20f8b3872984c1",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_enum_value_no_delete_unless_name_reserved|all": {
+  "hash": "a3adc1e12d8e1c67",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_enum_value_no_delete_unless_name_reserved|referenced": {
+  "hash": "a3adc1e12d8e1c67",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_enum_value_no_delete_unless_name_reserved|user": {
+  "hash": "a3adc1e12d8e1c67",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_enum_value_no_delete_unless_number_reserved|all": {
+  "hash": "0c26645eb4805b16",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_enum_value_no_delete_unless_number_reserved|referenced": {
+  "hash": "0c26645eb4805b16",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_enum_value_no_delete_unless_number_reserved|user": {
+  "hash": "0c26645eb4805b16",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_enum_value_no_delete|all": {
+  "hash": "a575c54c50f9a500",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_enum_value_no_delete|referenced": {
+  "hash": "a575c54c50f9a500",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_enum_value_no_delete|user": {
+  "hash": "a575c54c50f9a500",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_enum_value_same_name|all": {
+  "hash": "be552a1fc157e1e7",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_enum_value_same_name|referenced": {
+  "hash": "be552a1fc157e1e7",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_enum_value_same_name|user": {
+  "hash": "be552a1fc157e1e7",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_extension_message_no_delete|all": {
+  "hash": "6baf8ae9e5752ada",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_extension_message_no_delete|referenced": {
+  "hash": "6baf8ae9e5752ada",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_extension_message_no_delete|user": {
+  "hash": "6baf8ae9e5752ada",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_extension_no_delete|all": {
+  "hash": "16d8c10266d2168f",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_extension_no_delete|referenced": {
+  "hash": "16d8c10266d2168f",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_extension_no_delete|user": {
+  "hash": "16d8c10266d2168f",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_no_delete_unless_name_reserved|all": {
+  "hash": "107e2b7875bbc042",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_no_delete_unless_name_reserved|referenced": {
+  "hash": "107e2b7875bbc042",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_no_delete_unless_name_reserved|user": {
+  "hash": "107e2b7875bbc042",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_no_delete_unless_number_reserved|all": {
+  "hash": "d39949853980dea2",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_no_delete_unless_number_reserved|referenced": {
+  "hash": "d39949853980dea2",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_no_delete_unless_number_reserved|user": {
+  "hash": "d39949853980dea2",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_no_delete|all": {
+  "hash": "8e27839a34cf479b",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_no_delete|referenced": {
+  "hash": "8e27839a34cf479b",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_no_delete|user": {
+  "hash": "8e27839a34cf479b",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_cardinality|all": {
+  "hash": "4a3be9d317299808",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_cardinality|referenced": {
+  "hash": "4a3be9d317299808",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_cardinality|user": {
+  "hash": "4a3be9d317299808",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_cpp_string_type|all": {
+  "hash": "54485e314eacfaec",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_cpp_string_type|referenced": {
+  "hash": "54485e314eacfaec",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_cpp_string_type|user": {
+  "hash": "54485e314eacfaec",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_ctype|all": {
+  "hash": "894deba89ea46de1",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_ctype|referenced": {
+  "hash": "894deba89ea46de1",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_ctype|user": {
+  "hash": "894deba89ea46de1",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_default|all": {
+  "hash": "1df09fefe56cba13",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_default|referenced": {
+  "hash": "1df09fefe56cba13",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_default|user": {
+  "hash": "1df09fefe56cba13",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_java_utf8_validation|all": {
+  "hash": "d834c2e63c018d9e",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_java_utf8_validation|referenced": {
+  "hash": "d834c2e63c018d9e",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_java_utf8_validation|user": {
+  "hash": "d834c2e63c018d9e",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_json_name|all": {
+  "hash": "96cbaeab5bd6d928",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_json_name|referenced": {
+  "hash": "96cbaeab5bd6d928",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_json_name|user": {
+  "hash": "96cbaeab5bd6d928",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_jstype|all": {
+  "hash": "64ee26b112c8fb42",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_jstype|referenced": {
+  "hash": "64ee26b112c8fb42",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_jstype|user": {
+  "hash": "64ee26b112c8fb42",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_label|all": {
+  "hash": "bbae23be2c246b42",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_label|referenced": {
+  "hash": "bbae23be2c246b42",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_label|user": {
+  "hash": "bbae23be2c246b42",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_name|all": {
+  "hash": "713b86e7ed5a9eac",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_name|referenced": {
+  "hash": "713b86e7ed5a9eac",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_name|user": {
+  "hash": "713b86e7ed5a9eac",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_oneof|all": {
+  "hash": "728dacbfbb6d2385",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_oneof|referenced": {
+  "hash": "728dacbfbb6d2385",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_oneof|user": {
+  "hash": "728dacbfbb6d2385",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_type|all": {
+  "hash": "414eb5fe45192046",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_type|referenced": {
+  "hash": "414eb5fe45192046",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_type|user": {
+  "hash": "414eb5fe45192046",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_utf8_validation|all": {
+  "hash": "b7bba6f623467b9b",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_utf8_validation|referenced": {
+  "hash": "b7bba6f623467b9b",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_same_utf8_validation|user": {
+  "hash": "b7bba6f623467b9b",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_wire_compatible_cardinality|all": {
+  "hash": "611be3cfd63ed9c3",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_wire_compatible_cardinality|referenced": {
+  "hash": "611be3cfd63ed9c3",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_wire_compatible_cardinality|user": {
+  "hash": "611be3cfd63ed9c3",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_wire_compatible_type|all": {
+  "hash": "3178b940778b9476",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_wire_compatible_type|referenced": {
+  "hash": "3178b940778b9476",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_wire_compatible_type|user": {
+  "hash": "3178b940778b9476",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_wire_json_compatible_cardinality|all": {
+  "hash": "611be3cfd63ed9c3",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_wire_json_compatible_cardinality|referenced": {
+  "hash": "611be3cfd63ed9c3",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_wire_json_compatible_cardinality|user": {
+  "hash": "611be3cfd63ed9c3",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_wire_json_compatible_type|all": {
+  "hash": "70fc0eb29380cbde",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_wire_json_compatible_type|referenced": {
+  "hash": "70fc0eb29380cbde",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_field_wire_json_compatible_type|user": {
+  "hash": "70fc0eb29380cbde",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_file_no_delete_ignores|all": {
+  "hash": "16cc45347b6f00b4",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_file_no_delete_ignores|referenced": {
+  "hash": "16cc45347b6f00b4",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_file_no_delete_ignores|user": {
+  "hash": "16cc45347b6f00b4",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_file_no_delete_unstable|all": {
+  "hash": "5fe1dcbc870f53f2",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_file_no_delete_unstable|referenced": {
+  "hash": "5fe1dcbc870f53f2",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_file_no_delete_unstable|user": {
+  "hash": "5fe1dcbc870f53f2",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_file_no_delete|all": {
+  "hash": "16cc45347b6f00b4",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_file_no_delete|referenced": {
+  "hash": "16cc45347b6f00b4",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_file_no_delete|user": {
+  "hash": "16cc45347b6f00b4",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_file_same_cc_enable_arenas_edition_2026|all": {
+  "hash": "a6aeb22782664f65",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_file_same_cc_enable_arenas_edition_2026|referenced": {
+  "hash": "a6aeb22782664f65",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_file_same_cc_enable_arenas_edition_2026|user": {
+  "hash": "a6aeb22782664f65",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_file_same_package|all": {
+  "hash": "257a4da69779571e",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_file_same_package|referenced": {
+  "hash": "257a4da69779571e",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_file_same_package|user": {
+  "hash": "257a4da69779571e",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_file_same_syntax|all": {
+  "hash": "df8b0da432df3cf8",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_file_same_syntax|referenced": {
+  "hash": "df8b0da432df3cf8",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_file_same_syntax|user": {
+  "hash": "df8b0da432df3cf8",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_file_same_values|all": {
+  "hash": "b3e3ae3b4c5e4eb1",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_file_same_values|referenced": {
+  "hash": "b3e3ae3b4c5e4eb1",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_file_same_values|user": {
+  "hash": "b3e3ae3b4c5e4eb1",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_ignore_unstable_packages_delete_file|all": {
+  "hash": "054cbae609764743",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_ignore_unstable_packages_delete_file|referenced": {
+  "hash": "054cbae609764743",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_ignore_unstable_packages_delete_file|user": {
+  "hash": "054cbae609764743",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_ignore_unstable_packages_false|all": {
+  "hash": "8184924ca311eb2f",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_ignore_unstable_packages_false|referenced": {
+  "hash": "8184924ca311eb2f",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_ignore_unstable_packages_false|user": {
+  "hash": "8184924ca311eb2f",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_ignore_unstable_packages_true|all": {
+  "hash": "8184924ca311eb2f",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_ignore_unstable_packages_true|referenced": {
+  "hash": "8184924ca311eb2f",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_ignore_unstable_packages_true|user": {
+  "hash": "8184924ca311eb2f",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_int_enum|all": {
+  "hash": "63df39892f3f9b33",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_int_enum|referenced": {
+  "hash": "63df39892f3f9b33",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_int_enum|user": {
+  "hash": "63df39892f3f9b33",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_message_enum|all": {
+  "hash": "9b29eedac36f4b98",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_message_enum|referenced": {
+  "hash": "9b29eedac36f4b98",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_message_enum|user": {
+  "hash": "9b29eedac36f4b98",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_message_int|all": {
+  "hash": "9c6c5b4184df9a32",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_message_int|referenced": {
+  "hash": "9c6c5b4184df9a32",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_message_int|user": {
+  "hash": "9c6c5b4184df9a32",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_message_message|all": {
+  "hash": "58e07e951b5ebf99",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_message_message|referenced": {
+  "hash": "58e07e951b5ebf99",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_message_message|user": {
+  "hash": "58e07e951b5ebf99",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_message_no_delete|all": {
+  "hash": "6c4178b5095de8b9",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_message_no_delete|referenced": {
+  "hash": "6c4178b5095de8b9",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_message_no_delete|user": {
+  "hash": "6c4178b5095de8b9",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_message_same_json_format|all": {
+  "hash": "7ff2e125fe390f01",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_message_same_json_format|referenced": {
+  "hash": "7ff2e125fe390f01",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_message_same_json_format|user": {
+  "hash": "7ff2e125fe390f01",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_message_same_required_fields|all": {
+  "hash": "cca7bc51d2a5cd6c",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_message_same_required_fields|referenced": {
+  "hash": "cca7bc51d2a5cd6c",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_message_same_required_fields|user": {
+  "hash": "cca7bc51d2a5cd6c",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_message_same_values|all": {
+  "hash": "a8b825ae457ddf14",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_message_same_values|referenced": {
+  "hash": "a8b825ae457ddf14",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_message_same_values|user": {
+  "hash": "a8b825ae457ddf14",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_oneof_no_delete|all": {
+  "hash": "f42dbdaf972b4e41",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_oneof_no_delete|referenced": {
+  "hash": "f42dbdaf972b4e41",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_oneof_no_delete|user": {
+  "hash": "f42dbdaf972b4e41",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_package_extension_no_delete|all": {
+  "hash": "16d8c10266d2168f",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_package_extension_no_delete|referenced": {
+  "hash": "16d8c10266d2168f",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_package_extension_no_delete|user": {
+  "hash": "16d8c10266d2168f",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_package_no_delete|all": {
+  "hash": "e669f7b2e1182669",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_package_no_delete|referenced": {
+  "hash": "e669f7b2e1182669",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_package_no_delete|user": {
+  "hash": "e669f7b2e1182669",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_package_service_no_delete|all": {
+  "hash": "1764070b1278e9b4",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_package_service_no_delete|referenced": {
+  "hash": "1764070b1278e9b4",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_package_service_no_delete|user": {
+  "hash": "1764070b1278e9b4",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_policy_disablebuiltin|all": {
+  "hash": "6f112bb562034b20",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_policy_disablebuiltin|referenced": {
+  "hash": "6f112bb562034b20",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_policy_disablebuiltin|user": {
+  "hash": "6f112bb562034b20",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_policy_empty|all": {
+  "hash": "6f112bb562034b20",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_policy_empty|referenced": {
+  "hash": "6f112bb562034b20",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_policy_empty|user": {
+  "hash": "6f112bb562034b20",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_policy_local|all": {
+  "hash": "8b00f0cfb712629f",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_policy_local|referenced": {
+  "hash": "8b00f0cfb712629f",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_policy_local|user": {
+  "hash": "8b00f0cfb712629f",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_reserved_enum_no_delete|all": {
+  "hash": "8f43a7ff450d8e68",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_reserved_enum_no_delete|referenced": {
+  "hash": "8f43a7ff450d8e68",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_reserved_enum_no_delete|user": {
+  "hash": "8f43a7ff450d8e68",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_reserved_message_no_delete|all": {
+  "hash": "2f281dc9bd1f827f",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_reserved_message_no_delete|referenced": {
+  "hash": "2f281dc9bd1f827f",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_reserved_message_no_delete|user": {
+  "hash": "2f281dc9bd1f827f",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_rpc_no_delete|all": {
+  "hash": "72fcc28979f5efa1",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_rpc_no_delete|referenced": {
+  "hash": "72fcc28979f5efa1",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_rpc_no_delete|user": {
+  "hash": "72fcc28979f5efa1",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_rpc_same_values|all": {
+  "hash": "6c7030a73d6de669",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_rpc_same_values|referenced": {
+  "hash": "6c7030a73d6de669",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_rpc_same_values|user": {
+  "hash": "6c7030a73d6de669",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_service_no_delete|all": {
+  "hash": "f7ab2085f73fc358",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_service_no_delete|referenced": {
+  "hash": "f7ab2085f73fc358",
+  "buf": "ok"
+ },
+ "buf-breaking/current/breaking_service_no_delete|user": {
+  "hash": "f7ab2085f73fc358",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_custom_plugins|all": {
+  "hash": "9994cd5c5c79f642",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_custom_plugins|referenced": {
+  "hash": "9994cd5c5c79f642",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_custom_plugins|user": {
+  "hash": "9994cd5c5c79f642",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_enum_no_delete|all": {
+  "hash": "116edf0abef8dfd2",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_enum_no_delete|referenced": {
+  "hash": "116edf0abef8dfd2",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_enum_no_delete|user": {
+  "hash": "116edf0abef8dfd2",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_enum_same_json_format|all": {
+  "hash": "eeef15ecc9680473",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_enum_same_json_format|referenced": {
+  "hash": "eeef15ecc9680473",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_enum_same_json_format|user": {
+  "hash": "eeef15ecc9680473",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_enum_same_type|all": {
+  "hash": "e7a1eebb06bee057",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_enum_same_type|referenced": {
+  "hash": "e7a1eebb06bee057",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_enum_same_type|user": {
+  "hash": "e7a1eebb06bee057",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_enum_value_no_delete_unless_name_reserved|all": {
+  "hash": "942779966b8734ce",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_enum_value_no_delete_unless_name_reserved|referenced": {
+  "hash": "942779966b8734ce",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_enum_value_no_delete_unless_name_reserved|user": {
+  "hash": "942779966b8734ce",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_enum_value_no_delete_unless_number_reserved|all": {
+  "hash": "942779966b8734ce",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_enum_value_no_delete_unless_number_reserved|referenced": {
+  "hash": "942779966b8734ce",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_enum_value_no_delete_unless_number_reserved|user": {
+  "hash": "942779966b8734ce",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_enum_value_no_delete|all": {
+  "hash": "942779966b8734ce",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_enum_value_no_delete|referenced": {
+  "hash": "942779966b8734ce",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_enum_value_no_delete|user": {
+  "hash": "942779966b8734ce",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_enum_value_same_name|all": {
+  "hash": "c2507fa9baa23550",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_enum_value_same_name|referenced": {
+  "hash": "c2507fa9baa23550",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_enum_value_same_name|user": {
+  "hash": "c2507fa9baa23550",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_extension_message_no_delete|all": {
+  "hash": "451c10a10ff02944",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_extension_message_no_delete|referenced": {
+  "hash": "451c10a10ff02944",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_extension_message_no_delete|user": {
+  "hash": "451c10a10ff02944",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_extension_no_delete|all": {
+  "hash": "97b8135e5586dbb6",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_extension_no_delete|referenced": {
+  "hash": "97b8135e5586dbb6",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_extension_no_delete|user": {
+  "hash": "97b8135e5586dbb6",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_no_delete_unless_name_reserved|all": {
+  "hash": "0261f3e4aac138ce",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_no_delete_unless_name_reserved|referenced": {
+  "hash": "0261f3e4aac138ce",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_no_delete_unless_name_reserved|user": {
+  "hash": "0261f3e4aac138ce",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_no_delete_unless_number_reserved|all": {
+  "hash": "2416cbc44c65e393",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_no_delete_unless_number_reserved|referenced": {
+  "hash": "2416cbc44c65e393",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_no_delete_unless_number_reserved|user": {
+  "hash": "2416cbc44c65e393",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_no_delete|all": {
+  "hash": "0261f3e4aac138ce",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_no_delete|referenced": {
+  "hash": "0261f3e4aac138ce",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_no_delete|user": {
+  "hash": "0261f3e4aac138ce",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_cardinality|all": {
+  "hash": "c49511c8d76ba4a5",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_cardinality|referenced": {
+  "hash": "c49511c8d76ba4a5",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_cardinality|user": {
+  "hash": "c49511c8d76ba4a5",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_cpp_string_type|all": {
+  "hash": "d6088aa3088bf2bd",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_cpp_string_type|referenced": {
+  "hash": "d6088aa3088bf2bd",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_cpp_string_type|user": {
+  "hash": "d6088aa3088bf2bd",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_ctype|all": {
+  "hash": "02993a9e23cb7e27",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_ctype|referenced": {
+  "hash": "02993a9e23cb7e27",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_ctype|user": {
+  "hash": "02993a9e23cb7e27",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_default|all": {
+  "hash": "040150e6d328484a",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_default|referenced": {
+  "hash": "040150e6d328484a",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_default|user": {
+  "hash": "040150e6d328484a",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_java_utf8_validation|all": {
+  "hash": "1aedb623a2cf3790",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_java_utf8_validation|referenced": {
+  "hash": "1aedb623a2cf3790",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_java_utf8_validation|user": {
+  "hash": "1aedb623a2cf3790",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_json_name|all": {
+  "hash": "49318f0f7af3d760",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_json_name|referenced": {
+  "hash": "49318f0f7af3d760",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_json_name|user": {
+  "hash": "49318f0f7af3d760",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_jstype|all": {
+  "hash": "584314d5f7c5ab43",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_jstype|referenced": {
+  "hash": "584314d5f7c5ab43",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_jstype|user": {
+  "hash": "584314d5f7c5ab43",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_label|all": {
+  "hash": "7957faea9d60619d",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_label|referenced": {
+  "hash": "7957faea9d60619d",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_label|user": {
+  "hash": "7957faea9d60619d",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_name|all": {
+  "hash": "918035bf050f0612",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_name|referenced": {
+  "hash": "918035bf050f0612",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_name|user": {
+  "hash": "918035bf050f0612",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_oneof|all": {
+  "hash": "bc225a2e9623691d",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_oneof|referenced": {
+  "hash": "bc225a2e9623691d",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_oneof|user": {
+  "hash": "bc225a2e9623691d",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_type|all": {
+  "hash": "e5a1ddb53fad29c0",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_type|referenced": {
+  "hash": "e5a1ddb53fad29c0",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_type|user": {
+  "hash": "e5a1ddb53fad29c0",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_utf8_validation|all": {
+  "hash": "3e30048a7769d8aa",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_utf8_validation|referenced": {
+  "hash": "3e30048a7769d8aa",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_same_utf8_validation|user": {
+  "hash": "3e30048a7769d8aa",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_wire_compatible_cardinality|all": {
+  "hash": "9f2482469d17b5b6",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_wire_compatible_cardinality|referenced": {
+  "hash": "9f2482469d17b5b6",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_wire_compatible_cardinality|user": {
+  "hash": "9f2482469d17b5b6",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_wire_compatible_type|all": {
+  "hash": "53087ef5564d214d",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_wire_compatible_type|referenced": {
+  "hash": "53087ef5564d214d",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_wire_compatible_type|user": {
+  "hash": "53087ef5564d214d",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_wire_json_compatible_cardinality|all": {
+  "hash": "9f2482469d17b5b6",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_wire_json_compatible_cardinality|referenced": {
+  "hash": "9f2482469d17b5b6",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_wire_json_compatible_cardinality|user": {
+  "hash": "9f2482469d17b5b6",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_wire_json_compatible_type|all": {
+  "hash": "c9a92f2f82db81d8",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_wire_json_compatible_type|referenced": {
+  "hash": "c9a92f2f82db81d8",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_field_wire_json_compatible_type|user": {
+  "hash": "c9a92f2f82db81d8",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_file_no_delete_ignores|all": {
+  "hash": "b0f6648f6e1e6cc8",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_file_no_delete_ignores|referenced": {
+  "hash": "b0f6648f6e1e6cc8",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_file_no_delete_ignores|user": {
+  "hash": "b0f6648f6e1e6cc8",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_file_no_delete_unstable|all": {
+  "hash": "a367b3a25ef52b9a",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_file_no_delete_unstable|referenced": {
+  "hash": "a367b3a25ef52b9a",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_file_no_delete_unstable|user": {
+  "hash": "a367b3a25ef52b9a",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_file_no_delete|all": {
+  "hash": "abc4bfd301667265",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_file_no_delete|referenced": {
+  "hash": "abc4bfd301667265",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_file_no_delete|user": {
+  "hash": "abc4bfd301667265",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_file_same_cc_enable_arenas_edition_2026|all": {
+  "hash": "3c71bba060e67e54",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_file_same_cc_enable_arenas_edition_2026|referenced": {
+  "hash": "3c71bba060e67e54",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_file_same_cc_enable_arenas_edition_2026|user": {
+  "hash": "3c71bba060e67e54",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_file_same_package|all": {
+  "hash": "abc4bfd301667265",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_file_same_package|referenced": {
+  "hash": "abc4bfd301667265",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_file_same_package|user": {
+  "hash": "abc4bfd301667265",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_file_same_syntax|all": {
+  "hash": "8369834bf27c2ed4",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_file_same_syntax|referenced": {
+  "hash": "8369834bf27c2ed4",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_file_same_syntax|user": {
+  "hash": "8369834bf27c2ed4",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_file_same_values|all": {
+  "hash": "013a8edd22bfbaae",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_file_same_values|referenced": {
+  "hash": "013a8edd22bfbaae",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_file_same_values|user": {
+  "hash": "013a8edd22bfbaae",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_ignore_unstable_packages_delete_file|all": {
+  "hash": "f4a4246beb2c428a",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_ignore_unstable_packages_delete_file|referenced": {
+  "hash": "f4a4246beb2c428a",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_ignore_unstable_packages_delete_file|user": {
+  "hash": "f4a4246beb2c428a",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_ignore_unstable_packages_false|all": {
+  "hash": "b872a395dc347a76",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_ignore_unstable_packages_false|referenced": {
+  "hash": "b872a395dc347a76",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_ignore_unstable_packages_false|user": {
+  "hash": "b872a395dc347a76",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_ignore_unstable_packages_true|all": {
+  "hash": "b872a395dc347a76",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_ignore_unstable_packages_true|referenced": {
+  "hash": "b872a395dc347a76",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_ignore_unstable_packages_true|user": {
+  "hash": "b872a395dc347a76",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_int_enum|all": {
+  "hash": "6f19d6bbde9e8045",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_int_enum|referenced": {
+  "hash": "6f19d6bbde9e8045",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_int_enum|user": {
+  "hash": "6f19d6bbde9e8045",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_message_enum|all": {
+  "hash": "f5f3e47bf984e745",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_message_enum|referenced": {
+  "hash": "f5f3e47bf984e745",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_message_enum|user": {
+  "hash": "f5f3e47bf984e745",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_message_int|all": {
+  "hash": "502784490e4cfbb1",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_message_int|referenced": {
+  "hash": "502784490e4cfbb1",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_message_int|user": {
+  "hash": "502784490e4cfbb1",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_message_message|all": {
+  "hash": "b33f33d43554e33e",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_message_message|referenced": {
+  "hash": "b33f33d43554e33e",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_message_message|user": {
+  "hash": "b33f33d43554e33e",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_message_no_delete|all": {
+  "hash": "b6ac6f44ddfa79a4",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_message_no_delete|referenced": {
+  "hash": "b6ac6f44ddfa79a4",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_message_no_delete|user": {
+  "hash": "b6ac6f44ddfa79a4",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_message_same_json_format|all": {
+  "hash": "fc97c6439866bd57",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_message_same_json_format|referenced": {
+  "hash": "fc97c6439866bd57",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_message_same_json_format|user": {
+  "hash": "fc97c6439866bd57",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_message_same_required_fields|all": {
+  "hash": "e0aeb2e4d28e5aa0",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_message_same_required_fields|referenced": {
+  "hash": "e0aeb2e4d28e5aa0",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_message_same_required_fields|user": {
+  "hash": "e0aeb2e4d28e5aa0",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_message_same_values|all": {
+  "hash": "d7facddff093ada7",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_message_same_values|referenced": {
+  "hash": "d7facddff093ada7",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_message_same_values|user": {
+  "hash": "d7facddff093ada7",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_oneof_no_delete|all": {
+  "hash": "6d523ad82c9e7da4",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_oneof_no_delete|referenced": {
+  "hash": "6d523ad82c9e7da4",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_oneof_no_delete|user": {
+  "hash": "6d523ad82c9e7da4",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_package_extension_no_delete|all": {
+  "hash": "97b8135e5586dbb6",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_package_extension_no_delete|referenced": {
+  "hash": "97b8135e5586dbb6",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_package_extension_no_delete|user": {
+  "hash": "97b8135e5586dbb6",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_package_no_delete|all": {
+  "hash": "52a390f332bc0a00",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_package_no_delete|referenced": {
+  "hash": "52a390f332bc0a00",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_package_no_delete|user": {
+  "hash": "52a390f332bc0a00",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_package_service_no_delete|all": {
+  "hash": "63aeb33d1f634049",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_package_service_no_delete|referenced": {
+  "hash": "63aeb33d1f634049",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_package_service_no_delete|user": {
+  "hash": "63aeb33d1f634049",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_policy_disablebuiltin|all": {
+  "hash": "6f112bb562034b20",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_policy_disablebuiltin|referenced": {
+  "hash": "6f112bb562034b20",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_policy_disablebuiltin|user": {
+  "hash": "6f112bb562034b20",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_policy_empty|all": {
+  "hash": "1df20a588d4f76e0",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_policy_empty|referenced": {
+  "hash": "1df20a588d4f76e0",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_policy_empty|user": {
+  "hash": "1df20a588d4f76e0",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_policy_local|all": {
+  "hash": "9994cd5c5c79f642",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_policy_local|referenced": {
+  "hash": "9994cd5c5c79f642",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_policy_local|user": {
+  "hash": "9994cd5c5c79f642",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_reserved_enum_no_delete|all": {
+  "hash": "ab22d155db3c485c",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_reserved_enum_no_delete|referenced": {
+  "hash": "ab22d155db3c485c",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_reserved_enum_no_delete|user": {
+  "hash": "ab22d155db3c485c",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_reserved_message_no_delete|all": {
+  "hash": "08fbff0fe34aa1e0",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_reserved_message_no_delete|referenced": {
+  "hash": "08fbff0fe34aa1e0",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_reserved_message_no_delete|user": {
+  "hash": "08fbff0fe34aa1e0",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_rpc_no_delete|all": {
+  "hash": "05987f514648f443",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_rpc_no_delete|referenced": {
+  "hash": "05987f514648f443",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_rpc_no_delete|user": {
+  "hash": "05987f514648f443",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_rpc_same_values|all": {
+  "hash": "7b671f22f6d56c78",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_rpc_same_values|referenced": {
+  "hash": "7b671f22f6d56c78",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_rpc_same_values|user": {
+  "hash": "7b671f22f6d56c78",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_service_no_delete|all": {
+  "hash": "9f8654a79bacef87",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_service_no_delete|referenced": {
+  "hash": "9f8654a79bacef87",
+  "buf": "ok"
+ },
+ "buf-breaking/previous/breaking_service_no_delete|user": {
+  "hash": "9f8654a79bacef87",
+  "buf": "ok"
+ },
+ "bundle|all": {
+  "hash": "f2e407a92bebaacc",
+  "buf": "ok"
+ },
+ "bundle|referenced": {
+  "hash": "f2e407a92bebaacc",
+  "buf": "ok"
+ },
+ "bundle|user": {
+  "hash": "f2e407a92bebaacc",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.10|all": {
+  "hash": "6c263762d5ec3728",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.10|referenced": {
+  "hash": "6c263762d5ec3728",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.10|user": {
+  "hash": "6c263762d5ec3728",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.11|all": {
+  "hash": "899a171be9d321b4",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.11|referenced": {
+  "hash": "899a171be9d321b4",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.11|user": {
+  "hash": "899a171be9d321b4",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.13|all": {
+  "hash": "56e9fefd4a60aa6f",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.13|referenced": {
+  "hash": "56e9fefd4a60aa6f",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.13|user": {
+  "hash": "56e9fefd4a60aa6f",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.14|all": {
+  "hash": "3d67efbee46784a6",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.14|referenced": {
+  "hash": "3d67efbee46784a6",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.14|user": {
+  "hash": "3d67efbee46784a6",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.15|all": {
+  "hash": "31ccdddb4ac9d367",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.15|referenced": {
+  "hash": "31ccdddb4ac9d367",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.15|user": {
+  "hash": "31ccdddb4ac9d367",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.16|all": {
+  "hash": "3febfd46bf656e60",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.16|referenced": {
+  "hash": "3febfd46bf656e60",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.16|user": {
+  "hash": "3febfd46bf656e60",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.17|all": {
+  "hash": "ac267e823faaa1b4",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.17|referenced": {
+  "hash": "ac267e823faaa1b4",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.17|user": {
+  "hash": "ac267e823faaa1b4",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.18|all": {
+  "hash": "10989df0da1e4231",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.18|referenced": {
+  "hash": "10989df0da1e4231",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.18|user": {
+  "hash": "10989df0da1e4231",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.19|all": {
+  "hash": "f49a6b08d149f16e",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.19|referenced": {
+  "hash": "f49a6b08d149f16e",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.19|user": {
+  "hash": "f49a6b08d149f16e",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.1|all": {
+  "hash": "3a4938ccd008b6d0",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.1|referenced": {
+  "hash": "3a4938ccd008b6d0",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.1|user": {
+  "hash": "3a4938ccd008b6d0",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.22|all": {
+  "hash": "9ccf08abc394981e",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.22|referenced": {
+  "hash": "9ccf08abc394981e",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.22|user": {
+  "hash": "9ccf08abc394981e",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.23|all": {
+  "hash": "480573e065f7b5ba",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.23|referenced": {
+  "hash": "480573e065f7b5ba",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.23|user": {
+  "hash": "480573e065f7b5ba",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.2|all": {
+  "hash": "f21781408bd3f0c4",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.2|referenced": {
+  "hash": "f21781408bd3f0c4",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.2|user": {
+  "hash": "f21781408bd3f0c4",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.3|all": {
+  "hash": "1e41f4638f9da37e",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.3|referenced": {
+  "hash": "1e41f4638f9da37e",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.3|user": {
+  "hash": "1e41f4638f9da37e",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.4|all": {
+  "hash": "3e616a4214bde557",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.4|referenced": {
+  "hash": "3e616a4214bde557",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.4|user": {
+  "hash": "3e616a4214bde557",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.6|all": {
+  "hash": "97b38b092e00e7f6",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.6|referenced": {
+  "hash": "97b38b092e00e7f6",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.6|user": {
+  "hash": "97b38b092e00e7f6",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.7|all": {
+  "hash": "63a7f5821e3c4e98",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.7|referenced": {
+  "hash": "63a7f5821e3c4e98",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.7|user": {
+  "hash": "63a7f5821e3c4e98",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.8|all": {
+  "hash": "6460f9456514062d",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.8|referenced": {
+  "hash": "6460f9456514062d",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.8|user": {
+  "hash": "6460f9456514062d",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.9|all": {
+  "hash": "4f007d544a4956aa",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.9|referenced": {
+  "hash": "4f007d544a4956aa",
+  "buf": "ok"
+ },
+ "cases/annotations/PB-3.9|user": {
+  "hash": "4f007d544a4956aa",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-1|all": {
+  "hash": "56dbb64e50003a13",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-1|referenced": {
+  "hash": "56dbb64e50003a13",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-1|user": {
+  "hash": "56dbb64e50003a13",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-2|all": {
+  "hash": "0221c010f0503c5c",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-2|referenced": {
+  "hash": "0221c010f0503c5c",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-2|user": {
+  "hash": "0221c010f0503c5c",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-3|all": {
+  "hash": "39b1ec48b367e8a4",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-3|referenced": {
+  "hash": "39b1ec48b367e8a4",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-3|user": {
+  "hash": "39b1ec48b367e8a4",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-4|all": {
+  "hash": "564ff95439511f94",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-4|referenced": {
+  "hash": "564ff95439511f94",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-4|user": {
+  "hash": "564ff95439511f94",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-5|all": {
+  "hash": "5d1a19c2a97fe1a9",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-5|referenced": {
+  "hash": "5d1a19c2a97fe1a9",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-5|user": {
+  "hash": "5d1a19c2a97fe1a9",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-6|all": {
+  "hash": "e45535ca25c8946f",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-6|referenced": {
+  "hash": "e45535ca25c8946f",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-6|user": {
+  "hash": "e45535ca25c8946f",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-7|all": {
+  "hash": "e849d7b21d8d5c84",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-7|referenced": {
+  "hash": "e849d7b21d8d5c84",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-7|user": {
+  "hash": "e849d7b21d8d5c84",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-8|all": {
+  "hash": "46ce88ffaeb9c706",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-8|referenced": {
+  "hash": "46ce88ffaeb9c706",
+  "buf": "ok"
+ },
+ "cases/features/FEAT-8|user": {
+  "hash": "46ce88ffaeb9c706",
+  "buf": "ok"
+ },
+ "cases/frontend/TXT-1|all": {
+  "hash": "fb99269cdaf0d11a",
+  "buf": "ok"
+ },
+ "cases/frontend/TXT-1|referenced": {
+  "hash": "fb99269cdaf0d11a",
+  "buf": "ok"
+ },
+ "cases/frontend/TXT-1|user": {
+  "hash": "fb99269cdaf0d11a",
+  "buf": "ok"
+ },
+ "cases/frontend/TXT-2|all": {
+  "hash": "acbf3ef57983111e",
+  "buf": "ok"
+ },
+ "cases/frontend/TXT-2|referenced": {
+  "hash": "acbf3ef57983111e",
+  "buf": "ok"
+ },
+ "cases/frontend/TXT-2|user": {
+  "hash": "acbf3ef57983111e",
+  "buf": "ok"
+ },
+ "cases/positions/POS-10|all": {
+  "hash": "c02347fb69d950ee",
+  "buf": "ok"
+ },
+ "cases/positions/POS-10|referenced": {
+  "hash": "c02347fb69d950ee",
+  "buf": "ok"
+ },
+ "cases/positions/POS-10|user": {
+  "hash": "c02347fb69d950ee",
+  "buf": "ok"
+ },
+ "cases/positions/POS-1|all": {
+  "hash": "47a79d44d237c7d1",
+  "buf": "ok"
+ },
+ "cases/positions/POS-1|referenced": {
+  "hash": "47a79d44d237c7d1",
+  "buf": "ok"
+ },
+ "cases/positions/POS-1|user": {
+  "hash": "47a79d44d237c7d1",
+  "buf": "ok"
+ },
+ "cases/positions/POS-2|all": {
+  "hash": "05abb0eb30fbe3be",
+  "buf": "ok"
+ },
+ "cases/positions/POS-2|referenced": {
+  "hash": "05abb0eb30fbe3be",
+  "buf": "ok"
+ },
+ "cases/positions/POS-2|user": {
+  "hash": "05abb0eb30fbe3be",
+  "buf": "ok"
+ },
+ "cases/positions/POS-3|all": {
+  "hash": "b540be76d1241cae",
+  "buf": "ok"
+ },
+ "cases/positions/POS-3|referenced": {
+  "hash": "b540be76d1241cae",
+  "buf": "ok"
+ },
+ "cases/positions/POS-3|user": {
+  "hash": "b540be76d1241cae",
+  "buf": "ok"
+ },
+ "cases/positions/POS-4|all": {
+  "hash": "b540be76d1241cae",
+  "buf": "ok"
+ },
+ "cases/positions/POS-4|referenced": {
+  "hash": "b540be76d1241cae",
+  "buf": "ok"
+ },
+ "cases/positions/POS-4|user": {
+  "hash": "b540be76d1241cae",
+  "buf": "ok"
+ },
+ "cases/positions/POS-5|all": {
+  "hash": "d25c4812d934cebb",
+  "buf": "ok"
+ },
+ "cases/positions/POS-5|referenced": {
+  "hash": "d25c4812d934cebb",
+  "buf": "ok"
+ },
+ "cases/positions/POS-5|user": {
+  "hash": "d25c4812d934cebb",
+  "buf": "ok"
+ },
+ "cases/positions/POS-6|all": {
+  "hash": "f318c63b3d3b0484",
+  "buf": "ok"
+ },
+ "cases/positions/POS-6|referenced": {
+  "hash": "f318c63b3d3b0484",
+  "buf": "ok"
+ },
+ "cases/positions/POS-6|user": {
+  "hash": "f318c63b3d3b0484",
+  "buf": "ok"
+ },
+ "cases/positions/POS-7|all": {
+  "hash": "b540be76d1241cae",
+  "buf": "ok"
+ },
+ "cases/positions/POS-7|referenced": {
+  "hash": "b540be76d1241cae",
+  "buf": "ok"
+ },
+ "cases/positions/POS-7|user": {
+  "hash": "b540be76d1241cae",
+  "buf": "ok"
+ },
+ "cases/positions/POS-8|all": {
+  "hash": "5a7e52abf35faf94",
+  "buf": "ok"
+ },
+ "cases/positions/POS-8|referenced": {
+  "hash": "5a7e52abf35faf94",
+  "buf": "ok"
+ },
+ "cases/positions/POS-8|user": {
+  "hash": "5a7e52abf35faf94",
+  "buf": "ok"
+ },
+ "cases/positions/POS-9|all": {
+  "hash": "5623eb04752c4c53",
+  "buf": "ok"
+ },
+ "cases/positions/POS-9|referenced": {
+  "hash": "5623eb04752c4c53",
+  "buf": "ok"
+ },
+ "cases/positions/POS-9|user": {
+  "hash": "5623eb04752c4c53",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.12|all": {
+  "hash": "6dc5b726ff3e4baa",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.12|referenced": {
+  "hash": "f87a732b95a70f8e",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.12|user": {
+  "hash": "6dc5b726ff3e4baa",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.15|all": {
+  "hash": "130df1114194d1e7",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.15|referenced": {
+  "hash": "c2f59c435a38b478",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.15|user": {
+  "hash": "130df1114194d1e7",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.16|all": {
+  "hash": "813bfc49e203815a",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.16|referenced": {
+  "hash": "813bfc49e203815a",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.16|user": {
+  "hash": "813bfc49e203815a",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.17|all": {
+  "hash": "943851569ce6ae96",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.17|referenced": {
+  "hash": "7591119aa94d68d4",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.17|user": {
+  "hash": "943851569ce6ae96",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.1|all": {
+  "hash": "3915d2fe5e0e2867",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.1|referenced": {
+  "hash": "3915d2fe5e0e2867",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.1|user": {
+  "hash": "3915d2fe5e0e2867",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.20|all": {
+  "hash": "f40d794832e5ad7e",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.20|referenced": {
+  "hash": "f40d794832e5ad7e",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.20|user": {
+  "hash": "f40d794832e5ad7e",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.21|all": {
+  "hash": "20ce1b59a526d263",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.21|referenced": {
+  "hash": "20ce1b59a526d263",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.21|user": {
+  "hash": "20ce1b59a526d263",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.2|all": {
+  "hash": "680300eae51c0b8a",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.2|referenced": {
+  "hash": "680300eae51c0b8a",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.2|user": {
+  "hash": "680300eae51c0b8a",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.4|all": {
+  "hash": "fa1072942980c828",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.4|referenced": {
+  "hash": "fa1072942980c828",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.4|user": {
+  "hash": "fa1072942980c828",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.6|all": {
+  "hash": "ad7a559de7897414",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.6|referenced": {
+  "hash": "2484b350e9211a0c",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.6|user": {
+  "hash": "ad7a559de7897414",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.9|all": {
+  "hash": "370b7da446cc5014",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.9|referenced": {
+  "hash": "cde897ec220a186c",
+  "buf": "ok"
+ },
+ "cases/resolution/PB-4.9|user": {
+  "hash": "370b7da446cc5014",
+  "buf": "ok"
+ },
+ "cases/sourcemap/PB-6.18|all": {
+  "hash": "34280a07b99afc9a",
+  "buf": "ok"
+ },
+ "cases/sourcemap/PB-6.18|referenced": {
+  "hash": "34280a07b99afc9a",
+  "buf": "ok"
+ },
+ "cases/sourcemap/PB-6.18|user": {
+  "hash": "34280a07b99afc9a",
+  "buf": "ok"
+ },
+ "cases/sourcemap/PB-6.5|all": {
+  "hash": "c4c6fd707205fbc1",
+  "buf": "ok"
+ },
+ "cases/sourcemap/PB-6.5|referenced": {
+  "hash": "c4c6fd707205fbc1",
+  "buf": "ok"
+ },
+ "cases/sourcemap/PB-6.5|user": {
+  "hash": "c4c6fd707205fbc1",
+  "buf": "ok"
+ },
+ "cases/sourcemap/PB-6.6|all": {
+  "hash": "c4c6fd707205fbc1",
+  "buf": "ok"
+ },
+ "cases/sourcemap/PB-6.6|referenced": {
+  "hash": "c4c6fd707205fbc1",
+  "buf": "ok"
+ },
+ "cases/sourcemap/PB-6.6|user": {
+  "hash": "c4c6fd707205fbc1",
+  "buf": "ok"
+ },
+ "cases/sourcemap/PB-6.7|all": {
+  "hash": "c4c6fd707205fbc1",
+  "buf": "ok"
+ },
+ "cases/sourcemap/PB-6.7|referenced": {
+  "hash": "c4c6fd707205fbc1",
+  "buf": "ok"
+ },
+ "cases/sourcemap/PB-6.7|user": {
+  "hash": "c4c6fd707205fbc1",
+  "buf": "ok"
+ },
+ "cases/sourcemap/PB-6.8|all": {
+  "hash": "75f98ad50be3409a",
+  "buf": "ok"
+ },
+ "cases/sourcemap/PB-6.8|referenced": {
+  "hash": "75f98ad50be3409a",
+  "buf": "ok"
+ },
+ "cases/sourcemap/PB-6.8|user": {
+  "hash": "75f98ad50be3409a",
+  "buf": "ok"
+ },
+ "cases/sourcemap/PB-6.9|all": {
+  "hash": "63db59fa479672ab",
+  "buf": "ok"
+ },
+ "cases/sourcemap/PB-6.9|referenced": {
+  "hash": "63db59fa479672ab",
+  "buf": "ok"
+ },
+ "cases/sourcemap/PB-6.9|user": {
+  "hash": "63db59fa479672ab",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-103|all": {
+  "hash": "4254fa248f3bfdad",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-103|referenced": {
+  "hash": "4254fa248f3bfdad",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-103|user": {
+  "hash": "4254fa248f3bfdad",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-10|all": {
+  "hash": "e1d583fed3046e20",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-10|referenced": {
+  "hash": "e1d583fed3046e20",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-10|user": {
+  "hash": "e1d583fed3046e20",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-143|all": {
+  "hash": "c5ca9926603998cb",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-143|referenced": {
+  "hash": "c5ca9926603998cb",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-143|user": {
+  "hash": "c5ca9926603998cb",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-163|all": {
+  "hash": "54f66d7d76ed6436",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-163|referenced": {
+  "hash": "54f66d7d76ed6436",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-163|user": {
+  "hash": "54f66d7d76ed6436",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-16|all": {
+  "hash": "4e1fb41dca70c880",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-16|referenced": {
+  "hash": "4e1fb41dca70c880",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-16|user": {
+  "hash": "4e1fb41dca70c880",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-18|all": {
+  "hash": "b0a11a6b45a74f76",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-18|referenced": {
+  "hash": "b0a11a6b45a74f76",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-18|user": {
+  "hash": "b0a11a6b45a74f76",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-29|all": {
+  "hash": "d884a55edb6b3091",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-29|referenced": {
+  "hash": "d884a55edb6b3091",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-29|user": {
+  "hash": "d884a55edb6b3091",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-33|all": {
+  "hash": "95030bcc33004e3b",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-33|referenced": {
+  "hash": "95030bcc33004e3b",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-33|user": {
+  "hash": "95030bcc33004e3b",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-45|all": {
+  "hash": "f8310b2c8d9125be",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-45|referenced": {
+  "hash": "f8310b2c8d9125be",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-45|user": {
+  "hash": "f8310b2c8d9125be",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-59|all": {
+  "hash": "ddd4315c8b5f7863",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-59|referenced": {
+  "hash": "ddd4315c8b5f7863",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-59|user": {
+  "hash": "ddd4315c8b5f7863",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-66|all": {
+  "hash": "9a885a39c3f14e1f",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-66|referenced": {
+  "hash": "9a885a39c3f14e1f",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-66|user": {
+  "hash": "9a885a39c3f14e1f",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-78.editions|all": {
+  "hash": "55d6f9d916729543",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-78.editions|referenced": {
+  "hash": "55d6f9d916729543",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-78.editions|user": {
+  "hash": "55d6f9d916729543",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-78|all": {
+  "hash": "a9baf06a30aace30",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-78|referenced": {
+  "hash": "a9baf06a30aace30",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-78|user": {
+  "hash": "a9baf06a30aace30",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-7|all": {
+  "hash": "9d1e7ce745934ce4",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-7|referenced": {
+  "hash": "9d1e7ce745934ce4",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-7|user": {
+  "hash": "9d1e7ce745934ce4",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-95|all": {
+  "hash": "606954790786cba4",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-95|referenced": {
+  "hash": "606954790786cba4",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-95|user": {
+  "hash": "606954790786cba4",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-98|all": {
+  "hash": "05a4c2169f34f2b4",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-98|referenced": {
+  "hash": "05a4c2169f34f2b4",
+  "buf": "ok"
+ },
+ "cases/validation/VAL-98|user": {
+  "hash": "05a4c2169f34f2b4",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.10|all": {
+  "hash": "a1b9eb1fc3a97bf9",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.10|referenced": {
+  "hash": "a1b9eb1fc3a97bf9",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.10|user": {
+  "hash": "a1b9eb1fc3a97bf9",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.11|all": {
+  "hash": "032627b12bdeb83d",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.11|referenced": {
+  "hash": "032627b12bdeb83d",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.11|user": {
+  "hash": "032627b12bdeb83d",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.12|all": {
+  "hash": "88ae7f6fee981ffb",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.12|referenced": {
+  "hash": "88ae7f6fee981ffb",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.12|user": {
+  "hash": "88ae7f6fee981ffb",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.13|all": {
+  "hash": "62945956490ec5a8",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.13|referenced": {
+  "hash": "62945956490ec5a8",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.13|user": {
+  "hash": "62945956490ec5a8",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.14|all": {
+  "hash": "31e006cbdc8d772e",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.14|referenced": {
+  "hash": "31e006cbdc8d772e",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.14|user": {
+  "hash": "31e006cbdc8d772e",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.15|all": {
+  "hash": "33a499e72baec480",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.15|referenced": {
+  "hash": "33a499e72baec480",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.15|user": {
+  "hash": "33a499e72baec480",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.16|all": {
+  "hash": "d2783fdddb6472ff",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.16|referenced": {
+  "hash": "d2783fdddb6472ff",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.16|user": {
+  "hash": "d2783fdddb6472ff",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.17|all": {
+  "hash": "940f17a28a6b2ffc",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.17|referenced": {
+  "hash": "940f17a28a6b2ffc",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.17|user": {
+  "hash": "940f17a28a6b2ffc",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.18|all": {
+  "hash": "047b649719c05f6b",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.18|referenced": {
+  "hash": "047b649719c05f6b",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.18|user": {
+  "hash": "047b649719c05f6b",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.19|all": {
+  "hash": "d93e1ed94b961b60",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.19|referenced": {
+  "hash": "d93e1ed94b961b60",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.19|user": {
+  "hash": "d93e1ed94b961b60",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.1|all": {
+  "hash": "3221a584fc066e39",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.1|referenced": {
+  "hash": "3221a584fc066e39",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.1|user": {
+  "hash": "3221a584fc066e39",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.20|all": {
+  "hash": "60761ac0d96ded1d",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.20|referenced": {
+  "hash": "60761ac0d96ded1d",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.20|user": {
+  "hash": "60761ac0d96ded1d",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.21|all": {
+  "hash": "ed5e1710116c71a7",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.21|referenced": {
+  "hash": "ed5e1710116c71a7",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.21|user": {
+  "hash": "ed5e1710116c71a7",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.22|all": {
+  "hash": "aca3e50150ccb776",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.22|referenced": {
+  "hash": "aca3e50150ccb776",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.22|user": {
+  "hash": "aca3e50150ccb776",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.23|all": {
+  "hash": "7434266c010ae7b8",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.23|referenced": {
+  "hash": "7434266c010ae7b8",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.23|user": {
+  "hash": "7434266c010ae7b8",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.24|all": {
+  "hash": "5dccb635a30292c4",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.24|referenced": {
+  "hash": "5dccb635a30292c4",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.24|user": {
+  "hash": "5dccb635a30292c4",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.25|all": {
+  "hash": "62b45fcb2787adea",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.25|referenced": {
+  "hash": "62b45fcb2787adea",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.25|user": {
+  "hash": "62b45fcb2787adea",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.26|all": {
+  "hash": "7734b4388e93d6ab",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.26|referenced": {
+  "hash": "7734b4388e93d6ab",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.26|user": {
+  "hash": "7734b4388e93d6ab",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.27|all": {
+  "hash": "76273572f4db60b5",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.27|referenced": {
+  "hash": "76273572f4db60b5",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.27|user": {
+  "hash": "76273572f4db60b5",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.28|all": {
+  "hash": "82e6654a69c03073",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.28|referenced": {
+  "hash": "82e6654a69c03073",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.28|user": {
+  "hash": "82e6654a69c03073",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.29|all": {
+  "hash": "1082cd77b6d4c3ec",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.29|referenced": {
+  "hash": "1082cd77b6d4c3ec",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.29|user": {
+  "hash": "1082cd77b6d4c3ec",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.2|all": {
+  "hash": "ff89936500111dd7",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.2|referenced": {
+  "hash": "ff89936500111dd7",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.2|user": {
+  "hash": "ff89936500111dd7",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.31|all": {
+  "hash": "b2cd7218bcb5173b",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.31|referenced": {
+  "hash": "b2cd7218bcb5173b",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.31|user": {
+  "hash": "b2cd7218bcb5173b",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.32|all": {
+  "hash": "4ef722521dd6ce49",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.32|referenced": {
+  "hash": "4ef722521dd6ce49",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.32|user": {
+  "hash": "4ef722521dd6ce49",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.33|all": {
+  "hash": "2b05f3c9716579ec",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.33|referenced": {
+  "hash": "2b05f3c9716579ec",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.33|user": {
+  "hash": "2b05f3c9716579ec",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.36|all": {
+  "hash": "98014f9e23d92d6e",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.36|referenced": {
+  "hash": "98014f9e23d92d6e",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.36|user": {
+  "hash": "98014f9e23d92d6e",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.37|all": {
+  "hash": "e420dfa39be83096",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.37|referenced": {
+  "hash": "e420dfa39be83096",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.37|user": {
+  "hash": "e420dfa39be83096",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.38|all": {
+  "hash": "82b77614745978f1",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.38|referenced": {
+  "hash": "82b77614745978f1",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.38|user": {
+  "hash": "82b77614745978f1",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.39|all": {
+  "hash": "f3811747de6eabb3",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.39|referenced": {
+  "hash": "f3811747de6eabb3",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.39|user": {
+  "hash": "f3811747de6eabb3",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.3|all": {
+  "hash": "8f60e3a273514e46",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.3|referenced": {
+  "hash": "8f60e3a273514e46",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.3|user": {
+  "hash": "8f60e3a273514e46",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.4|all": {
+  "hash": "277cedf836359daa",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.4|referenced": {
+  "hash": "277cedf836359daa",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.4|user": {
+  "hash": "277cedf836359daa",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.5|all": {
+  "hash": "db8a55a0b5690efd",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.5|referenced": {
+  "hash": "db8a55a0b5690efd",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.5|user": {
+  "hash": "db8a55a0b5690efd",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.6|all": {
+  "hash": "434f5f5ac5098368",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.6|referenced": {
+  "hash": "434f5f5ac5098368",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.6|user": {
+  "hash": "434f5f5ac5098368",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.7|all": {
+  "hash": "20aa18f5ce9260cf",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.7|referenced": {
+  "hash": "20aa18f5ce9260cf",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.7|user": {
+  "hash": "20aa18f5ce9260cf",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.8|all": {
+  "hash": "15f60f5bd6167034",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.8|referenced": {
+  "hash": "15f60f5bd6167034",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.8|user": {
+  "hash": "15f60f5bd6167034",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.9|all": {
+  "hash": "d66b3a201b3588ae",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.9|referenced": {
+  "hash": "d66b3a201b3588ae",
+  "buf": "ok"
+ },
+ "cases/values/PB-5.9|user": {
+  "hash": "d66b3a201b3588ae",
+  "buf": "ok"
+ },
+ "catalogue/EX-AIP-1|all": {
+  "hash": "fa13076d822bcee1",
+  "buf": "ok"
+ },
+ "catalogue/EX-AIP-1|referenced": {
+  "hash": "fa13076d822bcee1",
+  "buf": "ok"
+ },
+ "catalogue/EX-AIP-1|user": {
+  "hash": "fa13076d822bcee1",
+  "buf": "ok"
+ },
+ "catalogue/EX-AIP-2|all": {
+  "hash": "a065832e5615b92c",
+  "buf": "ok"
+ },
+ "catalogue/EX-AIP-2|referenced": {
+  "hash": "a065832e5615b92c",
+  "buf": "ok"
+ },
+ "catalogue/EX-AIP-2|user": {
+  "hash": "a065832e5615b92c",
+  "buf": "ok"
+ },
+ "catalogue/EX-AIP-3|all": {
+  "hash": "77cd493a1b0f604e",
+  "buf": "ok"
+ },
+ "catalogue/EX-AIP-3|referenced": {
+  "hash": "77cd493a1b0f604e",
+  "buf": "ok"
+ },
+ "catalogue/EX-AIP-3|user": {
+  "hash": "77cd493a1b0f604e",
+  "buf": "ok"
+ },
+ "catalogue/EX-CARD-1|all": {
+  "hash": "ab1f5c2d899ad8ed",
+  "buf": "ok"
+ },
+ "catalogue/EX-CARD-1|referenced": {
+  "hash": "ab1f5c2d899ad8ed",
+  "buf": "ok"
+ },
+ "catalogue/EX-CARD-1|user": {
+  "hash": "ab1f5c2d899ad8ed",
+  "buf": "ok"
+ },
+ "catalogue/EX-CARD-2|all": {
+  "hash": "aaa9500c7a91f456",
+  "buf": "ok"
+ },
+ "catalogue/EX-CARD-2|referenced": {
+  "hash": "aaa9500c7a91f456",
+  "buf": "ok"
+ },
+ "catalogue/EX-CARD-2|user": {
+  "hash": "aaa9500c7a91f456",
+  "buf": "ok"
+ },
+ "catalogue/EX-CARD-3|all": {
+  "hash": "00177dbb89d79048",
+  "buf": "ok"
+ },
+ "catalogue/EX-CARD-3|referenced": {
+  "hash": "00177dbb89d79048",
+  "buf": "ok"
+ },
+ "catalogue/EX-CARD-3|user": {
+  "hash": "00177dbb89d79048",
+  "buf": "ok"
+ },
+ "catalogue/EX-CARD-4|all": {
+  "hash": "d45edb4e8b750cc9",
+  "buf": "ok"
+ },
+ "catalogue/EX-CARD-4|referenced": {
+  "hash": "d45edb4e8b750cc9",
+  "buf": "ok"
+ },
+ "catalogue/EX-CARD-4|user": {
+  "hash": "d45edb4e8b750cc9",
+  "buf": "ok"
+ },
+ "catalogue/EX-CMT-1|all": {
+  "hash": "efe29e95938d6d82",
+  "buf": "ok"
+ },
+ "catalogue/EX-CMT-1|referenced": {
+  "hash": "efe29e95938d6d82",
+  "buf": "ok"
+ },
+ "catalogue/EX-CMT-1|user": {
+  "hash": "efe29e95938d6d82",
+  "buf": "ok"
+ },
+ "catalogue/EX-CMT-2|all": {
+  "hash": "268ac24c4930a912",
+  "buf": "ok"
+ },
+ "catalogue/EX-CMT-2|referenced": {
+  "hash": "268ac24c4930a912",
+  "buf": "ok"
+ },
+ "catalogue/EX-CMT-2|user": {
+  "hash": "268ac24c4930a912",
+  "buf": "ok"
+ },
+ "catalogue/EX-CMT-3|all": {
+  "hash": "5eee6e5949ca3d45",
+  "buf": "ok"
+ },
+ "catalogue/EX-CMT-3|referenced": {
+  "hash": "5eee6e5949ca3d45",
+  "buf": "ok"
+ },
+ "catalogue/EX-CMT-3|user": {
+  "hash": "5eee6e5949ca3d45",
+  "buf": "ok"
+ },
+ "catalogue/EX-E24-1.user|all": {
+  "hash": "e2c3ffef34f37b7b",
+  "buf": "ok"
+ },
+ "catalogue/EX-E24-1.user|referenced": {
+  "hash": "44c437935440b419",
+  "buf": "ok"
+ },
+ "catalogue/EX-E24-1.user|user": {
+  "hash": "e2c3ffef34f37b7b",
+  "buf": "ok"
+ },
+ "catalogue/EX-E24-1|all": {
+  "hash": "e2c3ffef34f37b7b",
+  "buf": "ok"
+ },
+ "catalogue/EX-E24-1|referenced": {
+  "hash": "44c437935440b419",
+  "buf": "ok"
+ },
+ "catalogue/EX-E24-1|user": {
+  "hash": "e2c3ffef34f37b7b",
+  "buf": "ok"
+ },
+ "catalogue/EX-ENUM-1|all": {
+  "hash": "56f8a474056b26e1",
+  "buf": "ok"
+ },
+ "catalogue/EX-ENUM-1|referenced": {
+  "hash": "785467df5e880862",
+  "buf": "ok"
+ },
+ "catalogue/EX-ENUM-1|user": {
+  "hash": "56f8a474056b26e1",
+  "buf": "ok"
+ },
+ "catalogue/EX-ENUM-2.2023|all": {
+  "hash": "c855c67a665f9a4a",
+  "buf": "ok"
+ },
+ "catalogue/EX-ENUM-2.2023|referenced": {
+  "hash": "c855c67a665f9a4a",
+  "buf": "ok"
+ },
+ "catalogue/EX-ENUM-2.2023|user": {
+  "hash": "c855c67a665f9a4a",
+  "buf": "ok"
+ },
+ "catalogue/EX-ENUM-2.proto2|all": {
+  "hash": "a1fee41675ea0378",
+  "buf": "ok"
+ },
+ "catalogue/EX-ENUM-2.proto2|referenced": {
+  "hash": "a1fee41675ea0378",
+  "buf": "ok"
+ },
+ "catalogue/EX-ENUM-2.proto2|user": {
+  "hash": "a1fee41675ea0378",
+  "buf": "ok"
+ },
+ "catalogue/EX-ENUM-3.2023|all": {
+  "hash": "be89ec3a44f619d7",
+  "buf": "ok"
+ },
+ "catalogue/EX-ENUM-3.2023|referenced": {
+  "hash": "be89ec3a44f619d7",
+  "buf": "ok"
+ },
+ "catalogue/EX-ENUM-3.2023|user": {
+  "hash": "be89ec3a44f619d7",
+  "buf": "ok"
+ },
+ "catalogue/EX-ENUM-3.proto3|all": {
+  "hash": "a5294353a151a5a9",
+  "buf": "ok"
+ },
+ "catalogue/EX-ENUM-3.proto3|referenced": {
+  "hash": "a5294353a151a5a9",
+  "buf": "ok"
+ },
+ "catalogue/EX-ENUM-3.proto3|user": {
+  "hash": "a5294353a151a5a9",
+  "buf": "ok"
+ },
+ "catalogue/EX-EXT-1|all": {
+  "hash": "094f0769dec8220f",
+  "buf": "ok"
+ },
+ "catalogue/EX-EXT-1|referenced": {
+  "hash": "094f0769dec8220f",
+  "buf": "ok"
+ },
+ "catalogue/EX-EXT-1|user": {
+  "hash": "094f0769dec8220f",
+  "buf": "ok"
+ },
+ "catalogue/EX-EXT-2.opts|all": {
+  "hash": "a68ec3fb0de44b97",
+  "buf": "ok"
+ },
+ "catalogue/EX-EXT-2.opts|referenced": {
+  "hash": "a68ec3fb0de44b97",
+  "buf": "ok"
+ },
+ "catalogue/EX-EXT-2.opts|user": {
+  "hash": "a68ec3fb0de44b97",
+  "buf": "ok"
+ },
+ "catalogue/EX-EXT-2.shop.user|all": {
+  "hash": "4a140d39ce6e018c",
+  "buf": "ok"
+ },
+ "catalogue/EX-EXT-2.shop.user|referenced": {
+  "hash": "7e43283a29edc473",
+  "buf": "ok"
+ },
+ "catalogue/EX-EXT-2.shop.user|user": {
+  "hash": "4a140d39ce6e018c",
+  "buf": "ok"
+ },
+ "catalogue/EX-EXT-2.shop|all": {
+  "hash": "4a140d39ce6e018c",
+  "buf": "ok"
+ },
+ "catalogue/EX-EXT-2.shop|referenced": {
+  "hash": "7e43283a29edc473",
+  "buf": "ok"
+ },
+ "catalogue/EX-EXT-2.shop|user": {
+  "hash": "4a140d39ce6e018c",
+  "buf": "ok"
+ },
+ "catalogue/EX-EXT-3|all": {
+  "hash": "697b42c8b1fec8d3",
+  "buf": "ok"
+ },
+ "catalogue/EX-EXT-3|referenced": {
+  "hash": "c6c1b61a5c7ac2b7",
+  "buf": "ok"
+ },
+ "catalogue/EX-EXT-3|user": {
+  "hash": "697b42c8b1fec8d3",
+  "buf": "ok"
+ },
+ "catalogue/EX-EXT-5|all": {
+  "hash": "f8f032d818752f7c",
+  "buf": "ok"
+ },
+ "catalogue/EX-EXT-5|referenced": {
+  "hash": "aab8e03f6eff2065",
+  "buf": "ok"
+ },
+ "catalogue/EX-EXT-5|user": {
+  "hash": "f8f032d818752f7c",
+  "buf": "ok"
+ },
+ "catalogue/EX-EXT-6|all": {
+  "hash": "1f800e3959fb714c",
+  "buf": "ok"
+ },
+ "catalogue/EX-EXT-6|referenced": {
+  "hash": "c9e1b33b1818d557",
+  "buf": "ok"
+ },
+ "catalogue/EX-EXT-6|user": {
+  "hash": "1f800e3959fb714c",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-1.no-syntax|all": {
+  "hash": "4e650b65c9855043",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-1.no-syntax|referenced": {
+  "hash": "4e650b65c9855043",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-1.no-syntax|user": {
+  "hash": "4e650b65c9855043",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-1|all": {
+  "hash": "4bb16c2810819d91",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-1|referenced": {
+  "hash": "9c33104346ad7534",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-1|user": {
+  "hash": "4bb16c2810819d91",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-2|all": {
+  "hash": "80a1afca290cf7c2",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-2|referenced": {
+  "hash": "80a1afca290cf7c2",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-2|user": {
+  "hash": "80a1afca290cf7c2",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-3|all": {
+  "hash": "d1c14dfde242fbcb",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-3|referenced": {
+  "hash": "d1c14dfde242fbcb",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-3|user": {
+  "hash": "d1c14dfde242fbcb",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-4.2023|all": {
+  "hash": "f09bd7b2aa48d5f4",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-4.2023|referenced": {
+  "hash": "f09bd7b2aa48d5f4",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-4.2023|user": {
+  "hash": "f09bd7b2aa48d5f4",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-4.2024|all": {
+  "hash": "54a028a764595e3c",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-4.2024|referenced": {
+  "hash": "54a028a764595e3c",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-4.2024|user": {
+  "hash": "54a028a764595e3c",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-4.2026|all": {
+  "hash": "105d7e2f35ea1a26",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-4.2026|referenced": {
+  "hash": "105d7e2f35ea1a26",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-4.2026|user": {
+  "hash": "105d7e2f35ea1a26",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-4.proto2|all": {
+  "hash": "ccfe312da564aad1",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-4.proto2|referenced": {
+  "hash": "ccfe312da564aad1",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-4.proto2|user": {
+  "hash": "ccfe312da564aad1",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-5.backslash|all": {
+  "hash": "50506feae55357c9",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-5.backslash|referenced": {
+  "hash": "50506feae55357c9",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-5.backslash|user": {
+  "hash": "50506feae55357c9",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-5.dot|all": {
+  "hash": "50506feae55357c9",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-5.dot|referenced": {
+  "hash": "50506feae55357c9",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-5.dot|user": {
+  "hash": "50506feae55357c9",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-6.public.user|all": {
+  "hash": "9290d4b30f7fe84d",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-6.public.user|referenced": {
+  "hash": "67de98c9d0419ac8",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-6.public.user|user": {
+  "hash": "9290d4b30f7fe84d",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-6.public|all": {
+  "hash": "9290d4b30f7fe84d",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-6.public|referenced": {
+  "hash": "67de98c9d0419ac8",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-6.public|user": {
+  "hash": "9290d4b30f7fe84d",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-7|all": {
+  "hash": "e212b0266dd984a5",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-7|referenced": {
+  "hash": "e212b0266dd984a5",
+  "buf": "ok"
+ },
+ "catalogue/EX-FILE-7|user": {
+  "hash": "e212b0266dd984a5",
+  "buf": "ok"
+ },
+ "catalogue/EX-FULL-1|all": {
+  "hash": "a17f676f0af76feb",
+  "buf": "ok"
+ },
+ "catalogue/EX-FULL-1|referenced": {
+  "hash": "a17f676f0af76feb",
+  "buf": "ok"
+ },
+ "catalogue/EX-FULL-1|user": {
+  "hash": "a17f676f0af76feb",
+  "buf": "ok"
+ },
+ "catalogue/EX-GW-1|all": {
+  "hash": "87193c986c060f27",
+  "buf": "ok"
+ },
+ "catalogue/EX-GW-1|referenced": {
+  "hash": "87193c986c060f27",
+  "buf": "ok"
+ },
+ "catalogue/EX-GW-1|user": {
+  "hash": "87193c986c060f27",
+  "buf": "ok"
+ },
+ "catalogue/EX-MAP-1|all": {
+  "hash": "237534a9e5a0f4b3",
+  "buf": "ok"
+ },
+ "catalogue/EX-MAP-1|referenced": {
+  "hash": "237534a9e5a0f4b3",
+  "buf": "ok"
+ },
+ "catalogue/EX-MAP-1|user": {
+  "hash": "237534a9e5a0f4b3",
+  "buf": "ok"
+ },
+ "catalogue/EX-MAP-2|all": {
+  "hash": "df4b0b41ddea44c4",
+  "buf": "ok"
+ },
+ "catalogue/EX-MAP-2|referenced": {
+  "hash": "df4b0b41ddea44c4",
+  "buf": "ok"
+ },
+ "catalogue/EX-MAP-2|user": {
+  "hash": "df4b0b41ddea44c4",
+  "buf": "ok"
+ },
+ "catalogue/EX-MAP-3|all": {
+  "hash": "e5c9f1c079a78542",
+  "buf": "ok"
+ },
+ "catalogue/EX-MAP-3|referenced": {
+  "hash": "e5c9f1c079a78542",
+  "buf": "ok"
+ },
+ "catalogue/EX-MAP-3|user": {
+  "hash": "e5c9f1c079a78542",
+  "buf": "ok"
+ },
+ "catalogue/EX-MAP-4.2023-implicit|all": {
+  "hash": "b47feffd748b2052",
+  "buf": "ok"
+ },
+ "catalogue/EX-MAP-4.2023-implicit|referenced": {
+  "hash": "b47feffd748b2052",
+  "buf": "ok"
+ },
+ "catalogue/EX-MAP-4.2023-implicit|user": {
+  "hash": "b47feffd748b2052",
+  "buf": "ok"
+ },
+ "catalogue/EX-MAP-4.2023|all": {
+  "hash": "2f9c539539543f77",
+  "buf": "ok"
+ },
+ "catalogue/EX-MAP-4.2023|referenced": {
+  "hash": "2f9c539539543f77",
+  "buf": "ok"
+ },
+ "catalogue/EX-MAP-4.2023|user": {
+  "hash": "2f9c539539543f77",
+  "buf": "ok"
+ },
+ "catalogue/EX-MAP-4.proto2|all": {
+  "hash": "bd0f68274f1f2467",
+  "buf": "ok"
+ },
+ "catalogue/EX-MAP-4.proto2|referenced": {
+  "hash": "bd0f68274f1f2467",
+  "buf": "ok"
+ },
+ "catalogue/EX-MAP-4.proto2|user": {
+  "hash": "bd0f68274f1f2467",
+  "buf": "ok"
+ },
+ "catalogue/EX-MIG-1.after|all": {
+  "hash": "ac19aaca67eeadee",
+  "buf": "ok"
+ },
+ "catalogue/EX-MIG-1.after|referenced": {
+  "hash": "ac19aaca67eeadee",
+  "buf": "ok"
+ },
+ "catalogue/EX-MIG-1.after|user": {
+  "hash": "ac19aaca67eeadee",
+  "buf": "ok"
+ },
+ "catalogue/EX-MIG-1.before|all": {
+  "hash": "d0d11edb124f13ac",
+  "buf": "ok"
+ },
+ "catalogue/EX-MIG-1.before|referenced": {
+  "hash": "d0d11edb124f13ac",
+  "buf": "ok"
+ },
+ "catalogue/EX-MIG-1.before|user": {
+  "hash": "d0d11edb124f13ac",
+  "buf": "ok"
+ },
+ "catalogue/EX-MIG-2.after|all": {
+  "hash": "bdc3a7c24c4ae6ba",
+  "buf": "ok"
+ },
+ "catalogue/EX-MIG-2.after|referenced": {
+  "hash": "bdc3a7c24c4ae6ba",
+  "buf": "ok"
+ },
+ "catalogue/EX-MIG-2.after|user": {
+  "hash": "bdc3a7c24c4ae6ba",
+  "buf": "ok"
+ },
+ "catalogue/EX-MIG-2.before|all": {
+  "hash": "a41dec7b9e09c98a",
+  "buf": "ok"
+ },
+ "catalogue/EX-MIG-2.before|referenced": {
+  "hash": "a41dec7b9e09c98a",
+  "buf": "ok"
+ },
+ "catalogue/EX-MIG-2.before|user": {
+  "hash": "a41dec7b9e09c98a",
+  "buf": "ok"
+ },
+ "catalogue/EX-NEST-1|all": {
+  "hash": "970ad2e5029eab94",
+  "buf": "ok"
+ },
+ "catalogue/EX-NEST-1|referenced": {
+  "hash": "970ad2e5029eab94",
+  "buf": "ok"
+ },
+ "catalogue/EX-NEST-1|user": {
+  "hash": "970ad2e5029eab94",
+  "buf": "ok"
+ },
+ "catalogue/EX-NEST-2|all": {
+  "hash": "b4b0cc8adf470623",
+  "buf": "ok"
+ },
+ "catalogue/EX-NEST-2|referenced": {
+  "hash": "93f42d9bb6257c07",
+  "buf": "ok"
+ },
+ "catalogue/EX-NEST-2|user": {
+  "hash": "b4b0cc8adf470623",
+  "buf": "ok"
+ },
+ "catalogue/EX-NEST-4|all": {
+  "hash": "6559949ebca278ce",
+  "buf": "ok"
+ },
+ "catalogue/EX-NEST-4|referenced": {
+  "hash": "6559949ebca278ce",
+  "buf": "ok"
+ },
+ "catalogue/EX-NEST-4|user": {
+  "hash": "6559949ebca278ce",
+  "buf": "ok"
+ },
+ "catalogue/EX-NEST-5|all": {
+  "hash": "083755d3bff5e714",
+  "buf": "ok"
+ },
+ "catalogue/EX-NEST-5|referenced": {
+  "hash": "083755d3bff5e714",
+  "buf": "ok"
+ },
+ "catalogue/EX-NEST-5|user": {
+  "hash": "083755d3bff5e714",
+  "buf": "ok"
+ },
+ "catalogue/EX-NEST-6|all": {
+  "hash": "02d51556f351e558",
+  "buf": "ok"
+ },
+ "catalogue/EX-NEST-6|referenced": {
+  "hash": "02d51556f351e558",
+  "buf": "ok"
+ },
+ "catalogue/EX-NEST-6|user": {
+  "hash": "02d51556f351e558",
+  "buf": "ok"
+ },
+ "catalogue/EX-NEST-7|all": {
+  "hash": "769e0f9e5665764a",
+  "buf": "ok"
+ },
+ "catalogue/EX-NEST-7|referenced": {
+  "hash": "769e0f9e5665764a",
+  "buf": "ok"
+ },
+ "catalogue/EX-NEST-7|user": {
+  "hash": "769e0f9e5665764a",
+  "buf": "ok"
+ },
+ "catalogue/EX-ONEOF-1|all": {
+  "hash": "d2e3cc7c88dc7b10",
+  "buf": "ok"
+ },
+ "catalogue/EX-ONEOF-1|referenced": {
+  "hash": "c982bf870b21e6ac",
+  "buf": "ok"
+ },
+ "catalogue/EX-ONEOF-1|user": {
+  "hash": "d2e3cc7c88dc7b10",
+  "buf": "ok"
+ },
+ "catalogue/EX-ONEOF-2|all": {
+  "hash": "70fb96fab1b4fe3c",
+  "buf": "ok"
+ },
+ "catalogue/EX-ONEOF-2|referenced": {
+  "hash": "b1aa95c19b3dee58",
+  "buf": "ok"
+ },
+ "catalogue/EX-ONEOF-2|user": {
+  "hash": "70fb96fab1b4fe3c",
+  "buf": "ok"
+ },
+ "catalogue/EX-ONEOF-3|all": {
+  "hash": "5e323c73f6fe2a3e",
+  "buf": "ok"
+ },
+ "catalogue/EX-ONEOF-3|referenced": {
+  "hash": "5e323c73f6fe2a3e",
+  "buf": "ok"
+ },
+ "catalogue/EX-ONEOF-3|user": {
+  "hash": "5e323c73f6fe2a3e",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-1.proto2|all": {
+  "hash": "35804d980683bf31",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-1.proto2|referenced": {
+  "hash": "35804d980683bf31",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-1.proto2|user": {
+  "hash": "35804d980683bf31",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-1|all": {
+  "hash": "097f3db36a014b31",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-1|referenced": {
+  "hash": "097f3db36a014b31",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-1|user": {
+  "hash": "097f3db36a014b31",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-2|all": {
+  "hash": "bb3ecd045ca6f488",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-2|referenced": {
+  "hash": "bb3ecd045ca6f488",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-2|user": {
+  "hash": "bb3ecd045ca6f488",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-3|all": {
+  "hash": "d326798f8f721e0d",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-3|referenced": {
+  "hash": "d326798f8f721e0d",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-3|user": {
+  "hash": "d326798f8f721e0d",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-4.proto2|all": {
+  "hash": "34c83a6de9166664",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-4.proto2|referenced": {
+  "hash": "34c83a6de9166664",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-4.proto2|user": {
+  "hash": "34c83a6de9166664",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-4|all": {
+  "hash": "e2353de055037d7b",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-4|referenced": {
+  "hash": "e2353de055037d7b",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-4|user": {
+  "hash": "e2353de055037d7b",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-5|all": {
+  "hash": "f4aa8ace83a347c8",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-5|referenced": {
+  "hash": "f4aa8ace83a347c8",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-5|user": {
+  "hash": "f4aa8ace83a347c8",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-6.cpp|all": {
+  "hash": "6990540cd505ce63",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-6.cpp|referenced": {
+  "hash": "6990540cd505ce63",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-6.cpp|user": {
+  "hash": "6990540cd505ce63",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-6.go|all": {
+  "hash": "66e37057093a4cee",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-6.go|referenced": {
+  "hash": "66e37057093a4cee",
+  "buf": "ok"
+ },
+ "catalogue/EX-OPT-6.go|user": {
+  "hash": "66e37057093a4cee",
+  "buf": "ok"
+ },
+ "catalogue/EX-P2-1|all": {
+  "hash": "55a241d8f3657326",
+  "buf": "ok"
+ },
+ "catalogue/EX-P2-1|referenced": {
+  "hash": "55a241d8f3657326",
+  "buf": "ok"
+ },
+ "catalogue/EX-P2-1|user": {
+  "hash": "55a241d8f3657326",
+  "buf": "ok"
+ },
+ "catalogue/EX-P2-2|all": {
+  "hash": "6683e807c71a7eef",
+  "buf": "ok"
+ },
+ "catalogue/EX-P2-2|referenced": {
+  "hash": "6683e807c71a7eef",
+  "buf": "ok"
+ },
+ "catalogue/EX-P2-2|user": {
+  "hash": "6683e807c71a7eef",
+  "buf": "ok"
+ },
+ "catalogue/EX-P2-3|all": {
+  "hash": "c1ad14f761efedb4",
+  "buf": "ok"
+ },
+ "catalogue/EX-P2-3|referenced": {
+  "hash": "c1ad14f761efedb4",
+  "buf": "ok"
+ },
+ "catalogue/EX-P2-3|user": {
+  "hash": "c1ad14f761efedb4",
+  "buf": "ok"
+ },
+ "catalogue/EX-P2-4|all": {
+  "hash": "7235742e0d8a625d",
+  "buf": "ok"
+ },
+ "catalogue/EX-P2-4|referenced": {
+  "hash": "7235742e0d8a625d",
+  "buf": "ok"
+ },
+ "catalogue/EX-P2-4|user": {
+  "hash": "7235742e0d8a625d",
+  "buf": "ok"
+ },
+ "catalogue/EX-P2-5|all": {
+  "hash": "785b19f628429026",
+  "buf": "ok"
+ },
+ "catalogue/EX-P2-5|referenced": {
+  "hash": "785b19f628429026",
+  "buf": "ok"
+ },
+ "catalogue/EX-P2-5|user": {
+  "hash": "785b19f628429026",
+  "buf": "ok"
+ },
+ "catalogue/EX-P2-6.implicit|all": {
+  "hash": "20237a31bddd916b",
+  "buf": "ok"
+ },
+ "catalogue/EX-P2-6.implicit|referenced": {
+  "hash": "20237a31bddd916b",
+  "buf": "ok"
+ },
+ "catalogue/EX-P2-6.implicit|user": {
+  "hash": "20237a31bddd916b",
+  "buf": "ok"
+ },
+ "catalogue/EX-P2-6|all": {
+  "hash": "2341b6a695bf0b6a",
+  "buf": "ok"
+ },
+ "catalogue/EX-P2-6|referenced": {
+  "hash": "2341b6a695bf0b6a",
+  "buf": "ok"
+ },
+ "catalogue/EX-P2-6|user": {
+  "hash": "2341b6a695bf0b6a",
+  "buf": "ok"
+ },
+ "catalogue/EX-PGV-1|all": {
+  "hash": "012aae4c7ebdebc2",
+  "buf": "ok"
+ },
+ "catalogue/EX-PGV-1|referenced": {
+  "hash": "012aae4c7ebdebc2",
+  "buf": "ok"
+ },
+ "catalogue/EX-PGV-1|user": {
+  "hash": "012aae4c7ebdebc2",
+  "buf": "ok"
+ },
+ "catalogue/EX-PREC-1|all": {
+  "hash": "7aae8534c623a64d",
+  "buf": "ok"
+ },
+ "catalogue/EX-PREC-1|referenced": {
+  "hash": "7aae8534c623a64d",
+  "buf": "ok"
+ },
+ "catalogue/EX-PREC-1|user": {
+  "hash": "7aae8534c623a64d",
+  "buf": "ok"
+ },
+ "catalogue/EX-PREC-2|all": {
+  "hash": "81aa26150dfe7397",
+  "buf": "ok"
+ },
+ "catalogue/EX-PREC-2|referenced": {
+  "hash": "81aa26150dfe7397",
+  "buf": "ok"
+ },
+ "catalogue/EX-PREC-2|user": {
+  "hash": "81aa26150dfe7397",
+  "buf": "ok"
+ },
+ "catalogue/EX-PV-1|all": {
+  "hash": "376f59241cdd983a",
+  "buf": "ok"
+ },
+ "catalogue/EX-PV-1|referenced": {
+  "hash": "376f59241cdd983a",
+  "buf": "ok"
+ },
+ "catalogue/EX-PV-1|user": {
+  "hash": "376f59241cdd983a",
+  "buf": "ok"
+ },
+ "catalogue/EX-PV-2|all": {
+  "hash": "96bd8f0a94d9ed7b",
+  "buf": "ok"
+ },
+ "catalogue/EX-PV-2|referenced": {
+  "hash": "96bd8f0a94d9ed7b",
+  "buf": "ok"
+ },
+ "catalogue/EX-PV-2|user": {
+  "hash": "96bd8f0a94d9ed7b",
+  "buf": "ok"
+ },
+ "catalogue/EX-PV-3|all": {
+  "hash": "a5c7db1eec8e9c39",
+  "buf": "ok"
+ },
+ "catalogue/EX-PV-3|referenced": {
+  "hash": "a5c7db1eec8e9c39",
+  "buf": "ok"
+ },
+ "catalogue/EX-PV-3|user": {
+  "hash": "a5c7db1eec8e9c39",
+  "buf": "ok"
+ },
+ "catalogue/EX-PV-4|all": {
+  "hash": "e4e5604d3804a4f1",
+  "buf": "ok"
+ },
+ "catalogue/EX-PV-4|referenced": {
+  "hash": "e4e5604d3804a4f1",
+  "buf": "ok"
+ },
+ "catalogue/EX-PV-4|user": {
+  "hash": "e4e5604d3804a4f1",
+  "buf": "ok"
+ },
+ "catalogue/EX-RES-1|all": {
+  "hash": "bba97f5d7a54d929",
+  "buf": "ok"
+ },
+ "catalogue/EX-RES-1|referenced": {
+  "hash": "bba97f5d7a54d929",
+  "buf": "ok"
+ },
+ "catalogue/EX-RES-1|user": {
+  "hash": "bba97f5d7a54d929",
+  "buf": "ok"
+ },
+ "catalogue/EX-RES-2.declaration|all": {
+  "hash": "223e9460d04cd27f",
+  "buf": "ok"
+ },
+ "catalogue/EX-RES-2.declaration|referenced": {
+  "hash": "223e9460d04cd27f",
+  "buf": "ok"
+ },
+ "catalogue/EX-RES-2.declaration|user": {
+  "hash": "223e9460d04cd27f",
+  "buf": "ok"
+ },
+ "catalogue/EX-RES-2|all": {
+  "hash": "c22cc681609370f1",
+  "buf": "ok"
+ },
+ "catalogue/EX-RES-2|referenced": {
+  "hash": "c22cc681609370f1",
+  "buf": "ok"
+ },
+ "catalogue/EX-RES-2|user": {
+  "hash": "c22cc681609370f1",
+  "buf": "ok"
+ },
+ "catalogue/EX-RES-3|all": {
+  "hash": "6c4da82e33d2d86f",
+  "buf": "ok"
+ },
+ "catalogue/EX-RES-3|referenced": {
+  "hash": "6c4da82e33d2d86f",
+  "buf": "ok"
+ },
+ "catalogue/EX-RES-3|user": {
+  "hash": "6c4da82e33d2d86f",
+  "buf": "ok"
+ },
+ "catalogue/EX-SCAL-1|all": {
+  "hash": "0c5545c5cf857122",
+  "buf": "ok"
+ },
+ "catalogue/EX-SCAL-1|referenced": {
+  "hash": "0c5545c5cf857122",
+  "buf": "ok"
+ },
+ "catalogue/EX-SCAL-1|user": {
+  "hash": "0c5545c5cf857122",
+  "buf": "ok"
+ },
+ "catalogue/EX-SCAL-2|all": {
+  "hash": "808068ab9af7cef6",
+  "buf": "ok"
+ },
+ "catalogue/EX-SCAL-2|referenced": {
+  "hash": "808068ab9af7cef6",
+  "buf": "ok"
+ },
+ "catalogue/EX-SCAL-2|user": {
+  "hash": "808068ab9af7cef6",
+  "buf": "ok"
+ },
+ "catalogue/EX-SCAL-3|all": {
+  "hash": "fb7d5ed455f603e2",
+  "buf": "ok"
+ },
+ "catalogue/EX-SCAL-3|referenced": {
+  "hash": "fb7d5ed455f603e2",
+  "buf": "ok"
+ },
+ "catalogue/EX-SCAL-3|user": {
+  "hash": "fb7d5ed455f603e2",
+  "buf": "ok"
+ },
+ "catalogue/EX-SRC-1|all": {
+  "hash": "89da6c51bff996a8",
+  "buf": "ok"
+ },
+ "catalogue/EX-SRC-1|referenced": {
+  "hash": "89da6c51bff996a8",
+  "buf": "ok"
+ },
+ "catalogue/EX-SRC-1|user": {
+  "hash": "89da6c51bff996a8",
+  "buf": "ok"
+ },
+ "catalogue/EX-SVC-1|all": {
+  "hash": "f2d67953e988d996",
+  "buf": "ok"
+ },
+ "catalogue/EX-SVC-1|referenced": {
+  "hash": "10a06202a079298e",
+  "buf": "ok"
+ },
+ "catalogue/EX-SVC-1|user": {
+  "hash": "f2d67953e988d996",
+  "buf": "ok"
+ },
+ "catalogue/EX-SVC-2|all": {
+  "hash": "a97e0e3a32934dc0",
+  "buf": "ok"
+ },
+ "catalogue/EX-SVC-2|referenced": {
+  "hash": "a97e0e3a32934dc0",
+  "buf": "ok"
+ },
+ "catalogue/EX-SVC-2|user": {
+  "hash": "a97e0e3a32934dc0",
+  "buf": "ok"
+ },
+ "catalogue/EX-SVC-3|all": {
+  "hash": "0577d0290701f415",
+  "buf": "ok"
+ },
+ "catalogue/EX-SVC-3|referenced": {
+  "hash": "f68c988d20369ecd",
+  "buf": "ok"
+ },
+ "catalogue/EX-SVC-3|user": {
+  "hash": "0577d0290701f415",
+  "buf": "ok"
+ },
+ "catalogue/EX-TAG-1|all": {
+  "hash": "a26d919d09c17db8",
+  "buf": "ok"
+ },
+ "catalogue/EX-TAG-1|referenced": {
+  "hash": "a26d919d09c17db8",
+  "buf": "ok"
+ },
+ "catalogue/EX-TAG-1|user": {
+  "hash": "a26d919d09c17db8",
+  "buf": "ok"
+ },
+ "catalogue/EX-TAG-2|all": {
+  "hash": "c99cb734226ef27b",
+  "buf": "ok"
+ },
+ "catalogue/EX-TAG-2|referenced": {
+  "hash": "c99cb734226ef27b",
+  "buf": "ok"
+ },
+ "catalogue/EX-TAG-2|user": {
+  "hash": "c99cb734226ef27b",
+  "buf": "ok"
+ },
+ "catalogue/EX-TAG-3|all": {
+  "hash": "6b05ef34cb6fec41",
+  "buf": "ok"
+ },
+ "catalogue/EX-TAG-3|referenced": {
+  "hash": "6b05ef34cb6fec41",
+  "buf": "ok"
+ },
+ "catalogue/EX-TAG-3|user": {
+  "hash": "6b05ef34cb6fec41",
+  "buf": "ok"
+ },
+ "catalogue/EX-TAG-4.all|all": {
+  "hash": "6af724ce2fec9e75",
+  "buf": "ok"
+ },
+ "catalogue/EX-TAG-4.all|referenced": {
+  "hash": "6af724ce2fec9e75",
+  "buf": "ok"
+ },
+ "catalogue/EX-TAG-4.all|user": {
+  "hash": "6af724ce2fec9e75",
+  "buf": "ok"
+ },
+ "catalogue/EX-TAG-4.none|all": {
+  "hash": "43d33a04c63abc1e",
+  "buf": "ok"
+ },
+ "catalogue/EX-TAG-4.none|referenced": {
+  "hash": "43d33a04c63abc1e",
+  "buf": "ok"
+ },
+ "catalogue/EX-TAG-4.none|user": {
+  "hash": "43d33a04c63abc1e",
+  "buf": "ok"
+ },
+ "catalogue/EX-TAG-4.options|all": {
+  "hash": "43d33a04c63abc1e",
+  "buf": "ok"
+ },
+ "catalogue/EX-TAG-4.options|referenced": {
+  "hash": "43d33a04c63abc1e",
+  "buf": "ok"
+ },
+ "catalogue/EX-TAG-4.options|user": {
+  "hash": "43d33a04c63abc1e",
+  "buf": "ok"
+ },
+ "catalogue/EX-WKT-1|all": {
+  "hash": "089f0c036580085c",
+  "buf": "ok"
+ },
+ "catalogue/EX-WKT-1|referenced": {
+  "hash": "089f0c036580085c",
+  "buf": "ok"
+ },
+ "catalogue/EX-WKT-1|user": {
+  "hash": "089f0c036580085c",
+  "buf": "ok"
+ },
+ "catalogue/EX-WKT-2|all": {
+  "hash": "2da5fee50e5b2794",
+  "buf": "ok"
+ },
+ "catalogue/EX-WKT-2|referenced": {
+  "hash": "2da5fee50e5b2794",
+  "buf": "ok"
+ },
+ "catalogue/EX-WKT-2|user": {
+  "hash": "2da5fee50e5b2794",
+  "buf": "ok"
+ },
+ "googleapis|all": {
+  "hash": "19953f29ebf3c323",
+  "buf": "ok"
+ },
+ "googleapis|referenced": {
+  "hash": "19953f29ebf3c323",
+  "buf": "ok"
+ },
+ "googleapis|user": {
+  "hash": "19953f29ebf3c323",
+  "buf": "ok"
+ },
+ "named/comments-after-trailing|all": {
+  "hash": "858698aa5d23f4b4",
+  "buf": "ok"
+ },
+ "named/comments-after-trailing|referenced": {
+  "hash": "858698aa5d23f4b4",
+  "buf": "ok"
+ },
+ "named/comments-after-trailing|user": {
+  "hash": "858698aa5d23f4b4",
+  "buf": "ok"
+ },
+ "named/comments-at-eof|all": {
+  "hash": "8fa02ae5669add7a",
+  "buf": "ok"
+ },
+ "named/comments-at-eof|referenced": {
+  "hash": "8fa02ae5669add7a",
+  "buf": "ok"
+ },
+ "named/comments-at-eof|user": {
+  "hash": "8fa02ae5669add7a",
+  "buf": "ok"
+ },
+ "named/comments-block-after-close|all": {
+  "hash": "f5022795c312ec30",
+  "buf": "ok"
+ },
+ "named/comments-block-after-close|referenced": {
+  "hash": "f5022795c312ec30",
+  "buf": "ok"
+ },
+ "named/comments-block-after-close|user": {
+  "hash": "f5022795c312ec30",
+  "buf": "ok"
+ },
+ "named/comments-block-after-decl|all": {
+  "hash": "7490c3cc87d96fb5",
+  "buf": "ok"
+ },
+ "named/comments-block-after-decl|referenced": {
+  "hash": "7490c3cc87d96fb5",
+  "buf": "ok"
+ },
+ "named/comments-block-after-decl|user": {
+  "hash": "7490c3cc87d96fb5",
+  "buf": "ok"
+ },
+ "named/comments-block-in-empty-body|all": {
+  "hash": "b0d020d18eda1ef6",
+  "buf": "ok"
+ },
+ "named/comments-block-in-empty-body|referenced": {
+  "hash": "b0d020d18eda1ef6",
+  "buf": "ok"
+ },
+ "named/comments-block-in-empty-body|user": {
+  "hash": "b0d020d18eda1ef6",
+  "buf": "ok"
+ },
+ "named/comments-block-then-line|all": {
+  "hash": "60c3337076b821b9",
+  "buf": "ok"
+ },
+ "named/comments-block-then-line|referenced": {
+  "hash": "60c3337076b821b9",
+  "buf": "ok"
+ },
+ "named/comments-block-then-line|user": {
+  "hash": "60c3337076b821b9",
+  "buf": "ok"
+ },
+ "named/comments-fuzz|all": {
+  "hash": "4f2f9b65d7c302fa",
+  "buf": "ok"
+ },
+ "named/comments-fuzz|referenced": {
+  "hash": "4f2f9b65d7c302fa",
+  "buf": "ok"
+ },
+ "named/comments-fuzz|user": {
+  "hash": "4f2f9b65d7c302fa",
+  "buf": "ok"
+ },
+ "named/comments-multiline-block-after-decl|all": {
+  "hash": "f20e5a451657a55c",
+  "buf": "ok"
+ },
+ "named/comments-multiline-block-after-decl|referenced": {
+  "hash": "f20e5a451657a55c",
+  "buf": "ok"
+ },
+ "named/comments-multiline-block-after-decl|user": {
+  "hash": "f20e5a451657a55c",
+  "buf": "ok"
+ },
+ "named/comments-same-line|all": {
+  "hash": "87296ac3de0d9d30",
+  "buf": "ok"
+ },
+ "named/comments-same-line|referenced": {
+  "hash": "87296ac3de0d9d30",
+  "buf": "ok"
+ },
+ "named/comments-same-line|user": {
+  "hash": "87296ac3de0d9d30",
+  "buf": "ok"
+ },
+ "named/comments|all": {
+  "hash": "4ba9d36c1901d68c",
+  "buf": "ok"
+ },
+ "named/comments|referenced": {
+  "hash": "4ba9d36c1901d68c",
+  "buf": "ok"
+ },
+ "named/comments|user": {
+  "hash": "4ba9d36c1901d68c",
+  "buf": "ok"
+ },
+ "named/edition2024|all": {
+  "hash": "97ccce7660fba559",
+  "buf": "ok"
+ },
+ "named/edition2024|referenced": {
+  "hash": "97ccce7660fba559",
+  "buf": "ok"
+ },
+ "named/edition2024|user": {
+  "hash": "97ccce7660fba559",
+  "buf": "ok"
+ },
+ "named/http|all": {
+  "hash": "4d2437186eb8a0c2",
+  "buf": "ok"
+ },
+ "named/http|referenced": {
+  "hash": "4d2437186eb8a0c2",
+  "buf": "ok"
+ },
+ "named/http|user": {
+  "hash": "4d2437186eb8a0c2",
+  "buf": "ok"
+ },
+ "named/names|all": {
+  "hash": "c1e746322fc37e08",
+  "buf": "ok"
+ },
+ "named/names|referenced": {
+  "hash": "c1e746322fc37e08",
+  "buf": "ok"
+ },
+ "named/names|user": {
+  "hash": "c1e746322fc37e08",
+  "buf": "ok"
+ },
+ "named/validate|all": {
+  "hash": "8a20691061db48ff",
+  "buf": "ok"
+ },
+ "named/validate|referenced": {
+  "hash": "8a20691061db48ff",
+  "buf": "ok"
+ },
+ "named/validate|user": {
+  "hash": "8a20691061db48ff",
+  "buf": "ok"
+ },
+ "named/values|all": {
+  "hash": "cdca6551d4f86026",
+  "buf": "ok"
+ },
+ "named/values|referenced": {
+  "hash": "cdca6551d4f86026",
+  "buf": "ok"
+ },
+ "named/values|user": {
+  "hash": "cdca6551d4f86026",
+  "buf": "ok"
+ },
+ "poc|all": {
+  "hash": "de76fdf89be08f17",
+  "buf": "ok"
+ },
+ "poc|referenced": {
+  "hash": "de76fdf89be08f17",
+  "buf": "ok"
+ },
+ "poc|user": {
+  "hash": "de76fdf89be08f17",
+  "buf": "ok"
+ }
+}

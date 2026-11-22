@@ -1,0 +1,17 @@
+syntax = "proto3";
+package shop.v1;
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+message Notification {
+  string id = 1;
+  oneof target {
+    // Send to one user.
+    string user_id  = 2 [json_name = "uid"];
+    string group_id = 3 [deprecated = true];
+  }
+  oneof schedule {
+    google.protobuf.Timestamp at    = 4;
+    google.protobuf.Duration  after = 5;
+  }
+  optional int32 priority = 6;
+}

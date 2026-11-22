@@ -1,0 +1,16 @@
+message Catalog {
+  message Section {
+    message Entry {
+      Kind    kind   = 1;
+      Section parent = 2;
+      Catalog root   = 3;
+    }
+    enum Kind { KIND_UNSPECIFIED = 0; BOOK = 1; }
+    repeated Entry entries = 1;
+  }
+  repeated Section sections = 1;
+}
+message Shelf {
+  Catalog.Section.Entry featured = 1;
+  Catalog.Section.Kind  kind     = 2;
+}

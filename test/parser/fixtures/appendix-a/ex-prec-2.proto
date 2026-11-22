@@ -1,0 +1,9 @@
+service S {
+  // Deprecated: use V2.
+  rpc A(Req) returns (Res) { option deprecated = true; }
+  // @Deprecated use V3
+  rpc B(Req) returns (Res);
+  rpc C(Req) returns (Res) { option deprecated = true; }
+  // Deprecated: use V4.
+  rpc D(Req) returns (Res);
+}

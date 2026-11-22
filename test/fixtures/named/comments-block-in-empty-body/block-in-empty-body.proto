@@ -1,0 +1,11 @@
+// A block comment between `{` and `}` on one line (IN-10, Q0-P phase C): buf 1.75 makes it the trailing comment of the block, and after the last declaration of a body the trailing comment of that declaration (protoc drops both).
+
+syntax = "proto3";
+
+package named.comments.blockinemptybody;
+
+message Empty { /* Carries no data. */ }
+
+enum Status { STATUS_UNSPECIFIED = 0; /* The default. */ }
+
+service PetService { /* No methods yet. */ }

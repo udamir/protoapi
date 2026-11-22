@@ -1,0 +1,6 @@
+edition = "2023";
+package shop.edt;
+import "google/protobuf/cpp_features.proto";
+message Doc {
+  string body = 1 [features.(pb.cpp).string_type = CORD];
+}

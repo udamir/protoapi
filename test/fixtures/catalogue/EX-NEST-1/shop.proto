@@ -1,0 +1,8 @@
+syntax = "proto3";
+package shop.v1;
+message Pet {
+  message Tag { string value = 1; }
+  enum Size { SIZE_UNSPECIFIED = 0; SMALL = 1; }
+  repeated Tag tags = 1;
+  Size size = 2;
+}

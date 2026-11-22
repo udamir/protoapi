@@ -1,0 +1,10 @@
+# EX-DIAG-2 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: missing import
+textOnly: true   # money/amount.proto is missing
+expect:
+  - pointer: "#/components/messages/shop.v1.Price"
+    value: { type: object, properties: { amount: { number: 1, $ref: "#/components/messages/money.Amount" }, currency: { number: 2, $ref: "#/components/messages/shop.v1.Currency" } } }
+issues:
+  - "missing-import @ #/files/shop.proto/imports/0"
+  - "unresolved-type @ #/components/messages/shop.v1.Price/properties/amount"
+  - "unresolved-type @ #/components/messages/shop.v1.Price/properties/currency"

@@ -1,0 +1,15 @@
+# EX-ENUM-1 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: enum aliases, negative values, value options, reserved ranges
+options: { entry: [shop.proto] }
+expect:
+  - pointer: "#/components/enums/shop.v1.Level"
+    value:
+      type: string
+      values:
+        LEVEL_UNSPECIFIED: { number: 0 }
+        LOW:   { number: 1 }
+        MINOR: { number: 1, description: alias of LOW, deprecation: {} }
+        HIGH:  { number: 2, options: { acme.opts.label: High } }
+        BELOW: { number: -1 }
+      reserved: { numbers: [[5, 5], [10, 12], [100, 2147483647]], names: [OLD] }
+      options: { allow_alias: true }

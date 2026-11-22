@@ -1,0 +1,9 @@
+edition = "2023";
+package shop.legacy;
+option features.field_presence = IMPLICIT;
+enum Color {
+  option features.enum_type = CLOSED;
+  RED = 1;
+  GREEN = 2;
+}
+message Paint { map<string, Color> paints = 1; }

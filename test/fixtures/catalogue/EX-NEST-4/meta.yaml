@@ -1,0 +1,10 @@
+# EX-NEST-4 (design Appendix A). Fragment assertions for test/catalogue/catalogue.test.ts.
+title: recursive messages
+expect:
+  - pointer: "#/components/messages/shop.v1.Node"
+    value:
+      type: object
+      properties:
+        id:       { number: 1, type: string, protoType: string }
+        children: { number: 2, type: array, items: { $ref: "#/components/messages/shop.v1.Node" } }
+        parent:   { number: 3, $ref: "#/components/messages/shop.v1.Node" }

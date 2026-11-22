@@ -1,0 +1,10 @@
+// A block comment after a declaration's `;`, followed by a newline (IN-10, Q0-P phase C): buf 1.75 makes it the leading comment of the next declaration (protoc: trailing comment of the previous one), so `legs` gets `minimum`.
+
+syntax = "proto3";
+
+package named.comments.blockafterdecl;
+
+message Pet {
+  int32 age = 6; /* @Minimum 1 */
+  int32 legs = 7;
+}

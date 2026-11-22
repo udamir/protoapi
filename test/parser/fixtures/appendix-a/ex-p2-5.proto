@@ -1,0 +1,6 @@
+syntax = "proto2";
+package shop.legacy;
+message Packet {
+  required group Header = 1 { required int32 version = 1; }
+  optional Packet.Header copy = 2;
+}

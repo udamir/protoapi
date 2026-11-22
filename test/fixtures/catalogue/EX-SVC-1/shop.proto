@@ -1,0 +1,29 @@
+syntax = "proto3";
+package shop.v1;
+import "google/protobuf/empty.proto";
+import "google/api/client.proto";
+import "other/v1/types.proto";
+
+// Pet operations.
+service PetService {
+  option (google.api.default_host) = "pets.example.com";
+
+  rpc GetPet(GetPetRequest) returns (Pet) { option idempotency_level = NO_SIDE_EFFECTS; }
+  rpc ListPets(ListPetsRequest) returns (stream Pet);
+  rpc Upload(stream Photo) returns (UploadResult);
+  rpc Chat(stream ChatMessage) returns (stream ChatMessage);
+  rpc PutPet(Pet) returns (Pet) { option idempotency_level = IDEMPOTENT; }
+  rpc DeletePet(DeletePetRequest) returns (google.protobuf.Empty);
+  rpc Lookup(.other.v1.LookupRequest) returns (other.v1.LookupResponse);
+  // Deprecated: use GetPet.
+  rpc FetchPet(GetPetRequest) returns (Pet) { option deprecated = true; }
+}
+service Health {}
+
+message GetPetRequest {}
+message Pet {}
+message ListPetsRequest {}
+message Photo {}
+message UploadResult {}
+message ChatMessage {}
+message DeletePetRequest {}
