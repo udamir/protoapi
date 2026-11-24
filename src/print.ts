@@ -30,7 +30,32 @@ import { textToModel } from "./text.ts"
 import { INT_RANGE, canonFloatOf, fromBase64 } from "./values/canonical.ts"
 import { FLOAT_KINDS, INT64_KINDS, WRAPPERS, isScalar } from "./values/scalars.ts"
 import { OPTIONS_MESSAGE, WKT_VALUE_FORM, fromWktJson } from "./options.ts"
-import { NUMERIC_RULES as NUMERIC, OA, OA_FIELD, OA_SCHEMA, STRING_FORMATS, WKT_FAMILY } from "./annotate.ts"
+import { type ShapeKind, type Target, ANNOTATION_KEYWORDS, valueTarget } from "./conventions/types.ts"
+import {
+  BUF_VALIDATE_FIELD,
+  FIELD_BEHAVIOR,
+  FIELD_INFO,
+  HTTP_RULE,
+  OPENAPIV2_FIELD,
+  OPENAPIV2_SCHEMA,
+  OPTION_TYPES,
+  PGV_RULES,
+} from "./conventions/keys.ts"
+import { BEHAVIOR_OF_KEYWORD, FIELD_INFO_FORMAT_OF } from "./conventions/google-api.ts"
+import {
+  BOUND_KEYWORDS,
+  DECIMAL,
+  FORMAT_RULE,
+  NUMERIC_RULES,
+  RULE_OF_KEYWORD,
+  RULE_PATH,
+  WKT_FAMILY,
+  outsideRange,
+  ruleFamilyOf,
+} from "./conventions/rules.ts"
+import { OPENAPI_FIELD_OF_KEYWORD } from "./conventions/openapiv2.ts"
+import { TAG_OF_KEYWORD, type TagSpelling, VALUE_KEYWORDS, tagSpelling } from "./conventions/tags.ts"
+import { IDENTIFIER_PREFIX, PREFIX_OF_KEYWORD } from "./conventions/prefixes.ts"
 import { normalizePath } from "./paths.ts"
 import { featuresOf as treeFeatures } from "./features.ts"
 import { isEditions } from "./common/editions.ts"
@@ -280,40 +305,7 @@ const fitsScalar = (v: unknown, s: ProtoScalar): boolean => {
   return b >= range[0] && b <= range[1]
 }
 
-// ---- comment tags (decision 11, 13) ----------------------------------------------------------------------------------
-
-/** Tag name -> spelling the builder recognises with the same `tags` option, or undefined when it is disabled. */
-type TagSpelling = (t: TagName) => string | undefined
-
-const tagSpelling = (tags: PrintOptions["tags"]): TagSpelling | undefined => {
-  if (tags === false) return undefined
-  const map = isPlainObject(tags) ? (tags as Partial<Record<TagName, string | false>>) : {}
-  const renamed = new Set<string>()
-  for (const v of Object.values(map)) if (typeof v === "string") renamed.add(v.replace(/^@/, "").toLowerCase())
-  return (t) => {
-    const r = map[t]
-    if (r === false) return undefined
-    if (typeof r === "string") return r.replace(/^@/, "")
-    // a default name another tag was renamed to now means that tag (A-14)
-    const name = `${t[0].toUpperCase()}${t.slice(1)}`
-    return renamed.has(name.toLowerCase()) ? undefined : name
-  }
-}
-
-// ---- conventions ----------------------------------------------------------------------------------------------------
-
-const BV = "buf.validate.field"
-const PGV = "validate.rules"
-const FIELD_BEHAVIOR = "google.api.field_behavior"
-const FIELD_INFO = "google.api.field_info"
-const HTTP = "google.api.http"
-
-/** STRING_FORMATS of the annotation layer, inverted: keyword value -> rule field. */
-/** STRING_FORMATS of the annotation layer, inverted: keyword value -> rule field. */
-const FORMAT_RULE: Record<string, string> = Object.fromEntries(Object.entries(STRING_FORMATS).map(([k, v]) => [v, k]))
-const FIELD_INFO_FORMAT: Record<string, string> = { uuid: "UUID4", ipv4: "IPV4", ipv6: "IPV6", ip: "IPV4_OR_IPV6" }
-
-type Target = "" | "items" | "propertyNames" | "additionalProperties"
+// ---- annotation keywords (the convention tables are in conventions/) -------------------------------------------------
 
 /** A typed position of a field: the field itself, its items, map key or map value. */
 interface Pos {
@@ -325,106 +317,8 @@ interface Pos {
   messageFqn?: string
 }
 
-/** Value keywords: on `items` / `additionalProperties` for repeated and map fields (decision 5). */
-const VALUE = new Set(
-  "format minimum maximum exclusiveMinimum exclusiveMaximum multipleOf minLength maxLength pattern enum const".split(
-    " ",
-  ),
-)
-/** Every annotation keyword a position can carry (design §3.2 order). */
-const ANNOTATION_KEYWORDS =
-  "format readOnly writeOnly immutable minimum maximum exclusiveMinimum exclusiveMaximum multipleOf minLength maxLength pattern minItems maxItems uniqueItems minProperties maxProperties enum const examples".split(
-    " ",
-  )
-
-type Shape = "singular" | "repeated" | "map"
-
 /** The position a keyword is read back at: value keywords and value tags at the value position (design §3.8). */
-const targetOf = (kw: string, shape: Shape): Target =>
-  VALUE.has(kw) ? (shape === "repeated" ? "items" : shape === "map" ? "additionalProperties" : "") : ""
-
-/** Option message types of the convention options the printer fills. */
-const ROOT_TYPE: Record<string, string> = {
-  [BV]: "buf.validate.FieldRules",
-  [PGV]: "validate.FieldRules",
-  [OA_FIELD]: `${OA}JSONSchema`,
-  [OA_SCHEMA]: `${OA}Schema`,
-  [FIELD_INFO]: "google.api.FieldInfo",
-}
-/** The rule path of a position inside FieldRules. */
-const BASE: Record<Target, string[]> = {
-  "": [],
-  items: ["repeated", "items"],
-  propertyNames: ["map", "keys"],
-  additionalProperties: ["map", "values"],
-}
-/**
- * protovalidate / PGV rule field per keyword, with the family kinds it applies to (as the annotation layer lifts
- * them): n numeric, s string, b bytes, o bool, e enum, r repeated and m map (field level).
- */
-const RULES: Record<string, [string, string]> = {
-  minimum: ["n", "gte"],
-  maximum: ["n", "lte"],
-  exclusiveMinimum: ["n", "gt"],
-  exclusiveMaximum: ["n", "lt"],
-  minLength: ["sb", "min_len"],
-  maxLength: ["sb", "max_len"],
-  pattern: ["s", "pattern"],
-  const: ["nsboe", "const"],
-  enum: ["nsbe", "in"],
-  examples: ["nsboe", "example"],
-  minItems: ["r", "min_items"],
-  maxItems: ["r", "max_items"],
-  uniqueItems: ["r", "unique"],
-  minProperties: ["m", "min_pairs"],
-  maxProperties: ["m", "max_pairs"],
-}
-/** openapiv2 JSONSchema field per keyword (liftOpenapi of the annotation layer, inverted). */
-const OPENAPI: Record<string, string> = {
-  pattern: "pattern",
-  format: "format",
-  minLength: "min_length",
-  maxLength: "max_length",
-  multipleOf: "multiple_of",
-  enum: "enum",
-  minItems: "min_items",
-  maxItems: "max_items",
-  minProperties: "min_items",
-  maxProperties: "max_items",
-  uniqueItems: "unique_items",
-  readOnly: "read_only",
-  title: "title",
-  minimum: "minimum",
-  maximum: "maximum",
-  exclusiveMinimum: "minimum",
-  exclusiveMaximum: "maximum",
-  examples: "example",
-  "x-default": "default",
-}
-/** Comment tag per keyword and the kind of its value: b bound, c count, r / m count on repeated / map fields only,
- *  s one-line text, f one-line format (strings), e `@Enum` list, t flag, x one JSON value, X one line per value. */
-const TAGS: Record<string, [TagName, string]> = {
-  minimum: ["minimum", "b"],
-  maximum: ["maximum", "b"],
-  exclusiveMinimum: ["exclusiveMinimum", "b"],
-  exclusiveMaximum: ["exclusiveMaximum", "b"],
-  multipleOf: ["multipleOf", "b"],
-  minLength: ["minLength", "c"],
-  maxLength: ["maxLength", "c"],
-  minItems: ["minItems", "r"],
-  maxItems: ["maxItems", "r"],
-  minProperties: ["minItems", "m"],
-  maxProperties: ["maxItems", "m"],
-  pattern: ["pattern", "s"],
-  title: ["title", "s"],
-  format: ["format", "f"],
-  enum: ["enum", "e"],
-  readOnly: ["readOnly", "t"],
-  writeOnly: ["writeOnly", "t"],
-  "x-default": ["default", "x"],
-  examples: ["example", "X"],
-}
-const BEHAVIOR: Record<string, string> = { readOnly: "OUTPUT_ONLY", writeOnly: "INPUT_ONLY", immutable: "IMMUTABLE" }
+const targetOf = (kw: string, shape: ShapeKind): Target => (VALUE_KEYWORDS.has(kw) ? valueTarget(shape) : "")
 
 /** `value` in the canonical form of an option field of type `t`, or undefined when it does not fit. */
 const coerce = (v: unknown, t: FType): unknown => {
@@ -451,30 +345,10 @@ const enumTag = (v: unknown, slot: Pos): string | undefined => {
     return v.every((x) => typeof x === "string") ? v.map((x) => JSON.stringify(x)).join(", ") : undefined
   const ok = slot.enumFqn
     ? v.every((x) => (typeof x === "string" && /^[A-Za-z_]\w*$/.test(x)) || Number.isInteger(x))
-    : !!s && NUMERIC.has(s) && v.every((x) => fitsScalar(x, s) && (typeof x !== "number" || DECIMAL.test(String(x))))
+    : !!s &&
+      NUMERIC_RULES.has(s) &&
+      v.every((x) => fitsScalar(x, s) && (typeof x !== "number" || DECIMAL.test(String(x))))
   return ok ? v.join(", ") : undefined
-}
-
-const PREFIX: Record<string, string> = {
-  required: "Required.",
-  readOnly: "Output only.",
-  writeOnly: "Input only.",
-  immutable: "Immutable.",
-}
-const DECIMAL = /^-?(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?$/
-
-/** `a > b` for canonical bound values (numbers, 64-bit decimal strings, non-finite strings). */
-const greater = (a: unknown, b: unknown): boolean => {
-  if (typeof a === "string" && typeof b === "string" && /^-?\d+$/.test(a) && /^-?\d+$/.test(b))
-    return BigInt(a) > BigInt(b)
-  return Number(a) > Number(b)
-}
-
-/** A lower bound above the upper bound: the protovalidate / PGV lift keeps such bounds raw (A-9, D-D). */
-const outsideRange = (node: Obj): boolean => {
-  const lower = node.exclusiveMinimum ?? node.minimum
-  const upper = node.exclusiveMaximum ?? node.maximum
-  return lower !== undefined && upper !== undefined && greater(lower, upper)
 }
 
 /** What a field prints besides its declaration: option trees, comment lines before / after the description. */
@@ -779,7 +653,7 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
   const trySet = (root: Obj, key: string, path: string[], value: unknown): boolean => {
     if (!available(key)) return false
     const oracle = ctx.oracle
-    let fqn = ROOT_TYPE[key]
+    let fqn = OPTION_TYPES[key]
     let node: Obj | undefined = isPlainObject(root[key]) ? (root[key] as Obj) : undefined
     let leaf: unknown
     for (let i = 0; i < path.length; i++) {
@@ -824,23 +698,23 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
   }
 
   /** protovalidate / PGV (`key`) for keyword `kw` of position `p` (rule families as the annotation layer lifts them). */
-  const tryRules = (o: Obj, key: string, p: Pos, shape: Shape, kw: string, v: unknown): boolean => {
-    const r = RULES[kw]
+  const tryRules = (o: Obj, key: string, p: Pos, shape: ShapeKind, kw: string, v: unknown): boolean => {
+    const r = RULE_OF_KEYWORD[kw]
     if (p.target === "" && shape !== "singular")
-      return !!r && r[0].includes(shape === "repeated" ? "r" : "m") && trySet(o, key, [shape, r[1]], v)
+      return !!r && r.families.includes(shape) && trySet(o, key, [shape, r.rule], v)
     const fam = p.scalar ?? (p.enumFqn ? "enum" : p.messageFqn ? WKT_FAMILY[p.messageFqn] : undefined)
     if (!fam) return false
-    const kind = NUMERIC.has(fam) ? "n" : ({ string: "s", bytes: "b", bool: "o", enum: "e" } as Obj)[fam]
-    let rule = r && typeof kind === "string" && r[0].includes(kind) ? r[1] : undefined
+    const family = ruleFamilyOf(fam)
+    let rule = r && family && r.families.includes(family) ? r.rule : undefined
     let value = v
-    if (kw === "format" && kind === "s" && typeof v === "string" && FORMAT_RULE[v]) {
+    if (kw === "format" && family === "string" && typeof v === "string" && FORMAT_RULE[v]) {
       rule = FORMAT_RULE[v]
       value = true
     }
     if (!rule) return false
-    if (kind === "e") value = enumNumbers(p, v)
-    const base = BASE[p.target]
-    if (r?.[0] === "n") {
+    if (family === "enum") value = enumNumbers(p, v)
+    const base = RULE_PATH[p.target]
+    if (BOUND_KEYWORDS.has(kw)) {
       // A-9: bounds next to raw bounds of the family, or a lower bound above the upper one, are read back as
       // protovalidate's outside range (raw)
       let raw: unknown = rawOptions[key]
@@ -851,8 +725,8 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
   }
 
   /** openapiv2_field for keyword `kw`: value keywords at the value position (decision 5), the rest on the field. */
-  const tryOpenapi = (o: Obj, p: Pos, shape: Shape, kw: string, v: unknown): boolean => {
-    const rule = OPENAPI[kw]
+  const tryOpenapi = (o: Obj, p: Pos, shape: ShapeKind, kw: string, v: unknown): boolean => {
+    const rule = OPENAPI_FIELD_OF_KEYWORD[kw]
     if (!rule || p.target !== targetOf(kw, shape)) return false
     if ((kw.endsWith("Items") && shape !== "repeated") || (kw.endsWith("Properties") && shape !== "map")) return false
     let value = v
@@ -864,19 +738,19 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
     // `minimum` and `exclusiveMinimum` share the openapiv2 field
     if (rule === "minimum" || rule === "maximum")
       if (p.node[exclusive ? rule : `exclusive${rule[0].toUpperCase()}${rule.slice(1)}`] !== undefined) return false
-    if (!trySet(o, OA_FIELD, [rule], value)) return false
-    if (exclusive) trySet(o, OA_FIELD, [`exclusive_${rule}`], true)
+    if (!trySet(o, OPENAPIV2_FIELD, [rule], value)) return false
+    if (exclusive) trySet(o, OPENAPIV2_FIELD, [`exclusive_${rule}`], true)
     return true
   }
 
   /** A comment tag for keyword `kw`; value tags target the value position of the field (design §3.8). */
-  const tryTag = (plan: FieldPlan, p: Pos, shape: Shape, kw: string, v: unknown, slot: Pos): boolean => {
-    const spec = TAGS[kw]
+  const tryTag = (plan: FieldPlan, p: Pos, shape: ShapeKind, kw: string, v: unknown, slot: Pos): boolean => {
+    const spec = TAG_OF_KEYWORD[kw]
     if (!spec || p.target !== targetOf(kw, shape)) return false
     const [tag, k] = spec
     const ok = (c: unknown, x: unknown = v) => (c ? String(x) : undefined)
     const values: unknown[] =
-      k === "b" // decimal numbers; on 64-bit fields decimal integer digits (A-1, A-6)
+      k === "bound" // decimal numbers; on 64-bit fields decimal integer digits (A-1, A-6)
         ? [
             ok(
               slot.scalar && INT64_KINDS.has(slot.scalar)
@@ -884,29 +758,29 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
                 : typeof v === "number" && !Object.is(v, -0) && DECIMAL.test(String(v)),
             ),
           ]
-        : k === "c" || k === "r" || k === "m" // counts; @MinItems on repeated fields, on maps it counts entries (decision 4)
+        : k === "count" || k === "itemCount" || k === "entryCount" // counts; @MinItems on repeated fields, on maps it counts entries (decision 4)
           ? [
               ok(
-                (k === "c" || shape === (k === "r" ? "repeated" : "map")) &&
+                (k === "count" || shape === (k === "itemCount" ? "repeated" : "map")) &&
                   Number.isSafeInteger(v) &&
                   (v as number) >= 0,
               ),
             ]
-          : k === "s" || k === "f" // one line; @Format on strings only
+          : k === "text" || k === "format" // one line; @Format on strings only
             ? [
                 ok(
                   typeof v === "string" &&
                     v &&
                     v === v.trim() &&
                     !v.includes("\n") &&
-                    (k === "s" || slot.scalar === "string"),
+                    (k === "text" || slot.scalar === "string"),
                 ),
               ]
-            : k === "e"
+            : k === "enumList"
               ? [enumTag(v, slot)]
-              : k === "t"
+              : k === "flag"
                 ? [ok(v === true, "")]
-                : k === "x"
+                : k === "json"
                   ? [JSON.stringify(v)]
                   : Array.isArray(v) && v.length
                     ? v.map((e) => JSON.stringify(e))
@@ -925,7 +799,7 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
     rawOptions = isPlainObject(f.options) ? f.options : {}
     const o = structuredClone(rawOptions) as Obj
     const plan: FieldPlan = { options: o, prefixes: [], tags: [] }
-    const shape: Shape =
+    const shape: ShapeKind =
       f.type === "array" ? "repeated" : f.type === "object" && f.additionalProperties ? "map" : "singular"
     const positions = positionsOf(f)
     const slot = positions[shape === "repeated" ? 1 : shape === "map" ? 2 : 0]
@@ -936,7 +810,7 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
       if (!list.includes(value)) o[FIELD_BEHAVIOR] = [...list, value]
       return true
     }
-    const prefix = (kw: string) => !!(tags && PREFIX[kw] && plan.prefixes.push(PREFIX[kw]))
+    const prefix = (kw: string) => !!(tags && PREFIX_OF_KEYWORD[kw] && plan.prefixes.push(PREFIX_OF_KEYWORD[kw]))
     const forced = (key: string, then: () => unknown) => () => {
       // no available option and no tag spells the keyword (`const`, `uniqueItems`, map keys, `immutable` without
       // comments): the convention option is printed with its import (documents not built from this text)
@@ -951,25 +825,26 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
     // the Identifier prefix adds IDENTIFIER to field_behavior; without the import it prints as the prefix
     const listed = o[FIELD_BEHAVIOR]
     if (tags && Array.isArray(listed) && listed.includes("IDENTIFIER") && !available(FIELD_BEHAVIOR)) {
-      plan.prefixes.push("Identifier.")
+      plan.prefixes.push(IDENTIFIER_PREFIX)
       o[FIELD_BEHAVIOR] = listed.filter((x) => x !== "IDENTIFIER")
     }
     if (f.required === true)
       first(
         [
-          () => fb("REQUIRED"),
-          () => trySet(o, BV, ["required"], true),
-          () => shape === "singular" && !!positions[0].messageFqn && trySet(o, PGV, ["message", "required"], true),
+          () => fb(BEHAVIOR_OF_KEYWORD.required),
+          () => trySet(o, BUF_VALIDATE_FIELD, ["required"], true),
+          () =>
+            shape === "singular" && !!positions[0].messageFqn && trySet(o, PGV_RULES, ["message", "required"], true),
           () => !!(tags && tagLine("required") && plan.tags.push(tagLine("required") as string)),
           () => prefix("required"),
         ],
-        forced(FIELD_BEHAVIOR, () => fb("REQUIRED")),
+        forced(FIELD_BEHAVIOR, () => fb(BEHAVIOR_OF_KEYWORD.required)),
       )
     for (const p of positions)
       for (const kw of ANNOTATION_KEYWORDS) {
         const v = p.node[kw]
         if (v === undefined) continue
-        const behavior = p.target === "" && v === true ? BEHAVIOR[kw] : undefined
+        const behavior = p.target === "" && v === true ? BEHAVIOR_OF_KEYWORD[kw] : undefined
         first(
           [
             () => !!behavior && fb(behavior),
@@ -979,15 +854,17 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
               shape !== "map" &&
               p.scalar === "string" &&
               typeof v === "string" &&
-              !!FIELD_INFO_FORMAT[v] &&
-              trySet(o, FIELD_INFO, ["format"], FIELD_INFO_FORMAT[v]),
-            () => tryRules(o, BV, p, shape, kw, v),
-            () => tryRules(o, PGV, p, shape, kw, v),
+              !!FIELD_INFO_FORMAT_OF[v] &&
+              trySet(o, FIELD_INFO, ["format"], FIELD_INFO_FORMAT_OF[v]),
+            () => tryRules(o, BUF_VALIDATE_FIELD, p, shape, kw, v),
+            () => tryRules(o, PGV_RULES, p, shape, kw, v),
             () => tryOpenapi(o, p, shape, kw, v),
             () => !!tags && tryTag(plan, p, shape, kw, v, slot),
             () => p.target === "" && v === true && prefix(kw),
           ],
-          behavior ? forced(FIELD_BEHAVIOR, () => fb(behavior)) : forced(BV, () => tryRules(o, BV, p, shape, kw, v)),
+          behavior
+            ? forced(FIELD_BEHAVIOR, () => fb(behavior))
+            : forced(BUF_VALIDATE_FIELD, () => tryRules(o, BUF_VALIDATE_FIELD, p, shape, kw, v)),
         )
       }
     for (const [kw, v] of [
@@ -1254,7 +1131,7 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
     const o = structuredClone(withDeprecated(m))
     const tags: string[] = []
     if (typeof m.title === "string" && m.title !== lastSegment(fqn)) {
-      const ok = trySet(o, OA_SCHEMA, ["json_schema", "title"], m.title)
+      const ok = trySet(o, OPENAPIV2_SCHEMA, ["json_schema", "title"], m.title)
       if (!ok) {
         const t = tagLine("title", m.title)
         if (t) tags.push(t)
@@ -1451,7 +1328,7 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
       // the lifted method options back in the options tree: deprecated, idempotency_level, google.api.http
       const o = withDeprecated(m)
       if (m.idempotency) o.idempotency_level = m.idempotency
-      if (isPlainObject(m.http)) o[HTTP] = httpRule(m.http)
+      if (isPlainObject(m.http)) o[HTTP_RULE] = httpRule(m.http)
       const body = optionAssignments(o, "method").map((line) => `option ${line};`)
       comment(1, elementComment(m, undefined))
       const ref = (x: ProtoApiMethod["request"] | undefined) =>

@@ -41,18 +41,10 @@ import {
   lastInvalidReason,
   type VType,
 } from "./options.ts"
-import {
-  type AnnotationInput,
-  type AnnotationResult,
-  type CommentLine,
-  annotate,
-  OA_OPERATION,
-  OA_SCHEMA,
-  type FieldShape,
-  type Slot,
-  type Target,
-  tagCollisions,
-} from "./annotate.ts"
+import { annotate } from "./annotate.ts"
+import type { AnnotationInput, AnnotationResult, CommentLine, FieldShape, Slot, Target } from "./conventions/types.ts"
+import { HTTP_RULE, OPENAPIV2_OPERATION, OPENAPIV2_SCHEMA } from "./conventions/keys.ts"
+import { tagCollisions } from "./conventions/tags.ts"
 import {
   BUNDLED_FEATURE_DEFAULTS,
   FeatureDefaults,
@@ -344,7 +336,7 @@ export class Lowering {
     for (const o of ann.origins) {
       const base = o.target ? `${pointer}/${o.target}` : pointer
       // `json_schema.required` of the message (S1): the message's option statement
-      const at = o.option === OA_SCHEMA ? outer : holder
+      const at = o.option === OPENAPIV2_SCHEMA ? outer : holder
       this.map(`${base}/${ptr(o.keyword)}`, o.option ? at.optionLocs[o.option] : line(o.comment))
     }
     const d = ann.deprecationOrigin
@@ -354,7 +346,7 @@ export class Lowering {
         d.source === "option"
           ? holder.optionLocs.deprecated
           : d.source === "openapiv2"
-            ? holder.optionLocs[OA_OPERATION]
+            ? holder.optionLocs[OPENAPIV2_OPERATION]
             : line(d.comment),
       )
   }
@@ -739,7 +731,7 @@ export class Lowering {
       "field",
       f,
       withoutFeatureKeys(options, ["field_presence", "message_encoding"]),
-      { shape, extra: schema && [{ keyword: "required", value: true, source: "openapiv2", option: OA_SCHEMA }] },
+      { shape, extra: schema && [{ keyword: "required", value: true, source: "openapiv2", option: OPENAPIV2_SCHEMA }] },
     )
     docKeywords(out, ann)
     Object.assign(out, ann.keywords[""])
@@ -1030,9 +1022,9 @@ export class Lowering {
         idempotency = mo.idempotency_level
         delete mo.idempotency_level
       }
-      if (isPlainObject(mo["google.api.http"])) {
-        http = normalizeHttp(mo["google.api.http"])
-        delete mo["google.api.http"]
+      if (isPlainObject(mo[HTTP_RULE])) {
+        http = normalizeHttp(mo[HTTP_RULE])
+        delete mo[HTTP_RULE]
       }
       const ma = this.annotate("method", m, mo)
       docKeywords(entry, ma)
@@ -1051,7 +1043,7 @@ export class Lowering {
         "response/stream": "response/stream",
       })
       if (entry.idempotency) this.map(`${mp}/idempotency`, m.optionLocs.idempotency_level)
-      if (entry.http) this.map(`${mp}/http`, m.optionLocs["google.api.http"])
+      if (entry.http) this.map(`${mp}/http`, m.optionLocs[HTTP_RULE])
       if (entry.deprecation) this.map(`${mp}/deprecation`, m.optionLocs.deprecated)
       this.mapAnnotations(mp, m, ma)
       this.mapOptions(mp, m, entry.options as object | undefined)
