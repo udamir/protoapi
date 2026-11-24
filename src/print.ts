@@ -29,7 +29,8 @@ import { linkAll } from "./resolve.ts"
 import { textToModel } from "./text.ts"
 import { INT_RANGE, canonFloatOf, fromBase64 } from "./values/canonical.ts"
 import { FLOAT_KINDS, INT64_KINDS, WRAPPERS, isScalar } from "./values/scalars.ts"
-import { OPTIONS_MESSAGE, WKT_VALUE_FORM, fromWktJson } from "./options.ts"
+import { OPTIONS_MESSAGE } from "./options/kinds.ts"
+import { WKT_VALUE_FORM, fromWktJson } from "./options/wkt.ts"
 import { type ShapeKind, type Target, ANNOTATION_KEYWORDS, valueTarget } from "./conventions/types.ts"
 import {
   BUF_VALIDATE_FIELD,

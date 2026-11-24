@@ -33,14 +33,9 @@ import type {
   PendingIssue,
 } from "./model.ts"
 import type { SymbolTable } from "./symbols.ts"
-import {
-  type OptionsKind,
-  OptionInterpreter,
-  fromScalarText,
-  INVALID,
-  lastInvalidReason,
-  type VType,
-} from "./options.ts"
+import type { OptionsKind } from "./options/kinds.ts"
+import { OptionInterpreter } from "./options/interpret.ts"
+import { type VType, fromScalarText } from "./options/scalar.ts"
 import { annotate } from "./annotate.ts"
 import type { AnnotationInput, AnnotationResult, CommentLine, FieldShape, Slot, Target } from "./conventions/types.ts"
 import { HTTP_RULE, OPENAPIV2_OPERATION, OPENAPIV2_SCHEMA } from "./conventions/keys.ts"
@@ -533,8 +528,8 @@ export class Lowering {
   // ---- fields ---------------------------------------------------------------------------------------------------
 
   /** A descriptor `default_value` that cannot be parsed for the field's type is an `invalid-option`, dropped (desc#13). */
-  private descriptorDefault(t: VType, s: string): string | number | boolean | typeof INVALID {
-    if (t.kind === "enum") return t.def && !t.def.values.some((v) => v.name === s) ? INVALID : s
+  private descriptorDefault(t: VType, s: string): string | number | boolean | undefined {
+    if (t.kind === "enum") return t.def && !t.def.values.some((v) => v.name === s) ? undefined : s
     if (t.kind !== "scalar") return s
     switch (t.scalar) {
       case "string":
@@ -542,17 +537,17 @@ export class Lowering {
       case "bytes":
         return toBase64(unescapeC(s))
       case "bool":
-        return s === "true" ? true : s === "false" ? false : INVALID
+        return s === "true" ? true : s === "false" ? false : undefined
       case "float":
       case "double": {
         const v = parseFloatText(s)
-        return v === undefined ? INVALID : canonFloatOf(v, t.scalar)
+        return v === undefined ? undefined : canonFloatOf(v, t.scalar)
       }
       default: {
         const v = parseIntText(s)
-        if (v === undefined) return INVALID
+        if (v === undefined) return undefined
         const [lo, hi] = INT_RANGE[t.scalar] ?? [v, v]
-        return v < lo || v > hi ? INVALID : canonInt(v, t.scalar)
+        return v < lo || v > hi ? undefined : canonInt(v, t.scalar)
       }
     }
   }
@@ -571,22 +566,22 @@ export class Lowering {
       const src = this.input.sources.get(this.currentFile?.path ?? "") ?? ""
       const text = src.slice(c.start, c.end).trim()
       const v = fromScalarText(text, c.type === "str-lit", t, true)
-      if (v === INVALID) {
+      if (!v.ok) {
         // a message or unresolved field type is reported elsewhere (default not allowed / unresolved-type)
         if (t.kind === "scalar" || t.kind === "enum")
           this.issue(
             "invalid-option",
-            `default value ${text} is not valid for field ${f.name}: ${lastInvalidReason()}; it is dropped`,
+            `default value ${text} is not valid for field ${f.name}: ${v.reason}; it is dropped`,
             file,
             pointer,
             f.locs.default ?? f.locs[""],
           )
         return undefined
       }
-      return v as string | number | boolean
+      return v.value as string | number | boolean
     }
     const v = this.descriptorDefault(t, d.value)
-    if (v !== INVALID) return v
+    if (v !== undefined) return v
     this.issue(
       "invalid-option",
       `default value ${JSON.stringify(d.value)} is not valid for field ${f.name} (${

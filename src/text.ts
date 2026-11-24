@@ -16,7 +16,7 @@ import type {
   MService,
   MTypeRef,
 } from "./model.ts"
-import { newHolder } from "./model.ts"
+import { addPending, newHolder } from "./model.ts"
 import { protocGroupText } from "./comments.ts"
 import { isScalar } from "./values/scalars.ts"
 import { parseIntText, decodeStringLiteral } from "./values/literals.ts"
@@ -25,7 +25,7 @@ import { unsupportedEdition } from "./features.ts"
 import { editionNumber, EDITION_NUMBERS, isEditions, isKnownSyntax } from "./common/editions.ts"
 import { FIELD_NUMBER_MAX, INT32_MAX, MESSAGE_SET_NUMBER_MAX } from "./common/limits.ts"
 import { enumPointer, extensionPointer, filePointer, messagePointer, qualify, syntaxName } from "./common/names.ts"
-import { TRIVIA, addPending, optionNameSegments, tokensText } from "./options.ts"
+import { TRIVIA, optionNameSegments, tokensText } from "./frontend/text/nodes.ts"
 import { createLineIndex } from "./parser/index.ts"
 import { parse } from "./parser/proto.ts"
 

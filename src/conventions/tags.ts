@@ -3,7 +3,7 @@
 import type { BuildOptions, PrintOptions, ProtoScalar, TagName } from "../types.ts"
 import { INT64_KINDS } from "../values/scalars.ts"
 import { isPlainObject } from "../common/objects.ts"
-import { INVALID, type VType, fromScalarText, lastInvalidReason } from "../options.ts"
+import { type VType, fromScalarText } from "../options/scalar.ts"
 import { DECIMAL, DIGITS, NUMERIC_RULES } from "./rules.ts"
 import {
   type Candidate,
@@ -211,8 +211,8 @@ const enumTagValues = (items: string[], slot: Slot): unknown[] | string => {
   const out: unknown[] = []
   for (const it of items) {
     const v = fromScalarText(it, false, t)
-    if (v === INVALID) return lastInvalidReason()
-    out.push(v)
+    if (!v.ok) return v.reason
+    out.push(v.value)
   }
   return out
 }

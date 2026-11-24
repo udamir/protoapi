@@ -15,7 +15,8 @@ import { DESCRIPTOR_SCALAR } from "./values/scalars.ts"
 import { defaultJsonName } from "./values/json-name.ts"
 import { EDITION_NUMBERS, KNOWN_EDITIONS, editionNameOfNumber, knownEditionName } from "./common/editions.ts"
 import { mapEntryName } from "./common/names.ts"
-import { type VType, decodeWire, scalarType, wireDef } from "./options.ts"
+import type { VType } from "./options/scalar.ts"
+import { decodeWire, scalarType, wireDef } from "./wire.ts"
 
 /** The first @bufbuild/protobuf release that supports edition 2024 (the peer dependency minimum). */
 export const BUFBUILD_MINIMUM = "2.8.0"

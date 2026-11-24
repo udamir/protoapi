@@ -3,7 +3,7 @@
 
 import type { MField, MFile, MMessage, MOptionHolder, MTypeRef } from "./model.ts"
 import { type LookupFrom, type LookupResult, type SymbolTable, kindName, unresolvedKey } from "./symbols.ts"
-import { addPending } from "./options.ts"
+import { addPending } from "./model.ts"
 
 const kindPhrase = (kind: string) => (kind === "message" || kind === "enum" ? `${kind} type` : kindName(kind as never))
 

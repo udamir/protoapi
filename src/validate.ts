@@ -7,7 +7,8 @@ import type { BuildIssue, BuildIssueCode, Location } from "./types.ts"
 import type { MEnum, MField, MFile, MMessage, MOptionHolder, MService, OptionTree } from "./model.ts"
 import { type SymbolTable, defaultVisibility } from "./symbols.ts"
 import type { Lowering } from "./lower.ts"
-import { OPTIONS_MESSAGE, type OptionsKind, optionNameSegments } from "./options.ts"
+import { OPTIONS_MESSAGE, OPTIONS_MESSAGES, type OptionsKind } from "./options/kinds.ts"
+import { optionNameSegments } from "./frontend/text/nodes.ts"
 import { type ResolvedFeatures, resolveFeatures } from "./features.ts"
 import { defaultJsonName } from "./values/json-name.ts"
 import { ptr } from "./paths.ts"
@@ -49,7 +50,6 @@ const KIND_NAME: Record<OptionsKind, string> = {
   service: "a service",
   method: "a method",
 }
-const OPTIONS_MESSAGES = new Set(Object.values(OPTIONS_MESSAGE))
 
 // ---- naming styles (edition 2024 enforce_naming_style STYLE2024 / STYLE2026, as buf checks them) -------------------
 const SNAKE = /^[a-z][a-z0-9]*(?:_[a-z][a-z0-9]*)*$/

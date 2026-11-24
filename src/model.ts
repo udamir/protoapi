@@ -48,6 +48,12 @@ export interface PendingIssue {
   sub?: string
 }
 
+/** Record an issue on a model element, to be emitted by the lowering. */
+export const addPending = (holder: { pending?: PendingIssue[] }, issue: PendingIssue) => {
+  if (!holder.pending) holder.pending = []
+  holder.pending.push(issue)
+}
+
 export interface MOptionHolder {
   pending?: PendingIssue[]
   raw: MRawOption[]
