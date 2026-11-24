@@ -135,3 +135,25 @@ export const resolveFeatures = (
   }
   return out as unknown as ResolvedFeatures
 }
+
+/** Features written as resolved keywords (`packed`, `utf8Validation`, `jsonFormat`; decision F-3) and never kept under
+ *  `options.features`, on any element. */
+const RESOLVED_FEATURES = ["repeated_field_encoding", "utf8_validation", "json_format"]
+
+/**
+ * `options` without what the format writes as keywords: `packed` and the resolved features (F-3), plus `lifted`, the
+ * lifted features declared on this element (`field_presence` / `message_encoding` on fields, `enum_type` on enums,
+ * rule D). Always a new object.
+ */
+export const withoutFeatureKeys = (options: OptionTree, lifted: string[] = []): OptionTree => {
+  const out: OptionTree = { ...options }
+  delete out.packed
+  const fo = featuresOf(options)
+  if (fo) {
+    const rest = { ...fo }
+    for (const k of [...RESOLVED_FEATURES, ...lifted]) delete rest[k]
+    if (Object.keys(rest).length) out.features = rest
+    else delete out.features
+  }
+  return out
+}

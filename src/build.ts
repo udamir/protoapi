@@ -13,12 +13,12 @@ import type {
 import type { MField, MFile, MOptionHolder } from "./model.ts"
 import { SymbolTable } from "./symbols.ts"
 import { linkAll } from "./resolve.ts"
-import { Lowering } from "./lower.ts"
+import { Lowering } from "./lower/index.ts"
 import { DEFAULT_TAB_WIDTH, textToModel } from "./text.ts"
 import { convertFile } from "./descriptor.ts"
 import { normalizePath } from "./paths.ts"
 import { type BufbuildModules, decodeWithBufbuild, loadBufbuild } from "./binary.ts"
-import { validateFiles } from "./validate.ts"
+import { validateFiles } from "./validate/index.ts"
 import { filePointer } from "./common/names.ts"
 import { isPlainObjectNotBytes } from "./common/objects.ts"
 
@@ -119,7 +119,7 @@ const finish = (
   })
   const { document, sourceMap } = lowering.run()
   // D-E: definition checks of the text producer (files flagged `validate`: the non-bundled sources)
-  validateFiles({ files, symbols, lowering, sources: loaded.sources, issues })
+  validateFiles({ files, symbols, optionsContext: lowering.optionsContext, sources: loaded.sources, issues })
   return { document, sourceMap: options.sourceMap === false ? {} : sourceMap, issues }
 }
 
