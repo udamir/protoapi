@@ -49,10 +49,7 @@ export const OPENAPI_FIELD_OF_KEYWORD: Record<string, string> = {
 }
 
 /**
- * openapiv2_field. On a repeated field `min_items`, `max_items` and `unique_items` describe the array and the value
- * keywords go to `items`; on a map the value keywords go to `additionalProperties` and `min_items` / `max_items` become
- * `minProperties` / `maxProperties` (A-10, decisions 4 and 5). `title`, `read_only`, `example` and `default` stay on
- * the field, as the tags do.
+ * openapiv2_field. On a repeated field `min_items`, `max_items` and `unique_items` describe the array and the value keywords go to `items`; on a map the value keywords go to `additionalProperties` and `min_items` / `max_items` become `minProperties` / `maxProperties`. `title`, `read_only`, `example` and `default` stay on the field, as the tags do.
  */
 const liftOpenapi = (
   o: Record<string, unknown>,
@@ -107,7 +104,7 @@ export const liftOpenapiField = (options: Record<string, unknown>, shape: FieldS
   if (isPlainObject(oa)) putRest(options, OPENAPIV2_FIELD, liftOpenapi(oa, out, shape))
 }
 
-/** openapiv2_schema on a message: `json_schema.title` -> `title`, `json_schema.required` -> the named fields (A-13, S1). */
+/** openapiv2_schema on a message: `json_schema.title` -> `title`, `json_schema.required` -> the named fields (`required: true`, spec §3.8). */
 export const liftOpenapiSchema = (
   options: Record<string, unknown>,
   out: Candidate[],
@@ -137,7 +134,7 @@ export const liftOpenapiSchema = (
   putRest(options, OPENAPIV2_SCHEMA, rest)
 }
 
-/** A-13: `openapiv2_operation.deprecated` on a method, removed from the options; true when it was set. */
+/** `openapiv2_operation.deprecated` on a method, removed from the options; true when it was set. */
 export const liftOpenapiOperation = (options: Record<string, unknown>): boolean => {
   const op = options[OPENAPIV2_OPERATION]
   if (!isPlainObject(op) || op.deprecated !== true) return false

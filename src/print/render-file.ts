@@ -1,6 +1,6 @@
 // One printed file: the declarations (top-level messages with file-level extend blocks, enums, services), then the header (description, syntax, package, written and added imports, file options).
 
-import { isPlainObject } from "../common/objects.ts"
+import { getKey, isPlainObject } from "../common/objects.ts"
 import type { FilePrinter } from "./file-printer.ts"
 import { quote } from "./literals.ts"
 import { optionAssignments } from "./option-values.ts"
@@ -35,11 +35,14 @@ export const renderFile = (p: FilePrinter): string => {
   }
   header.push(syntax === "proto2" || syntax === "proto3" ? `syntax = "${syntax}";` : `edition = ${quote(syntax)};`)
   if (file.package) header.push(`package ${file.package};`)
-  const imports = [...(file.imports ?? [])]
-  for (const i of p.imports.added) if (i !== path && !imports.includes(i)) imports.push(i)
+  const written = [...(file.imports ?? [])]
+  for (const i of p.imports.added) if (i !== path && !written.includes(i)) written.push(i)
+  const flagOf = (i: string) => (p.imports.upgraded.has(i) ? undefined : getKey(file.importFlags, i))
+  // `import option` comes after the other imports, so added and upgraded imports print before the option imports
+  const imports = [...written.filter((i) => flagOf(i) !== "option"), ...written.filter((i) => flagOf(i) === "option")]
   if (imports.length) header.push("")
   for (const i of imports) {
-    const flag = file.importFlags?.[i]
+    const flag = flagOf(i)
     header.push(`import ${flag ? `${flag} ` : ""}${quote(i)};`)
   }
   if (fileOpts.length) header.push("")

@@ -1,14 +1,24 @@
-// FileDescriptorSet (ProtoJSON) front end (design §6): descriptor protos -> model, SourceCodeInfo -> spans.
+// FileDescriptorSet (ProtoJSON) front end: descriptor protos -> model, SourceCodeInfo -> spans.
 
 import type { BuildIssue, ProtoScalar, ProtoSyntax } from "../../types.ts"
-import type { MEnum, MExtensionRange, MField, MFile, MMessage, MOneof, MService, MTypeRef } from "../../model/index.ts"
+import type {
+  MEnum,
+  MExtensionRange,
+  MField,
+  MFile,
+  MMessage,
+  MOneof,
+  MService,
+  MTypeRef,
+  MWireField,
+} from "../../model/index.ts"
 import { newEnum, newFile, newHolder, newMessage } from "../../model/index.ts"
 import { DESCRIPTOR_SCALAR, DESCRIPTOR_TYPE_BY_NUMBER } from "../../values/scalars.ts"
 import { normalizePath, ptr } from "../../paths.ts"
 import { unsupportedEdition } from "../../features.ts"
-import { KNOWN_EDITIONS, editionNameOfNumber } from "../../common/editions.ts"
+import { editionNameOfNumber, knownSyntaxOfEdition } from "../../common/editions.ts"
 import { qualify } from "../../common/names.ts"
-import { isPlainObject } from "../../common/objects.ts"
+import { hasKey, isPlainObject } from "../../common/objects.ts"
 import {
   ENUM,
   ENUM_VALUE,
@@ -20,7 +30,7 @@ import {
   ONEOF,
   SERVICE,
 } from "../../common/descriptor-fields.ts"
-import { type Json, arr, enumStr, get, list, num, str } from "./json.ts"
+import { type Json, WIRE_OPTIONS, arr, enumStr, get, list, num, str } from "./json.ts"
 import {
   ENUM_PARTS,
   FIELD_PARTS,
@@ -38,8 +48,10 @@ const LABELS: Record<number, string> = { 1: "LABEL_OPTIONAL", 2: "LABEL_REQUIRED
 const optionsOf = (o: Json, src: SourceIndex, optionsPath: number[]) => {
   const h = newHolder()
   const opts = get<unknown>(o, "options")
-  if (isPlainObject(opts) && Object.keys(opts).length)
-    h.raw.push({ kind: "json", value: opts, locs: src.childLocs(optionsPath) })
+  if (!isPlainObject(opts)) return h
+  const wire = (opts as Record<symbol, MWireField[] | undefined>)[WIRE_OPTIONS]
+  if (Object.keys(opts).length || wire?.length)
+    h.raw.push({ kind: "json", value: opts, locs: src.childLocs(optionsPath), ...(wire?.length ? { wire } : {}) })
   return h
 }
 
@@ -66,7 +78,7 @@ const convertField = (f: Json, path: number[], ctx: Ctx, entries: Map<string, Js
   const typeStr = enumStr(get(f, "type"), DESCRIPTOR_TYPE_BY_NUMBER)
   const typeName = str(f, "typeName")
   let type: MTypeRef
-  if (typeStr && typeStr in DESCRIPTOR_SCALAR)
+  if (typeStr && hasKey(DESCRIPTOR_SCALAR, typeStr))
     type = { kind: "scalar", scalar: DESCRIPTOR_SCALAR[typeStr] as ProtoScalar }
   else
     type = {
@@ -109,11 +121,10 @@ const convertField = (f: Json, path: number[], ctx: Ctx, entries: Map<string, Js
       const kt = enumStr(get(k, "type"), DESCRIPTOR_TYPE_BY_NUMBER) ?? ""
       const vt = enumStr(get(v, "type"), DESCRIPTOR_TYPE_BY_NUMBER) ?? ""
       field.map = {
-        key: DESCRIPTOR_SCALAR[kt] as ProtoScalar,
-        value:
-          vt in DESCRIPTOR_SCALAR
-            ? { kind: "scalar", scalar: DESCRIPTOR_SCALAR[vt] as ProtoScalar }
-            : { kind: "named", name: str(v, "typeName") ?? "", hint: vt === "TYPE_ENUM" ? "enum" : "message" },
+        key: (hasKey(DESCRIPTOR_SCALAR, kt) ? DESCRIPTOR_SCALAR[kt] : undefined) as ProtoScalar,
+        value: hasKey(DESCRIPTOR_SCALAR, vt)
+          ? { kind: "scalar", scalar: DESCRIPTOR_SCALAR[vt] as ProtoScalar }
+          : { kind: "named", name: str(v, "typeName") ?? "", hint: vt === "TYPE_ENUM" ? "enum" : "message" },
       }
       field.repeated = false
     }
@@ -230,10 +241,7 @@ const convertService = (s: Json, fqn: string, path: number[], ctx: Ctx): MServic
 })
 
 /**
- * The syntax of a FileDescriptorProto (decision D-C). `edition` (a name or a number) decides when `syntax` is
- * "editions" or absent; a known edition maps to its syntax (`EDITION_PROTO3` -> "proto3"), any other is written
- * verbatim without the `EDITION_` prefix (`EDITION_UNSTABLE` -> "UNSTABLE"; a number without a name as its decimal
- * string), and `syntax: "editions"` without an edition is "editions". `unsupported` names what is not known.
+ * The syntax of a FileDescriptorProto (spec §3.3). `edition` (a name or a number) decides when `syntax` is "editions" or absent; a known edition maps to its syntax (`EDITION_PROTO3` -> "proto3"), any other is written verbatim without the `EDITION_` prefix (`EDITION_UNSTABLE` -> "UNSTABLE"; a number without a name as its decimal string), and `syntax: "editions"` without an edition is "editions". `unsupported` names what is not known.
  */
 export const syntaxOf = (f: Json): { syntax: ProtoSyntax; unsupported?: string } => {
   const syntax = str(f, "syntax")
@@ -250,7 +258,7 @@ export const syntaxOf = (f: Json): { syntax: ProtoSyntax; unsupported?: string }
     return syntax === "editions"
       ? { syntax: "editions", unsupported: 'syntax "editions" without an edition' }
       : { syntax: "proto2" }
-  const known = KNOWN_EDITIONS[name]
+  const known = knownSyntaxOfEdition(name)
   if (known) return { syntax: known }
   return { syntax: name.startsWith("EDITION_") ? name.slice(8) : name, unsupported: `edition ${name}` }
 }
@@ -289,7 +297,7 @@ export const convertFile = (f: Json, issues: BuildIssue[]): MFile => {
       message: `${path} has no SourceCodeInfo; the source map is empty`,
       file: path,
     })
-  // header rule (§3.3): the detached comments of the first statement, as the text producer reads them (C-12)
+  // header rule (spec §3.3): the detached comments of the first statement, as the text producer reads them
   const header = src.header()
   if (header.length) file.header = header.join("\n\n")
   const ctx: Ctx = { src, file, syntax }

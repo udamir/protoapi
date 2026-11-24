@@ -62,10 +62,7 @@ export const messageEncodingFeature = (
 }
 
 /**
- * The resolved keywords `packed: false` and `utf8Validation: false` (validation F-3) in the spelling of the syntax:
- * proto2 prints `[packed = true]` when `packed` is absent (its default is EXPANDED), proto3 `[packed = false]`,
- * editions `features.repeated_field_encoding = EXPANDED` / `features.utf8_validation = NONE` (files and messages
- * never carry these features, so the edition defaults PACKED and VERIFY apply).
+ * The resolved keywords `packed: false` and `utf8Validation: false` (spec §3.5 rule D) in the spelling of the syntax: proto2 prints `[packed = true]` when `packed` is absent (its default is EXPANDED), proto3 `[packed = false]`, editions `features.repeated_field_encoding = EXPANDED` / `features.utf8_validation = NONE` (files and messages never carry these features, so the edition defaults PACKED and VERIFY apply).
  */
 export const resolvedFeatureOptions = (f: ProtoApiField, syntax: ProtoSyntax): string[] => {
   const editions = isEditions(syntax)
@@ -90,7 +87,7 @@ export const resolvedFeatureOptions = (f: ProtoApiField, syntax: ProtoSyntax): s
   return out
 }
 
-/** `jsonFormat` (F-3) in editions: the feature option when it differs from the value the element inherits from the printed file and enclosing messages (absent means ALLOW). A message records what it prints for its nested types. */
+/** `jsonFormat` (spec §3.5 rule D) in editions: the feature option when it differs from the value the element inherits from the printed file and enclosing messages (absent means ALLOW). A message records what it prints for its nested types. */
 export const jsonFormatOption = (
   features: FeatureChain,
   jsonFormat: string | undefined,

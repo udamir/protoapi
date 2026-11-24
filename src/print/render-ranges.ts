@@ -27,7 +27,7 @@ export const printExtensionRanges = (p: FilePrinter, depth: number, m: ProtoApiM
   const decls = isPlainObject(m.options)
     ? (m.options.extension_declarations as Record<string, unknown[]> | undefined)
     : undefined
-  // extensionOptions (F-1): each range with options is printed on its own, the rest of a merged interval around it
+  // extensionOptions: each range with options is printed on its own, the rest of a merged interval around it
   const rangeOpts = [...(Array.isArray(m.extensionOptions) ? m.extensionOptions : [])].sort(
     (x, y) => x.range[0] - y.range[0],
   )

@@ -9,12 +9,12 @@ import { decodeWire, scalarType, wireDef } from "../wire.ts"
 import {
   type Any,
   type EnumProto,
-  type FieldProto,
   type FileProto,
   type MessageProto,
+  type ServiceProto,
   type UnknownField,
   VERSION_HINT,
-  type WithUnknown,
+  type WithOptions,
   editionLabel,
 } from "./bufbuild.ts"
 
@@ -71,7 +71,8 @@ export const readBufExtension = (unknown: UnknownField[] | undefined): Record<st
   }
 }
 
-const OPTION_SCHEMAS: Record<string, string> = {
+/** The `@bufbuild/protobuf/wkt` schema of each kind of `*Options` message. */
+export const OPTION_SCHEMAS: Record<string, string> = {
   file: "FileOptionsSchema",
   message: "MessageOptionsSchema",
   field: "FieldOptionsSchema",
@@ -81,6 +82,53 @@ const OPTION_SCHEMAS: Record<string, string> = {
   service: "ServiceOptionsSchema",
   method: "MethodOptionsSchema",
   extensionRange: "ExtensionRangeOptionsSchema",
+}
+
+/** The descriptor message of each kind of element whose own unknown fields are reported (oneofs and extension ranges are not). */
+const DESCRIPTOR_TYPES: Record<string, string> = {
+  file: "google.protobuf.FileDescriptorProto",
+  message: "google.protobuf.DescriptorProto",
+  field: "google.protobuf.FieldDescriptorProto",
+  enum: "google.protobuf.EnumDescriptorProto",
+  enumValue: "google.protobuf.EnumValueDescriptorProto",
+  service: "google.protobuf.ServiceDescriptorProto",
+  method: "google.protobuf.MethodDescriptorProto",
+}
+
+type Json = Record<string, unknown>
+
+/** Visit every element of a file in declaration order (an element before its children) with the kind of its options message (`OPTION_SCHEMAS`), and with its ProtoJSON object when the file's ProtoJSON `json` is given (walked in parallel). */
+export const eachElement = (
+  fd: FileProto,
+  json: Json | undefined,
+  visit: (d: WithOptions, kind: string, j: Json | undefined) => void,
+) => {
+  const each = <T extends WithOptions>(
+    list: T[] | undefined,
+    j: Json | undefined,
+    key: string,
+    kind: string,
+    inner?: (d: T, j: Json | undefined) => void,
+  ) =>
+    list?.forEach((d, i) => {
+      const dj = j && Array.isArray(j[key]) ? (j[key] as Json[])[i] : undefined
+      visit(d, kind, dj)
+      inner?.(d, dj)
+    })
+  const enumeration = (e: EnumProto, j: Json | undefined) => each(e.value, j, "value", "enumValue")
+  const message = (m: MessageProto, j: Json | undefined) => {
+    each(m.field, j, "field", "field")
+    each(m.extension, j, "extension", "field")
+    each(m.oneofDecl, j, "oneofDecl", "oneof")
+    each(m.extensionRange, j, "extensionRange", "extensionRange")
+    each(m.nestedType, j, "nestedType", "message", message)
+    each(m.enumType, j, "enumType", "enum", enumeration)
+  }
+  visit(fd, "file", json)
+  each(fd.messageType, json, "messageType", "message", message)
+  each(fd.enumType, json, "enumType", "enum", enumeration)
+  each(fd.extension, json, "extension", "field")
+  each(fd.service, json, "service", "service", (s: ServiceProto, j) => each(s.method, j, "method", "method"))
 }
 
 /** Report option fields without a definition (`unknown-option`) and descriptor fields the decoder does not know. */
@@ -99,51 +147,15 @@ export const checkUnknownFields = (
     if (!s) m.set(key, (s = new Set()))
     s.add(no)
   }
-  const options = (o: WithUnknown | undefined, kind: string) => {
-    if (!o?.$unknown) return
+  eachElement(fd, undefined, (d, kind) => {
+    const typeName = DESCRIPTOR_TYPES[kind]
+    // buf_extension and an edition value the decoder does not know (both are read from the bytes, `scanFileRecords`)
+    const skip = kind === "file" ? [BUF_EXTENSION_FIELD, FILE.edition] : []
+    if (typeName) for (const u of d.$unknown ?? []) if (!skip.includes(u.no)) add(unknownDescriptor, typeName, u.no)
     const schema = wkt[OPTION_SCHEMAS[kind]]
-    for (const u of o.$unknown)
+    for (const u of d.options?.$unknown ?? [])
       if (!schema || !registry.getExtensionFor?.(schema, u.no)) add(unknownOptions, schema?.typeName ?? kind, u.no)
-  }
-  const descriptor = (d: WithUnknown | undefined, typeName: string, skip: number[] = []) => {
-    for (const u of d?.$unknown ?? []) if (!skip.includes(u.no)) add(unknownDescriptor, typeName, u.no)
-  }
-  const field = (f: FieldProto) => {
-    descriptor(f, "google.protobuf.FieldDescriptorProto")
-    options(f.options, "field")
-  }
-  const enumeration = (e: EnumProto) => {
-    descriptor(e, "google.protobuf.EnumDescriptorProto")
-    options(e.options, "enum")
-    for (const v of e.value ?? []) {
-      descriptor(v, "google.protobuf.EnumValueDescriptorProto")
-      options(v.options, "enumValue")
-    }
-  }
-  const message = (m: MessageProto) => {
-    descriptor(m, "google.protobuf.DescriptorProto")
-    options(m.options, "message")
-    for (const f of m.field ?? []) field(f)
-    for (const x of m.extension ?? []) field(x)
-    for (const o of m.oneofDecl ?? []) options(o.options, "oneof")
-    for (const r of m.extensionRange ?? []) options(r.options, "extensionRange")
-    for (const n of m.nestedType ?? []) message(n)
-    for (const e of m.enumType ?? []) enumeration(e)
-  }
-  // buf_extension and an edition value the decoder does not know (both are read from the bytes, `scanFileRecords`)
-  descriptor(fd, "google.protobuf.FileDescriptorProto", [BUF_EXTENSION_FIELD, FILE.edition])
-  options(fd.options, "file")
-  for (const m of fd.messageType ?? []) message(m)
-  for (const e of fd.enumType ?? []) enumeration(e)
-  for (const x of fd.extension ?? []) field(x)
-  for (const s of fd.service ?? []) {
-    descriptor(s, "google.protobuf.ServiceDescriptorProto")
-    options(s.options, "service")
-    for (const m of s.method ?? []) {
-      descriptor(m, "google.protobuf.MethodDescriptorProto")
-      options(m.options, "method")
-    }
-  }
+  })
   for (const [typeName, nos] of unknownOptions)
     issues.push({
       code: "unknown-option",

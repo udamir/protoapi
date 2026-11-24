@@ -1,11 +1,12 @@
 /**
  * Origin: pbkit 0.0.72, `core/ast/index.d.ts` (https://github.com/pbkit/pbkit),
- * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0 (see ./../LICENSE-MIT, ./../LICENSE-APACHE).
+ * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0, used here under MIT (see ../LICENSE-MIT).
  *
  * Modifications:
  * - reconstructed as TypeScript source from the published `.d.ts`; type-only imports / re-exports.
  * - `Import.weakOrPublic` documented to also hold `option` (edition 2024 `import option "x.proto";`).
  * - comment semantics of `StatementBase` follow buf 1.75 (see KNOWN_DEVIATIONS in ../proto.ts).
+ * - `MalformedBase` removed (the parser no longer recovers inside a field).
  */
 import type { Span, Token } from "../scanner.ts"
 import type * as extensionsAndReserved from "./extensions-and-reserved.ts"
@@ -45,14 +46,6 @@ export type Node =
   | topLevelDefinitions.Node
 
 type index_Node = Syntax | Edition | Import | Package | Option | OptionName | OptionNameSegment
-
-export type MalformedBase<T extends StatementBase, TType extends string, TKeep extends keyof T> = Pick<
-  T,
-  TKeep | keyof StatementBase
-> &
-  Partial<Omit<T, TKeep | keyof StatementBase | "type">> & {
-    type: TType
-  }
 
 export type Statement =
   | TopLevelStatement

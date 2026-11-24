@@ -1,16 +1,12 @@
-// Editions feature resolution (design §6.2 "Feature resolution", rule D in §3.5).
+// Editions feature resolution (spec §3.5 rule D).
 //
-// A feature's value on an element is the nearest explicitly set value walking field -> oneof -> message ->
-// enclosing messages -> file, else the edition default. Edition defaults come from the `edition_defaults` of the
-// `google.protobuf.FeatureSet` fields in the descriptor.proto the build uses: a user-supplied descriptor.proto wins
-// (design §5.2), the bundled one (generated into src/bundle/features.ts) fills the features it does not define.
-// proto2 and proto3 files use the defaults of EDITION_PROTO2 and EDITION_PROTO3.
+// A feature's value on an element is the nearest explicitly set value walking field -> oneof -> message -> enclosing messages -> file, else the edition default. Edition defaults come from the `edition_defaults` of the `google.protobuf.FeatureSet` fields in the descriptor.proto the build uses: a user-supplied descriptor.proto wins, the bundled one (generated into src/bundle/features.ts) fills the features it does not define. proto2 and proto3 files use the defaults of EDITION_PROTO2 and EDITION_PROTO3.
 
 import type { BuildIssue, KnownProtoSyntax, Location, ProtoSyntax } from "./types.ts"
 import type { MFile, MOptionHolder, OptionTree } from "./model/index.ts"
 import { bundledFeatureDefaults } from "./bundle/features.ts"
-import { EDITION_NUMBERS, NEWEST_EDITION, editionName, isEditions, isKnownSyntax } from "./common/editions.ts"
-import { isPlainObject } from "./common/objects.ts"
+import { NEWEST_EDITION, editionName, editionNumberOfName, isEditions, isKnownSyntax } from "./common/editions.ts"
+import { hasKey, isPlainObject, setKey } from "./common/objects.ts"
 import { tokensText } from "./frontend/text/nodes.ts"
 
 /** Resolved values of the `google.protobuf.FeatureSet` fields (enum value names). */
@@ -35,7 +31,7 @@ export interface FeatureDefaultsSource {
   defaults: Record<string, [string, string][]>
 }
 
-/** The `unsupported` issue of an edition this version does not know (both producers, decision D-C). */
+/** The `unsupported` issue of an edition this version does not know (both producers, spec §3.3). */
 export const unsupportedEdition = (
   what: string,
   file: string,
@@ -55,14 +51,14 @@ export const featureDefaultsSource = (
   editions: { name: string; number: number }[],
 ): FeatureDefaultsSource => {
   const out: FeatureDefaultsSource = { editions: {}, defaults: {} }
-  for (const e of editions) out.editions[e.name] = e.number
+  for (const e of editions) setKey(out.editions, e.name, e.number)
   for (const f of fields) {
     if (!Array.isArray(f.editionDefaults)) continue
     const entries: [string, string][] = []
     for (const d of f.editionDefaults)
       if (isPlainObject(d) && typeof d.edition === "string" && typeof d.value === "string")
         entries.push([d.edition, d.value])
-    if (entries.length) out.defaults[f.name] = entries
+    if (entries.length) setKey(out.defaults, f.name, entries)
   }
   return out
 }
@@ -76,6 +72,9 @@ export const mergeFeatureDefaults = (
   defaults: { ...base.defaults, ...over.defaults },
 })
 
+/** The message whose field options (`edition_defaults`) hold the edition defaults. */
+export const FEATURE_SET = "google.protobuf.FeatureSet"
+
 /** Edition defaults by syntax, computed once per syntax. */
 export class FeatureDefaults {
   private readonly cache = new Map<string, ResolvedFeatures>()
@@ -87,7 +86,7 @@ export class FeatureDefaults {
   }
 
   private number(edition: string): number | undefined {
-    return this.source.editions[edition] ?? EDITION_NUMBERS[edition]
+    return Object.hasOwn(this.source.editions, edition) ? this.source.editions[edition] : editionNumberOfName(edition)
   }
 
   /** Defaults for a file's syntax; an edition this version does not know gets the newest known edition's defaults. */
@@ -103,7 +102,7 @@ export class FeatureDefaults {
         const n = this.number(edition)
         if (n === undefined || n > target || (best !== undefined && n < best)) continue
         best = n
-        out[feature] = value
+        setKey(out, feature, value)
       }
     }
     const resolved = out as unknown as ResolvedFeatures
@@ -116,8 +115,7 @@ export class FeatureDefaults {
 export const BUNDLED_FEATURE_DEFAULTS = new FeatureDefaults(bundledFeatureDefaults)
 
 // ---- symbol visibility (edition 2024) ------------------------------------------------------------------------------
-// Read before option typing (the symbol table needs it to resolve names), from the raw options and the bundled
-// defaults.
+// Read before option typing (the symbol table needs it to resolve names), from the raw options and the build's edition defaults (see `linkAll`).
 
 /** Raw option names always carry their tokens: no source text is needed to spell them. */
 const NO_SOURCE = () => ""
@@ -151,11 +149,9 @@ const declaredDefaultVisibility = (file: MOptionHolder): string | undefined => {
  * edition 2024; EXPORT_TOP_LEVEL (2024 default) exports top-level types only; LOCAL_ALL and STRICT (2026 default)
  * make every type local unless it is marked `export`.
  */
-export const defaultVisibility = (file: MFile): string =>
+export const defaultVisibility = (file: MFile, defaults: FeatureDefaults = BUNDLED_FEATURE_DEFAULTS): string =>
   isEditions(file.syntax)
-    ? (declaredDefaultVisibility(file) ??
-      BUNDLED_FEATURE_DEFAULTS.forSyntax(file.syntax).default_symbol_visibility ??
-      "EXPORT_ALL")
+    ? (declaredDefaultVisibility(file) ?? defaults.forSyntax(file.syntax).default_symbol_visibility ?? "EXPORT_ALL")
     : "EXPORT_ALL"
 
 /** The `features` sub-tree of an element's typed options, if any. */
@@ -175,19 +171,16 @@ export const resolveFeatures = (
   for (const options of chain) {
     const f = featuresOf(options)
     if (!f) continue
-    for (const [k, v] of Object.entries(f)) if (k in base && typeof v === "string") out[k] = v
+    for (const [k, v] of Object.entries(f)) if (hasKey(base, k) && typeof v === "string") setKey(out, k, v)
   }
   return out as unknown as ResolvedFeatures
 }
 
-/** Features written as resolved keywords (`packed`, `utf8Validation`, `jsonFormat`; decision F-3) and never kept under
- *  `options.features`, on any element. */
+/** Features written as resolved keywords (`packed`, `utf8Validation`, `jsonFormat`; spec §3.5 rule D) and never kept under `options.features`, on any element. */
 const RESOLVED_FEATURES = ["repeated_field_encoding", "utf8_validation", "json_format"]
 
 /**
- * `options` without what the format writes as keywords: `packed` and the resolved features (F-3), plus `lifted`, the
- * lifted features declared on this element (`field_presence` / `message_encoding` on fields, `enum_type` on enums,
- * rule D). Always a new object.
+ * `options` without what the format writes as keywords: `packed` and the resolved features, plus `lifted`, the lifted features declared on this element (`field_presence` / `message_encoding` on fields, `enum_type` on enums, rule D). Always a new object.
  */
 export const withoutFeatureKeys = (options: OptionTree, lifted: string[] = []): OptionTree => {
   const out: OptionTree = { ...options }

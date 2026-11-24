@@ -1,6 +1,6 @@
 /**
  * Origin: pbkit 0.0.72, `core/parser/recursive-descent-parser.{js,d.ts}` (https://github.com/pbkit/pbkit),
- * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0 (see ./LICENSE-MIT, ./LICENSE-APACHE).
+ * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0, used here under MIT (see ./LICENSE-MIT).
  *
  * Modifications:
  * - strict TypeScript port of the compiled `.js` + `.d.ts`.
@@ -129,8 +129,7 @@ export class ParserSyntaxError extends Error {
 }
 
 /**
- * A malformed token (an invalid escape or an unterminated string literal): never recovered from, so the error is
- * reported where the token is malformed rather than where a later rule gives up (validation text#14).
+ * A malformed token (an invalid escape or an unterminated string literal): never recovered from, so the error is reported where the token is malformed rather than where a later rule gives up.
  */
 export class TokenSyntaxError extends ParserSyntaxError {
   constructor(parser: RecursiveDescentParser<Token>, expectedPatterns: Pattern[], message: string) {

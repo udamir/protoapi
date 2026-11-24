@@ -1,5 +1,4 @@
-// The syntactic rules of a syntax or edition, checked by the text front end while the AST is at hand (validation
-// decision D-E): labels, groups, map keys, reserved names, visibility keywords, import flags, oneofs, extensions.
+// The syntactic rules of a syntax or edition, checked by the text front end while the AST is at hand (what buf rejects; `invalid-definition` issues): labels, groups, map keys, reserved names, visibility keywords, import flags, oneofs, extensions.
 
 import type { Location } from "../../types.ts"
 import type { MField, MImport } from "../../model/index.ts"
@@ -9,9 +8,7 @@ import { syntaxName } from "../../common/names.ts"
 import { type Ctx, report } from "./context.ts"
 
 /**
- * The label rules of the file's syntax (D-E): proto2 fields outside a oneof need a label, proto3 has no `required`,
- * editions have neither `optional` nor `required` (features.field_presence replaces them), extensions are never
- * `required`.
+ * The label rules of the file's syntax: proto2 fields outside a oneof need a label, proto3 has no `required`, editions have neither `optional` nor `required` (features.field_presence replaces them), extensions are never `required`.
  */
 export const checkLabel = (
   ctx: Ctx,
@@ -67,7 +64,7 @@ export const checkGroup = (
 
 const MAP_KEY_INVALID = new Set(["float", "double", "bytes"])
 
-/** The map key must be an integral, bool or string scalar (D-E: a message key used to become `string`). */
+/** The map key must be an integral, bool or string scalar (an `invalid-definition`, not a `string` key). */
 export const checkMapKey = (ctx: Ctx, key: string, scalar: boolean, keyType: Span, pointer: string) => {
   if (!scalar || MAP_KEY_INVALID.has(key))
     report(
@@ -82,9 +79,7 @@ export const checkMapKey = (ctx: Ctx, key: string, scalar: boolean, keyType: Spa
 const IDENT = /^[A-Za-z_][A-Za-z0-9_]*$/
 
 /**
- * Reserved names: editions write them as identifiers, proto2 / proto3 as string literals, and a quoted name must be
- * an identifier (D-E; buf: "cannot use string literals in reserved range in editions mode", "reserved message field
- * name is not a valid identifier").
+ * Reserved names: editions write them as identifiers, proto2 / proto3 as string literals, and a quoted name must be an identifier (buf: "cannot use string literals in reserved range in editions mode", "reserved message field name is not a valid identifier").
  */
 export const checkReservedName = (
   ctx: Ctx,

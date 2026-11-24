@@ -1,19 +1,35 @@
-// Type names in the printed text: the names a document knows, protoc's name lookup, the shortest name that resolves back to a type from a scope, and the spelling of unresolved references.
+// Type names in the printed text: the names a document knows (and, for extendees and method types, its members too), protoc's name lookup, the shortest name that resolves back to a type from a scope, and the spelling of unresolved references.
 
 import type { ProtoApiDocument, ProtoApiFile } from "../types.ts"
-import { qualify } from "../common/names.ts"
+import { parentScope, qualify } from "../common/names.ts"
 import type { Oracle } from "./oracle.ts"
 
-/** Fully qualified names of every type and package the document (and the definitions) know. */
+/** Fully qualified names of every type and package the document (and the definitions) know; with `members`, also the document's fields, oneofs, enum values (siblings of their enum), extensions and methods, which only protoc's any-kind lookups see (extendees and method types: the first symbol of any kind wins, the wrong kind is an error). */
 export const symbolNames = (
   doc: ProtoApiDocument,
   oracle: Oracle,
   files: Record<string, ProtoApiFile>,
+  members?: boolean,
 ): Set<string> => {
   const out = new Set<string>()
-  for (const k of Object.keys(doc.components?.messages ?? {})) out.add(k)
-  for (const k of Object.keys(doc.components?.enums ?? {})) out.add(k)
-  for (const k of Object.keys(doc.services ?? {})) out.add(k)
+  const add = (scope: string, o: unknown) => {
+    if (members) for (const n in o as object) out.add(qualify(scope, n))
+  }
+  add("", doc.components?.extensions)
+  for (const [k, m] of Object.entries(doc.components?.messages ?? {})) {
+    out.add(k)
+    add(k, m?.properties)
+    add(k, m?.oneofs)
+  }
+  for (const [k, e] of Object.entries(doc.components?.enums ?? {})) {
+    out.add(k)
+    add(parentScope(k), e?.values)
+  }
+  for (const [k, s] of Object.entries(doc.services ?? {})) {
+    out.add(k)
+    // a method name hides a type of the same name in the service's scope (buf: "expected message type, found service method")
+    add(k, s?.methods)
+  }
   for (const f of Object.values(files)) {
     const parts = (typeof f?.package === "string" ? f.package : "").split(".").filter(Boolean)
     for (let i = 1; i <= parts.length; i++) out.add(parts.slice(0, i).join("."))

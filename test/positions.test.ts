@@ -1,6 +1,7 @@
 // Source-map positions of the text producer (C-8, D-A, C-10, text#14) against buf; cases in test/cases/positions.ts.
 
 import { describe, expect, test } from "vite-plus/test"
+import { buildFromDescriptorSet, bundledFiles } from "../src/index.ts"
 import { createLineIndex } from "../src/parser/index.ts"
 import { cases } from "./cases/positions.ts"
 import { describeCases } from "./cases/run.ts"
@@ -30,5 +31,21 @@ describe("line index with tab stops (D-A)", () => {
     }
     for (const o of [2999, 5, 1500, 1499, 257, 256, 255, 0, 3000, 1024])
       expect(index.toPosition(o).column).toBe(scan(o))
+  })
+})
+
+describe("tabWidth is a text-producer option", () => {
+  test("a descriptor build reads every bundled file with the default tab stop, imported or added for the option definitions", () => {
+    const desc = bundledFiles["google/protobuf/descriptor.proto"].replace(
+      "message FileDescriptorSet {",
+      "message FileDescriptorSet {\n\t\tint32 tabbed = 99;",
+    )
+    const bundle = { "google/protobuf/descriptor.proto": desc }
+    const file = { name: "a.proto", package: "p", syntax: "proto3", messageType: [{ name: "M" }] }
+    for (const dependency of [["google/protobuf/descriptor.proto"], []]) {
+      const set = { file: [{ ...file, dependency }] }
+      const results = [4, 8, 1].map((tabWidth) => buildFromDescriptorSet(set, { imports: "all", bundle, tabWidth }))
+      for (const r of results.slice(1)) expect(r).toEqual(results[0])
+    }
   })
 })

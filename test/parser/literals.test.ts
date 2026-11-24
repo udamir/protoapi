@@ -32,7 +32,8 @@ describe("decodeStrLit", () => {
   test("unicode escapes", () => {
     expect(decodeStrLit(lit(`"${bs}u00e9${bs}u20AC"`))).toBe("é€")
     expect(decodeStrLit(lit(`"${bs}U0001F600"`))).toBe("\u{1F600}")
-    expect(decodeStrLit(lit(`"${bs}ud83d${bs}ude00"`))).toBe("\u{1F600}") // surrogate pair
+    // the scanner rejects surrogate and out-of-range escapes (buf); a hand-made token decodes them to U+FFFD
+    expect(decodeStrLit(lit(`"${bs}ud83d${bs}ude00${bs}U00110000"`))).toBe("\u{FFFD}\u{FFFD}\u{FFFD}")
   })
 
   test("invalid UTF-8 becomes U+FFFD", () => {

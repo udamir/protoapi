@@ -3,6 +3,7 @@
 
 import type { MField, MFile, MOptionHolder } from "../model/index.ts"
 import { DEFAULT_TAB_WIDTH, textToModel } from "../frontend/text/convert.ts"
+import { getKey, hasKey } from "../common/objects.ts"
 
 /** Parsed bundled files, shared between builds (bundled files only reference bundled files). */
 const bundleCache = new Map<string, { text: string; file: MFile; tabWidth: number }>()
@@ -54,6 +55,6 @@ export type BundleLookup = (path: string, override?: Record<string, string>) => 
 export const bundleLookup =
   (bundle: Bundle): BundleLookup =>
   (path, override) => {
-    if (override && path in override) return override[path]
-    return Object.prototype.hasOwnProperty.call(bundle, path) ? bundle[path] : undefined
+    if (override && hasKey(override, path)) return override[path]
+    return getKey(bundle, path)
   }

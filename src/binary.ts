@@ -1,11 +1,6 @@
-// Binary FileDescriptorSet decoding with the optional peer dependency @bufbuild/protobuf (design §6.1, IN-8).
+// Binary FileDescriptorSet decoding with the optional peer dependency @bufbuild/protobuf.
 //
-// The set is decoded with `FileDescriptorSetSchema`; custom options arrive as unknown fields and are converted by
-// `toJson` with a registry. The registry is built per file from the set plus the bundled definitions (validation
-// decision 16), so one file that @bufbuild/protobuf cannot load (a future edition, a missing import) only loses its own
-// definitions. Every fallback is reported: `unsupported` when a file's definitions cannot be loaded or decoded,
-// `unknown-option` when an option field has no definition anywhere. buf's `ImageFile.buf_extension` (field 8042) is
-// read from the unknown fields, so `bufExtension.isImport` survives the binary path (C-3).
+// The set is decoded with `FileDescriptorSetSchema`; custom options arrive as unknown fields and are converted by `toJson` with a registry. The registry is built per file from the set plus the bundled definitions, so one file that @bufbuild/protobuf cannot load (a future edition, a missing import) only loses its own definitions. Every fallback is reported: `unsupported` when a file's definitions cannot be loaded or decoded, `unknown-option` when an option field has no definition anywhere. buf's `ImageFile.buf_extension` (field 8042) is read from the unknown fields, so `bufExtension.isImport` survives the binary path.
 //
 // This file loads the package and decodes; the registry, the model -> FileDescriptorProto serializer and the unknown-field scanning are in src/binary/.
 
@@ -17,9 +12,11 @@ import {
   type BinaryContext,
   type BufbuildModules,
   type FileProto,
+  type UnknownField,
 } from "./binary/bufbuild.ts"
 import { buildRegistry } from "./binary/registry.ts"
-import { checkUnknownFields, scanFileRecords } from "./binary/unknown-fields.ts"
+import { OPTION_SCHEMAS, checkUnknownFields, eachElement, scanFileRecords } from "./binary/unknown-fields.ts"
+import { WIRE_OPTIONS } from "./frontend/descriptor/json.ts"
 
 export { BUFBUILD_2026, BUFBUILD_MINIMUM } from "./binary/bufbuild.ts"
 export type { BinaryContext, BufbuildModules } from "./binary/bufbuild.ts"
@@ -46,6 +43,37 @@ export const loadBufbuild = async (
   }
   return { pb, wkt }
 }
+
+type Json = Record<string, unknown>
+
+/**
+ * The options of a file whose ProtoJSON @bufbuild/protobuf cannot write as a whole (`toJson` throws for an `Any` of a type the registry does not have, an out-of-range `Timestamp` or `Duration`, …): each `*Options` message is converted on its own, and in one that still fails each option field on its own. The fields that fail stay wire bytes under `WIRE_OPTIONS`, which the option interpreter decodes against the set's definitions as the text producer does; every other option keeps its ProtoJSON. `json` is the file's ProtoJSON without custom options, walked in parallel with `fd`.
+ */
+const rescueOptions = (pb: Any, wkt: Any, registry: Any, fd: FileProto, json: Json) =>
+  eachElement(fd, json, (d, kind, j) => {
+    const opts = d.options
+    const unknown = opts?.$unknown ?? []
+    const schema = wkt[OPTION_SCHEMAS[kind]]
+    if (!unknown.length || !schema || !j) return
+    const convert = (keep: UnknownField[]): Json | undefined => {
+      try {
+        return pb.toJson(schema, { ...opts, $unknown: keep }, { registry })
+      } catch {
+        return undefined
+      }
+    }
+    let out = convert(unknown)
+    if (!out) {
+      const failing = new Set<number>()
+      for (const no of new Set(unknown.map((u) => u.no)))
+        if (!convert(unknown.filter((u) => u.no === no))) failing.add(no)
+      let keep = unknown.filter((u) => !failing.has(u.no))
+      // fields that convert one by one but not together all stay bytes
+      out = convert(keep) ?? convert((keep = [])) ?? {}
+      ;(out as Record<symbol, unknown>)[WIRE_OPTIONS] = unknown.filter((u) => !keep.includes(u))
+    }
+    j.options = out
+  })
 
 /** Decode a binary FileDescriptorSet (or buf image) to its ProtoJSON form. Throws when no usable decoder exists. */
 export const decodeWithBufbuild = async (
@@ -80,13 +108,10 @@ export const decodeWithBufbuild = async (
     let json: Record<string, unknown>
     try {
       json = pb.toJson(wkt.FileDescriptorProtoSchema, fd, { registry })
-    } catch (e) {
-      ctx.issues.push({
-        code: "unsupported",
-        message: `custom options of ${fd.name} cannot be decoded (${(e as Error).message}); they are dropped`,
-        file: fd.name,
-      })
+    } catch {
+      // one option value without a ProtoJSON form fails the whole file: convert each options message on its own
       json = pb.toJson(wkt.FileDescriptorProtoSchema, fd)
+      rescueOptions(pb, wkt, registry, fd, json)
     }
     const ext = raw[i]?.bufExtension
     if (ext) json.bufExtension = ext

@@ -3,12 +3,19 @@
 // oracle; `buf` holds the substring of its error when it rejects the input.
 
 import type { Case } from "./types.ts"
+import { bundledFiles } from "../../src/index.ts"
 
 const e = (edition: string, pkg: string, body = "") => `edition = "${edition}";\npackage ${pkg};\n${body}`
 const P3 = (pkg: string, body = "") => `syntax = "proto3";\n${pkg ? `package ${pkg};\n` : ""}${body}`
 const P2 = (body: string) => `syntax = "proto2";\npackage p;\nimport "google/protobuf/descriptor.proto";\n${body}`
 
 const ref = (fqn: string) => `#/components/messages/${fqn}`
+
+/** The bundled descriptor.proto with edition 2024's `default_symbol_visibility` default changed to EXPORT_ALL. */
+const exportAllDescriptor = bundledFiles["google/protobuf/descriptor.proto"].replace(
+  'edition_defaults = { edition: EDITION_2024, value: "EXPORT_TOP_LEVEL" }',
+  'edition_defaults = { edition: EDITION_2024, value: "EXPORT_ALL" }',
+)
 
 export const cases: Case[] = [
   // ---- C-1: symbols outside the import closure are not found; the search continues outward ----------------------
@@ -342,5 +349,114 @@ export const cases: Case[] = [
     entry: ["a.proto"],
     buf: "cannot find `Foo.Bar` in this scope",
     issues: ["unresolved-type @ #/components/messages/a.M/properties/f"],
+  },
+  {
+    id: "PB-4.30",
+    title: "an unresolved map value type is reported once, like a plain field's",
+    sources: { "a.proto": P3("p", "message A { map<string, Missing> m = 1; Missing x = 2; }\n") },
+    buf: "cannot find `Missing` in this scope",
+    issues: [
+      "unresolved-type @ #/components/messages/p.A/properties/m",
+      "unresolved-type @ #/components/messages/p.A/properties/x",
+    ],
+  },
+  {
+    id: "PB-4.31",
+    title:
+      "2024: the default symbol visibility comes from the build's own descriptor.proto (EXPORT_ALL: a nested message is exported)",
+    sources: {
+      // the import puts the descriptor.proto into buf's image, so that the descriptor build sees it too
+      "a.proto": e(
+        "2024",
+        "p",
+        'import "b.proto";\nimport "google/protobuf/descriptor.proto";\nmessage A { q.Outer.Inner i = 1; }\n',
+      ),
+      "b.proto": e("2024", "q", "message Outer { message Inner {} }\n"),
+      "google/protobuf/descriptor.proto": exportAllDescriptor,
+    },
+    entry: ["a.proto", "b.proto"],
+    noConformance:
+      "a set does not record where a file came from: its descriptor.proto counts as bundled and is not emitted, while the text producer emits the user's own",
+    check: (r, x) => {
+      x(exportAllDescriptor).not.toBe(bundledFiles["google/protobuf/descriptor.proto"])
+      x(r.document.components?.messages?.["p.A"]?.properties.i.$ref).toBe(ref("q.Outer.Inner"))
+    },
+    descriptorCheck: (r, x) => {
+      x(r.issues).toEqual([])
+      x(r.document.components?.messages?.["p.A"]?.properties.i.$ref).toBe(ref("q.Outer.Inner"))
+    },
+  },
+  {
+    id: "PB-4.32",
+    title: "an rpc type named like a method of its service resolves to that method (wrong kind, not skipped)",
+    sources: {
+      "a.proto": P3(
+        "p",
+        "message A {}\nmessage B {}\nmessage Foo {}\nservice S { rpc A (B) returns (B); rpc B (A) returns (A); rpc Foo (Foo) returns (Foo); rpc C (A) returns (Foo); }\n",
+      ),
+    },
+    buf: "expected message type, found service method `p.S.B`",
+    issues: [
+      "unresolved-type @ #/services/p.S/methods/A/request",
+      "unresolved-type @ #/services/p.S/methods/A/response",
+      "unresolved-type @ #/services/p.S/methods/B/request",
+      "unresolved-type @ #/services/p.S/methods/B/response",
+      "unresolved-type @ #/services/p.S/methods/Foo/request",
+      "unresolved-type @ #/services/p.S/methods/Foo/response",
+      "unresolved-type @ #/services/p.S/methods/C/request",
+      "unresolved-type @ #/services/p.S/methods/C/response",
+    ],
+    check: (r, x) =>
+      x(r.issues.map((i) => i.message)).toContain(
+        "unresolved type: Foo resolves to method p.S.Foo, which is not a message or enum type",
+      ),
+  },
+  {
+    id: "PB-4.33",
+    title:
+      "an rpc type named like a method resolves when qualified (a method is not an aggregate for the first component)",
+    sources: {
+      "a.proto": P3(
+        "p",
+        "message Foo {}\nservice S { rpc Foo (.p.Foo) returns (p.Foo); rpc p (p.Foo) returns (.p.Foo); }\n",
+      ),
+    },
+    check: (r, x) => {
+      x(r.document.services?.["p.S"]?.methods.Foo.request.schema.$ref).toBe(ref("p.Foo"))
+      x(r.document.services?.["p.S"]?.methods.p.response.schema.$ref).toBe(ref("p.Foo"))
+    },
+  },
+  {
+    id: "PB-4.34",
+    title: "an rpc type or extendee finds a service or package of an inner scope before a message of an outer one",
+    sources: {
+      "a.proto":
+        'syntax = "proto2";\npackage p.q;\nimport "b.proto";\nimport "c.proto";\nmessage M {}\nservice Foo {}\nservice S { rpc X (M) returns (Foo); rpc Y (M) returns (Bar); }\nmessage N { optional Foo f = 1; }\nextend Foo { optional int32 x = 1; }\nextend Bar { optional int32 y = 1; }\n',
+      "b.proto":
+        'syntax = "proto2";\npackage p;\nmessage Foo { extensions 1 to 10; }\nmessage Bar { extensions 1 to 10; }\n',
+      "c.proto": 'syntax = "proto2";\npackage p.q.Bar;\n',
+    },
+    entry: ["a.proto"],
+    buf: "expected message type, found service definition `p.q.Foo`",
+    issues: [
+      "unresolved-type @ #/services/p.q.S/methods/X/response",
+      "unresolved-type @ #/services/p.q.S/methods/Y/response",
+      "unresolved-extendee @ #/components/extensions/p.q.x",
+      "unresolved-extendee @ #/components/extensions/p.q.y",
+    ],
+    check: (r, x) => x(r.document.components?.messages?.["p.q.N"]?.properties.f.$ref).toBe(ref("p.Foo")),
+  },
+  {
+    id: "PB-4.35",
+    title: "an extendee named like a field of an enclosing message resolves to that field (wrong kind, not skipped)",
+    sources: {
+      "a.proto": P2(
+        "message Foo { extensions 1 to 10; }\nmessage M { optional int32 Foo = 1; message K { extend Foo { optional int32 x = 2; } } }\n",
+      ),
+    },
+    buf: "expected message type, found message field `p.M.Foo`",
+    issues: ["unresolved-extendee @ #/components/extensions/p.M.K.x"],
+    check: (r, x) =>
+      x(r.issues[0].message).toBe("unresolved extendee: Foo resolves to field p.M.Foo, which is not a message type"),
   },
 ]

@@ -13,8 +13,7 @@ export interface Slot {
   message?: boolean
   /** the message type of a message slot, when resolved */
   messageFqn?: string
-  /** the wrapper well-known type a `scalar` slot comes from (`google.protobuf.StringValue`): wrappers take the tags
-   *  and rules of their scalar (A-11, decision 6) */
+  /** the wrapper well-known type a `scalar` slot comes from (`google.protobuf.StringValue`): wrappers take the tags and rules of their scalar */
   wrapper?: string
 }
 
@@ -39,7 +38,7 @@ export interface AnnotationInput {
   shape?: FieldShape
   mode: NonNullable<BuildOptions["annotations"]>
   tags?: BuildOptions["tags"]
-  /** keywords set on the element by an enclosing one (`openapiv2_schema.json_schema.required` of the message, A-13) */
+  /** keywords set on the element by an enclosing one (`openapiv2_schema.json_schema.required` of the message) */
   extra?: { keyword: string; value: unknown; source: AnnotationSource; option?: string }[]
   /** messages: the field a `json_schema.required` entry names (proto name or JSON name), if any */
   fieldOf?: (name: string) => string | undefined
@@ -55,13 +54,13 @@ export interface AnnotationResult {
   conflicts: AnnotationConflict[]
   /** invalid comment tags, each as `@Tag value: reason` */
   invalidTags: string[]
-  /** convention options not lifted because they do not fit the element (A-11): the option key and the reason */
+  /** convention options not lifted because they do not fit the element (spec §3.8): the option key and the reason */
   invalidOptions: { key: string; message: string }[]
-  /** messages: the fields `openapiv2_schema.json_schema.required` names (A-13) */
+  /** messages: the fields `openapiv2_schema.json_schema.required` names */
   requiredFields?: string[]
   /** options left after lifting */
   options: Record<string, unknown>
-  /** where each kept keyword came from (validation L-3: keyword-level source-map entries) */
+  /** where each kept keyword came from (for the keyword-level source-map entries of spec §5) */
   origins: KeywordOrigin[]
   /** where `deprecation` came from */
   deprecationOrigin?: { source: AnnotationSource; comment?: CommentLine }
@@ -97,7 +96,7 @@ export interface Candidate {
 export const shapeKind = (shape: FieldShape | undefined): ShapeKind =>
   shape?.repeated ? "repeated" : shape?.map ? "map" : "singular"
 
-/** The value position of a field: `items` on repeated fields, `additionalProperties` on maps (decision 5). */
+/** The value position of a field: `items` on repeated fields, `additionalProperties` on maps (spec §3.2 Field). */
 export const valueTarget = (shape: ShapeKind): Target =>
   shape === "repeated" ? "items" : shape === "map" ? "additionalProperties" : ""
 
@@ -110,7 +109,7 @@ export const slotOf = (shape: FieldShape | undefined, target: Target): Slot | un
   return shape.map?.value
 }
 
-/** Every annotation keyword a position can carry (design §3.2 order). */
+/** Every annotation keyword a position can carry, in the order of `ProtoApiAnnotations`. */
 export const ANNOTATION_KEYWORDS =
   "format readOnly writeOnly immutable minimum maximum exclusiveMinimum exclusiveMaximum multipleOf minLength maxLength pattern minItems maxItems uniqueItems minProperties maxProperties enum const examples".split(
     " ",

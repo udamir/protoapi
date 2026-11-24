@@ -5,6 +5,7 @@ import type { MFile } from "../model/index.ts"
 import { SymbolTable } from "../symbols.ts"
 import { linkAll } from "../resolve.ts"
 import { Lowering } from "../lower/index.ts"
+import { OptionsContext } from "../lower/context.ts"
 import { validateFiles } from "../validate/index.ts"
 import { textToModel } from "../frontend/text/convert.ts"
 import type { Settings } from "./arguments.ts"
@@ -26,7 +27,7 @@ export const finish = (
   options: BuildOptions,
   settings: Settings,
   issues: BuildIssue[],
-  /** text producer: a descriptor.proto among the sources wins over the bundle (design §5.2), even when not imported */
+  /** text producer: a descriptor.proto among the sources wins over the bundle, even when not imported */
   own?: string,
 ): BuildResult => {
   const { files, byPath } = loaded
@@ -45,7 +46,9 @@ export const finish = (
     }
   }
   const symbols = new SymbolTable(files)
-  linkAll(files, symbols)
+  // the edition defaults of the build's descriptor.proto decide the symbol visibility, so they are read while linking
+  const optionsContext = new OptionsContext(symbols, loaded.sources)
+  linkAll(files, symbols, () => optionsContext.featureTable())
   const lowering = new Lowering({
     files,
     entry,
@@ -54,9 +57,10 @@ export const finish = (
     imports: settings.imports,
     sources: loaded.sources,
     issues,
+    optionsContext,
   })
   const { document, sourceMap } = lowering.run()
-  // D-E: definition checks of the text producer (files flagged `validate`: the non-bundled sources)
+  // definition checks of the text producer (files flagged `validate`: the non-bundled sources)
   validateFiles({ files, symbols, optionsContext: lowering.optionsContext, sources: loaded.sources, issues })
   return { document, sourceMap: options.sourceMap === false ? {} : sourceMap, issues }
 }

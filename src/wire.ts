@@ -6,9 +6,10 @@ import type { MField, MMessage } from "./model/index.ts"
 import type { SymbolTable } from "./symbols.ts"
 import { canonFloat, canonFloatOf, canonInt, toBase64 } from "./values/canonical.ts"
 import { utf8Decode } from "./values/literals.ts"
-import { type VType, enumName } from "./options/scalar.ts"
+import { type VType, enumName, zeroValue } from "./options/scalar.ts"
 import { refType, typeOfRef } from "./options/definitions.ts"
 import { isAbsentValue } from "./options/presence.ts"
+import { hasKey, setKey } from "./common/objects.ts"
 
 /** A field of a definition made for `decodeWire`, its value type given. */
 type WireField = MField & { vt?: VType }
@@ -93,14 +94,24 @@ export const decodeWire = (
     if (packed) for (const end = Number(varint()) + p; p < end;) values.push(value(t, e))
     else values.push(value(t, w))
     for (const v of values) {
+      if (!m) {
+        if (!f.repeated) setKey(out, f.name, v)
+        else if (hasKey(out, f.name)) (out[f.name] as unknown[]).push(v)
+        else setKey(out, f.name, [v])
+        continue
+      }
+      // a missing key or value is the zero value of its type
       const entry = v as { key?: unknown; value?: unknown }
-      if (!m) f.repeated ? ((out[f.name] ??= []) as unknown[]).push(v) : (out[f.name] = v)
-      else if ("key" in entry && "value" in entry)
-        ((out[f.name] ??= {}) as Record<string, unknown>)[String(entry.key)] = entry.value
-      else throw RangeError()
+      const key = "key" in entry ? entry.key : zeroValue(scalarType(m.key))
+      if (!hasKey(out, f.name)) setKey(out, f.name, {})
+      setKey(
+        out[f.name] as Record<string, unknown>,
+        String(key),
+        "value" in entry ? entry.value : zeroValue(refType(m.value, symbols)),
+      )
     }
   }
-  for (const f of def.fields) if (f.name in out && isAbsentValue(out[f.name], f, def, symbols)) delete out[f.name]
+  for (const f of def.fields) if (hasKey(out, f.name) && isAbsentValue(out[f.name], f, def, symbols)) delete out[f.name]
   return def.fqn === "google.protobuf.Any" ? any(out) : out
 }
 

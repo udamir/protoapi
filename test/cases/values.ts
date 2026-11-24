@@ -17,6 +17,11 @@ const options = (defs: string, sets: string, imports = "", syntax = P2) => ({
   "a.proto": `${syntax}${DESC}${imports}extend google.protobuf.MessageOptions {\n${defs}\n}\nmessage M {\n${sets}\n}\n`,
 })
 
+/** `(o)` (an `O` of maps) set to `value` on `v.M`, and `(an)` (an Any) to the text-format fields `any` */
+const mapOptions = (value: string, any = "") => ({
+  "a.proto": `${P3}import "google/protobuf/any.proto";\n${DESC}enum E { E0 = 0; E1 = 1; }\nmessage V { int32 x = 1; }\nmessage O { map<string, int32> m = 1; map<string, E> e = 2; map<string, V> v = 3; map<int64, string> i = 4; map<bool, bytes> b = 5; }\nextend google.protobuf.MessageOptions { O o = 50000; google.protobuf.Any an = 50001; }\nmessage M {\n  option (o) = ${value};\n${any ? `  option (an) = { ${any} };\n` : ""}}\n`,
+})
+
 type Doc = { components?: { messages?: Record<string, Record<string, unknown>> } }
 const props = (d: unknown) =>
   (d as Doc).components?.messages?.["v.M"]?.properties as Record<string, Record<string, unknown>>
@@ -400,8 +405,11 @@ export const cases: Case[] = [
     },
     buf: "Missing",
     issues: [`unknown-option @ ${M}/options/v.an`],
-    check: (r, x) =>
-      x(opts(r.document)["v.an"]).toEqual({ type_url: "type.googleapis.com/nope.Missing", value: "CAE=" }),
+    check: (r, x) => {
+      x(opts(r.document)["v.an"]).toEqual({ type_url: "type.googleapis.com/nope.Missing", value: "CAE=" })
+      // the same issue as an unknown type in the expanded form (PB-5.30)
+      x(r.issues[0].message).toContain("unknown type type.googleapis.com/nope.Missing in an Any option value")
+    },
   },
   {
     id: "PB-5.41",
@@ -422,6 +430,52 @@ export const cases: Case[] = [
     buf: "type_url is not set",
     issues: [`unknown-option @ ${M}/options/v.an`],
     check: (r, x) => x(opts(r.document)["v.an"]).toEqual({ value: "CAE=" }),
+  },
+  // ---- map entries in text-format option values ---------------------------------------------------------------------
+  {
+    id: "PB-5.47",
+    title: "a map entry without a key or a value takes the zero value of its type",
+    sources: mapOptions(
+      '{ m: [{ value: 1 }, { key: "k" }] e: { key: "a" } v: { key: "a" } i: { value: "z" } b: {} }',
+      'type_url: "type.googleapis.com/v.O" value: "\\x0a\\x03\\x0a\\x01k\\x0a\\x02\\x10\\x05"',
+    ),
+    check: (r, x) => {
+      x(opts(r.document)["v.o"]).toEqual({
+        m: { "": 1, k: 0 },
+        e: { a: "E0" },
+        v: { a: {} },
+        i: { "0": "z" },
+        b: { false: "" },
+      })
+      // the same in an Any decoded from its wire bytes
+      x(opts(r.document)["v.an"]).toEqual({ "@type": "type.googleapis.com/v.O", m: { k: 0, "": 5 } })
+    },
+  },
+  {
+    id: "PB-5.48",
+    title: "a map entry key of the wrong type is an invalid-option (buf rejects it)",
+    sources: mapOptions("{ m: { key: 1, value: 2 } }"),
+    buf: "mismatched types",
+    issues: [`invalid-option @ ${M}/options/v.o`],
+    check: (r, x) => {
+      x(opts(r.document)["v.o"]).toEqual({})
+      x(r.issues[0].message).toContain("map entry key: a string literal is expected")
+    },
+  },
+  {
+    id: "PB-5.49",
+    title: "a map entry value of the wrong type is an invalid-option (buf rejects it)",
+    sources: mapOptions('{ m: { key: "k", value: "x" } m: { key: "j", value: 2 } }'),
+    buf: "mismatched types",
+    issues: [`invalid-option @ ${M}/options/v.o`],
+    check: (r, x) => x(opts(r.document)["v.o"]).toEqual({ m: { j: 2 } }),
+  },
+  {
+    id: "PB-5.50",
+    title: "a map entry field other than key and value is an invalid-option (buf rejects it)",
+    sources: mapOptions('{ m: { key: "k", foo: 1 } }'),
+    buf: "cannot resolve message field name",
+    issues: [`invalid-option @ ${M}/options/v.o`],
   },
   // ---- rule D and rule J --------------------------------------------------------------------------------------------
   {

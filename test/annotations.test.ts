@@ -3,6 +3,8 @@
 
 import { describe, expect, test } from "vite-plus/test"
 import { buildFromProto } from "../src/index.ts"
+import { liftGoogleApi } from "../src/conventions/google-api.ts"
+import type { Candidate } from "../src/conventions/types.ts"
 import { cases } from "./cases/annotations.ts"
 import { describeCases } from "./cases/run.ts"
 
@@ -53,5 +55,22 @@ message M {
       "annotation-conflict: field a: maxLength from buf.validate (5) is kept, tag (9) is dropped",
       "invalid-tag: invalid comment tag @MinLength abc: a non-negative integer is expected (field b)",
     ])
+  })
+})
+
+describe("PB-3 google.api field_info", () => {
+  test("a field_info.format named like an Object.prototype key is not a format (it stays under options)", () => {
+    for (const format of ["constructor", "toString", "__proto__", "IPV4"]) {
+      const options: Record<string, unknown> = { "google.api.field_info": { format } }
+      const out: Candidate[] = []
+      liftGoogleApi(options, { self: { scalar: "string" } }, out)
+      if (format === "IPV4") {
+        expect(out).toEqual([{ target: "", keyword: "format", value: "ipv4", source: "google.api" }])
+        expect(options).toEqual({})
+      } else {
+        expect(out).toEqual([])
+        expect(options).toEqual({ "google.api.field_info": { format } })
+      }
+    }
   })
 })

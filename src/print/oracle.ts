@@ -4,10 +4,11 @@ import type { ProtoApiDocument, ProtoApiField, ProtoApiTypeRef, ProtoScalar } fr
 import type { MField, MFile, MMessage } from "../model/index.ts"
 import { SymbolTable } from "../symbols.ts"
 import { linkAll } from "../resolve.ts"
+import { OptionsContext } from "../lower/context.ts"
 import { textToModel } from "../frontend/text/convert.ts"
 import { isScalar } from "../values/scalars.ts"
 import { normalizePath } from "../paths.ts"
-import { isPlainObject } from "../common/objects.ts"
+import { getKey, hasKey, isPlainObject } from "../common/objects.ts"
 
 export type FType =
   | { kind: "scalar"; scalar: ProtoScalar; repeated?: boolean }
@@ -40,7 +41,7 @@ const optionModels = (bundle: Readonly<Record<string, string>>): OptionModels =>
 }
 const bundleSymbols = new WeakMap<object, SymbolTable>()
 
-/** Every bundled file's top-level declarations (fqn -> path), for documents without `files` (decision 12). The option files are already parsed by `optionModels` (linking does not change the names read here); the rest is parsed here. */
+/** Every bundled file's top-level declarations (fqn -> path), for documents without `files` (spec §6). The option files are already parsed by `optionModels` (linking does not change the names read here); the rest is parsed here. */
 const bundleIndexes = new WeakMap<object, Map<string, string>>()
 export const bundleIndex = (bundle: Readonly<Record<string, string>>): Map<string, string> => {
   let idx = bundleIndexes.get(bundle)
@@ -110,13 +111,20 @@ export class Oracle {
     if (cached) this.symbols = cached
     else {
       // the caller's sources win over bundled files with the same path
+      const texts = new Map<string, string>()
       const own = Object.entries(sources ?? {})
         .filter(([, text]) => typeof text === "string")
-        .map(([p, text]) => textToModel(normalizePath(p), text, []))
+        .map(([p, text]) => {
+          texts.set(normalizePath(p), text)
+          return textToModel(normalizePath(p), text, [])
+        })
       const paths = new Set(own.map((f) => f.path))
       const files = [...own, ...optionModels(bundle).files.filter((f) => !paths.has(f.path))]
+      for (const f of files) if (!texts.has(f.path) && hasKey(bundle, f.path)) texts.set(f.path, bundle[f.path])
       this.symbols = new SymbolTable(files)
-      linkAll(files, this.symbols)
+      // the edition defaults of the descriptor.proto in use (the caller's, if `sources` has one) decide the symbol visibility, as in a build
+      const options = new OptionsContext(this.symbols, texts)
+      linkAll(files, this.symbols, () => options.featureTable())
       if (!sources) bundleSymbols.set(bundle, this.symbols)
     }
   }
@@ -157,12 +165,22 @@ export class Oracle {
       const x = this.symbols.extensionByName.get(key)
       if (x && x.field.extendee?.resolved === fqn) return ftypeOfModel(x.field)
     }
-    const ext = this.doc.components?.extensions?.[key]
+    const ext = getKey(this.doc.components?.extensions, key)
     if (ext && ext.extendee === fqn) return this.docType(ext)
-    const msg = this.doc.components?.messages?.[fqn]
+    const msg = getKey(this.doc.components?.messages, fqn)
     const p = msg?.properties
-    if (p && isPlainObject(p) && p[key]) return this.docType(p[key])
+    const pf = isPlainObject(p) ? getKey(p, key) : undefined
+    if (pf) return this.docType(pf)
     return undefined
+  }
+
+  /** Whether key `key` of a value of message `fqn` (an `*Options` message or an option value type) names an extension: a dotted key, or the fqn of an extension of `fqn` declared outside a package that is not a field name of `fqn`. */
+  isExtension(fqn: string, key: string): boolean {
+    if (key.includes(".")) return true
+    if (this.fieldDef(fqn, key)) return false
+    const x = this.symbols.extensionByName.get(key)
+    if (x && x.field.extendee?.resolved === fqn) return true
+    return getKey(this.doc.components?.extensions, key)?.extendee === fqn
   }
 
   /** The model field `key` of message `fqn`, for oneof checks (definitions only). */
@@ -172,28 +190,28 @@ export class Oracle {
 
   /** Whether message `fqn` is known, from the definitions or the document (an `Any` payload is printed typed then). */
   hasMessage(fqn: string): boolean {
-    return !!(this.symbols.message(fqn) || this.doc.components?.messages?.[fqn])
+    return !!(this.symbols.message(fqn) || getKey(this.doc.components?.messages, fqn))
   }
 
   /** Number of enum value `name` of enum `fqn`. */
   enumNumber(fqn: string | undefined, name: string): number | undefined {
     if (!fqn) return undefined
-    const de = this.doc.components?.enums?.[fqn]
-    const v = de?.values && isPlainObject(de.values) ? de.values[name] : undefined
+    const de = getKey(this.doc.components?.enums, fqn)
+    const v = de?.values && isPlainObject(de.values) ? getKey(de.values, name) : undefined
     if (v && typeof v.number === "number") return v.number
     return this.symbols.enum(fqn)?.values.find((x) => x.name === name)?.number
   }
 
   /** Declaring file of an extension (option) key. */
   extensionFile(key: string): string | undefined {
-    const ext = this.doc.components?.extensions?.[key]
+    const ext = getKey(this.doc.components?.extensions, key)
     if (ext?.file) return ext.file
     return this.symbols.extensionByName.get(key)?.file.path
   }
 
   /** Declaring file of a message or enum. */
   typeFile(fqn: string): string | undefined {
-    const c = this.doc.components?.messages?.[fqn] ?? this.doc.components?.enums?.[fqn]
+    const c = getKey(this.doc.components?.messages, fqn) ?? getKey(this.doc.components?.enums, fqn)
     if (c?.file) return c.file
     return this.symbols.get(fqn)?.file?.path
   }

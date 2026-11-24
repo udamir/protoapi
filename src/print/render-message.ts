@@ -3,7 +3,7 @@
 import type { ProtoApiExtension, ProtoApiField, ProtoApiMessage } from "../types.ts"
 import { OPENAPIV2_SCHEMA } from "../conventions/keys.ts"
 import { lastSegment, parentScope } from "../common/names.ts"
-import { isPlainObject } from "../common/objects.ts"
+import { getKey, isPlainObject } from "../common/objects.ts"
 import { type FilePrinter, optionFeatures } from "./file-printer.ts"
 import { refFqn } from "./oracle.ts"
 import { elementComment, tagLine } from "./comments.ts"
@@ -27,22 +27,20 @@ const runs = <T>(items: T[], key: (t: T) => string): T[][] => {
   return out
 }
 
-/** The proto2 group message a field or extension declares, if it prints as a group (P-1). */
+/** The proto2 group message a field or extension declares, if it prints as a group. */
 const groupOf = (p: FilePrinter, name: string, f: ProtoApiField, scope: string): string | undefined => {
   if (p.syntax !== "proto2" || !f.delimited) return undefined
   const ref = f.$ref ?? (f.type === "array" && f.items && "$ref" in f.items ? f.items.$ref : undefined)
   if (!ref) return undefined
   const fqn = refFqn(ref)
   if (parentScope(fqn) !== scope || lastSegment(fqn).toLowerCase() !== name) return undefined
-  const m = p.ctx.doc.components?.messages?.[fqn]
+  const m = getKey(p.ctx.doc.components?.messages, fqn)
   if (!m || !p.layout.has(fqn) || p.printed.has(fqn)) return undefined
   return fqn
 }
 
 /**
- * Nested messages, extension blocks and (for message bodies) fields of one scope, keeping the order of each
- * (components.messages, components.extensions, properties): a group message is printed by its field or extension,
- * so the nested messages before it are printed first (P-4, P-5).
+ * Nested messages, extension blocks and (for message bodies) fields of one scope, keeping the order of each (components.messages, components.extensions, properties): a group message is printed by its field or extension, so the nested messages before it are printed first.
  */
 export const printScope = (
   p: FilePrinter,
@@ -92,7 +90,7 @@ const printField = (p: FilePrinter, depth: number, name: string, f: ProtoApiFiel
     return
   }
   // proto2 groups: the comment belongs to the generated message (protoc attaches it there)
-  const g = p.ctx.doc.components?.messages?.[groupMessage] as ProtoApiMessage
+  const g = getKey(p.ctx.doc.components?.messages, groupMessage) as ProtoApiMessage
   p.out.comment(depth, messageComment(p, groupMessage, g))
   const groupName = lastSegment(groupMessage)
   const lbl = site.inOneof ? "" : f.type === "array" ? "repeated " : head.label
@@ -105,7 +103,7 @@ const printField = (p: FilePrinter, depth: number, name: string, f: ProtoApiFiel
 const printExtendBlock = (p: FilePrinter, depth: number, scope: string, list: [string, ProtoApiExtension][]) => {
   const extendee = list[0][1].extendee ?? ""
   p.within(scope, () => {
-    p.out.emit(depth, `extend ${p.extendeeName(extendee, scope)} {`)
+    p.out.emit(depth, `extend ${p.typeName(extendee, p.ctx.members)} {`)
     for (const [k, x] of list) {
       const n = lastSegment(k)
       const ext = { ...x, title: x.title === n ? undefined : x.title }
@@ -173,7 +171,7 @@ const messageMembers = (p: FilePrinter, depth: number, fqn: string, m: ProtoApiM
           const g = groups.get(n2)
           if (g) flushBefore(g)
         }
-        const o = (isPlainObject(m.oneofs) ? m.oneofs[f.oneof] : undefined) ?? {}
+        const o = (isPlainObject(m.oneofs) ? getKey(m.oneofs, f.oneof) : undefined) ?? {}
         out.comment(depth, elementComment(tag, o, undefined, [], true))
         out.emit(depth, `oneof ${f.oneof} {`)
         for (const line of optionAssignments(oracle, p.imports, o.options as Obj | undefined, "oneof"))
@@ -203,7 +201,7 @@ const messageMembers = (p: FilePrinter, depth: number, fqn: string, m: ProtoApiM
 export const printMessage = (p: FilePrinter, depth: number, fqn: string) => {
   if (p.printed.has(fqn)) return
   p.printed.add(fqn)
-  const m = p.ctx.doc.components?.messages?.[fqn]
+  const m = getKey(p.ctx.doc.components?.messages, fqn)
   const name = lastSegment(fqn)
   if (!m) {
     // wrapper for nested types whose parent is not in the document

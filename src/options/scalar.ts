@@ -28,6 +28,16 @@ export const enumName = (def: MEnum | undefined, v: string | number): unknown =>
   return v
 }
 
+/** The zero value of a type in its canonical form (a missing map key or value): `0` / `"0"` (64-bit), `false`, `""`, the enum's value 0 (by name when it has one), `{}` for a message. */
+export const zeroValue = (t: VType): unknown => {
+  if (t.kind === "enum") return enumName(t.def, 0)
+  if (t.kind !== "scalar") return {}
+  const s = t.scalar
+  if (s === "string" || s === "bytes") return ""
+  if (s === "bool") return false
+  return FLOAT_KINDS.has(s) ? 0 : canonInt(0n, s)
+}
+
 const utf8Strict = new TextDecoder("utf-8", { fatal: true })
 /** A string literal whose escapes do not form valid UTF-8 (`"\377"`) is not a valid `string` value (buf). */
 const isValidUtf8Literal = (text: string): boolean => {

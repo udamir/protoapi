@@ -32,17 +32,10 @@ export const ranges = (ctx: Ctx, rangesNode: Ranges, max: number): ParsedRange[]
   return out
 }
 
-/** The parser fills `strLitOrCommas` only; the other two lists are read as before but never present. */
-type NamesNode = FieldNames & {
-  strLitOrIdentOrCommas?: FieldNames["strLitOrCommas"]
-  names?: FieldNames["strLitOrCommas"]
-}
-
 /** Reserved names of a `reserved` statement, each checked against the syntax's spelling (`checkReservedName`). */
-const reservedNames = (ctx: Ctx, namesNode: NamesNode, pointer: string): { name: string; loc?: Location }[] => {
+const reservedNames = (ctx: Ctx, namesNode: FieldNames, pointer: string): { name: string; loc?: Location }[] => {
   const out: { name: string; loc?: Location }[] = []
-  const items = namesNode?.strLitOrCommas ?? namesNode?.strLitOrIdentOrCommas ?? namesNode?.names ?? []
-  for (const x of items) {
+  for (const x of namesNode.strLitOrCommas) {
     if (x.type === "comma") continue
     const quoted = x.type === "str-lit"
     const name = quoted ? decodeStringLiteral(src(ctx, x)) : src(ctx, x).trim()

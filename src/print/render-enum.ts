@@ -2,7 +2,7 @@
 
 import type { ProtoApiEnum } from "../types.ts"
 import { lastSegment } from "../common/names.ts"
-import { isPlainObject } from "../common/objects.ts"
+import { getKey, isPlainObject } from "../common/objects.ts"
 import type { FilePrinter } from "./file-printer.ts"
 import { elementComment } from "./comments.ts"
 import { optionAssignments, withDeprecated } from "./option-values.ts"
@@ -12,7 +12,7 @@ import { printReserved } from "./render-ranges.ts"
 export const printEnum = (p: FilePrinter, depth: number, fqn: string) => {
   const { doc, oracle, tag } = p.ctx
   const out = p.out
-  const e: ProtoApiEnum | undefined = doc.components?.enums?.[fqn]
+  const e: ProtoApiEnum | undefined = getKey(doc.components?.enums, fqn)
   if (!e) return
   const name = lastSegment(fqn)
   out.comment(depth, elementComment(tag, e, name))

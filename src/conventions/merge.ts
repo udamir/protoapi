@@ -1,11 +1,11 @@
-// The merge of keyword candidates: sources in precedence order (D13), first wins, 64-bit bounds normalised, conflicts recorded, and the kept keywords written into the annotation result.
+// The merge of keyword candidates: sources in precedence order (spec §3.8), first wins, 64-bit bounds normalised, conflicts recorded, and the kept keywords written into the annotation result.
 
 import type { AnnotationSource } from "../types.ts"
 import { INT64_KINDS } from "../values/scalars.ts"
 import { DECIMAL } from "./rules.ts"
 import { type AnnotationResult, type Candidate, type FieldShape, slotOf } from "./types.ts"
 
-/** The sources in precedence order (D13): built-in options first, comment tags and prefixes last. */
+/** The sources in precedence order (spec §3.8): built-in options first, comment tags and prefixes last. */
 const SOURCE_ORDER: AnnotationSource[] = [
   "option",
   "google.api",
@@ -28,8 +28,7 @@ export const mergeCandidates = (candidates: Candidate[], shape: FieldShape | und
     const slot = slotOf(shape, c.target)
     let value = c.value
     if (KEYWORDS_64.has(c.keyword) && slot?.scalar) {
-      // 64-bit bounds are decimal strings (D7); other bounds are numbers, except the non-finite and `-0` strings of
-      // float rules (A-2: never a JSON null)
+      // 64-bit bounds are decimal strings (spec §3.6); other bounds are numbers, except the non-finite and `-0` strings of float rules (never a JSON null)
       if (INT64_KINDS.has(slot.scalar)) value = typeof value === "number" ? String(value) : value
       else if (typeof value === "string" && DECIMAL.test(value)) value = Number(value)
     }
@@ -60,7 +59,7 @@ export const mergeCandidates = (candidates: Candidate[], shape: FieldShape | und
         ...(c.option ? { option: c.option } : {}),
         ...(c.comment ? { comment: c.comment } : {}),
       })
-    // annotation-level requiredness is the field keyword (S1); `OPTIONAL` (false) only wins against the other sources
+    // annotation-level requiredness is the field keyword (spec §3.8); `OPTIONAL` (false) only wins against the other sources
     if (c.keyword === "required" && c.value !== true) continue
     if (c.keyword === "title") {
       result.title = String(c.value)

@@ -36,7 +36,7 @@ export class OptionReader {
     return this.ctx.source ? this.ctx.source.slice(node.start, node.end) : ""
   }
 
-  /** Where option names and values look names up from: the file, with `import option` files visible (decision 18). */
+  /** Where option names and values look names up from: the file, with `import option` files visible. */
   protected get from() {
     return { file: this.ctx.file, options: true }
   }

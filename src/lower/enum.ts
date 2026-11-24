@@ -5,6 +5,7 @@ import type { MEnum, OptionTree } from "../model/index.ts"
 import { resolveFeatures, withoutFeatureKeys } from "../features.ts"
 import { ptr } from "../paths.ts"
 import { enumPointer, parentScope } from "../common/names.ts"
+import { hasKey, setKey } from "../common/objects.ts"
 import type { LowerContext } from "./context.ts"
 import {
   DEPRECATED,
@@ -30,7 +31,7 @@ export const lowerEnum = (cx: LowerContext, e: MEnum, chain: OptionTree[]): Prot
   const values: Record<string, unknown> = {}
   for (const v of e.values) {
     const vp = `${pointer}/values/${ptr(v.name)}`
-    if (v.name in values) {
+    if (hasKey(values, v.name)) {
       cx.issue("duplicate-name", `enum value ${v.name} is used more than once in ${e.fqn}`, file, vp, v.locs[""])
       continue
     }
@@ -40,7 +41,7 @@ export const lowerEnum = (cx: LowerContext, e: MEnum, chain: OptionTree[]): Prot
     docKeywords(entry, va)
     entry.number = v.number
     if (Object.keys(va.options).length) entry.options = va.options
-    values[v.name] = entry
+    setKey(values, v.name, entry)
     finish(cx, entry, va, `enum value ${v.name}`, file, vp, v, { keys: { number: "number" }, keywords: DEPRECATED })
   }
   out.values = values

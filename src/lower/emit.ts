@@ -5,6 +5,7 @@ import type { MEnum, MFile, MMessage, MTypeRef, OptionTree } from "../model/inde
 import type { AnnotationResult } from "../conventions/types.ts"
 import { type ResolvedFeatures, featuresOf } from "../features.ts"
 import { ptr } from "../paths.ts"
+import { getKey } from "../common/objects.ts"
 import { enumPointer, messagePointer } from "../common/names.ts"
 import type { LowerContext } from "./context.ts"
 import type { ElementEntries, MappedElement } from "./sourcemap.ts"
@@ -75,7 +76,7 @@ export const docKeywords = (out: Record<string, unknown>, a: AnnotationResult) =
   if (a.deprecation) out.deprecation = a.deprecation
 }
 
-/** The common keys of a declaration: `title`, `file`, then `description` and `deprecation` (§7 key order). */
+/** The common keys of a declaration: `title`, `file`, then `description` and `deprecation` (the order of the Element keys in spec §3.2). */
 export const head = (cx: LowerContext, name: string, file: MFile, ann: AnnotationResult): Record<string, unknown> => {
   const out: Record<string, unknown> = { title: name }
   if (cx.useFiles) out.file = file.path
@@ -101,7 +102,7 @@ export const typeRef = (t: MTypeRef): ProtoApiTypeRef => {
 
 // ---- blocks of messages and enums --------------------------------------------------------------------------------
 
-/** Sort and merge inclusive intervals (D8); adjacent intervals merge. */
+/** Sort and merge inclusive intervals (spec §3.5 Order); adjacent intervals merge. */
 export const mergeRanges = (ranges: [number, number][]): [number, number][] => {
   const sorted = ranges.map((r): [number, number] => [r[0], r[1]]).sort((a, b) => a[0] - b[0] || a[1] - b[1])
   const out: [number, number][] = []
@@ -143,7 +144,7 @@ export const writeReserved = (
   cx.sourceMap.mapReserved(pointer, el, numbers, names)
 }
 
-/** `jsonFormat` of a message or enum (a resolved feature, F-3), pointing at its own `features` option when it sets it. */
+/** `jsonFormat` of a message or enum (a resolved feature, spec §3.5 rule D), pointing at its own `features` option when it sets it. */
 export const writeJsonFormat = (
   cx: LowerContext,
   out: Record<string, unknown>,
@@ -174,7 +175,7 @@ export const declarationOptions = (
 /** The `deprecation` keyword is written from the `deprecated` option (OneofOptions has none). */
 export const DEPRECATED: Record<string, string> = { deprecation: "deprecated" }
 
-/** The issues of an annotation result: invalid tags, convention options that do not fit, conflicts (A-15). */
+/** The issues of an annotation result: invalid tags, convention options that do not fit, conflicts. */
 const annotationIssues = (
   cx: LowerContext,
   ann: AnnotationResult,
@@ -191,7 +192,7 @@ const annotationIssues = (
       `${o.message} (${what})`,
       file,
       `${pointer}/options/${ptr(o.key)}`,
-      holder.optionLocs[o.key] ?? holder.locs[""],
+      getKey(holder.optionLocs, o.key) ?? holder.locs[""],
     )
   ann.conflicts.forEach((c, i) =>
     cx.issue(

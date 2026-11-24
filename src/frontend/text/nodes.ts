@@ -38,7 +38,7 @@ export const optionNameSegments = (
 /** Whitespace and comments between the tokens of a name or a number. */
 export const TRIVIA = /\/\*[\s\S]*?\*\/|\/\/[^\n]*|\s+/g
 
-/** A dotted name node as written, without the whitespace and comments between its tokens (C-15). */
+/** A dotted name node as written, without the whitespace and comments between its tokens. */
 export const tokensText = (n: unknown, src: (n: Spanned) => string): string => {
   const parts = (n as { identOrDots?: { text: string }[] } | undefined)?.identOrDots
   if (Array.isArray(parts)) return parts.map((t) => t.text).join("")

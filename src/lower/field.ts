@@ -13,7 +13,7 @@ import { WRAPPERS } from "../values/scalars.ts"
 import { isEditions } from "../common/editions.ts"
 import { FIELD_NUMBER_MAX, IMPLEMENTATION_RESERVED_END, IMPLEMENTATION_RESERVED_START } from "../common/limits.ts"
 import { parentScope } from "../common/names.ts"
-import { isPlainObject } from "../common/objects.ts"
+import { hasKey, isPlainObject } from "../common/objects.ts"
 import type { LowerContext } from "./context.ts"
 import { DEPRECATED, docKeywords, emitElement, orderKeys, reportAnnotations, typeRef } from "./emit.ts"
 
@@ -32,8 +32,8 @@ const slot = (cx: LowerContext, t: MTypeRef): Slot => {
   if (t.kind === "scalar") return { scalar: t.scalar }
   if (t.resolved?.kind === "enum") return { enumDef: cx.input.symbols.enum(t.resolved.fqn) }
   const fqn = t.resolved?.fqn
-  // A-11: wrapper well-known types take the tags and rules of their scalar
-  if (fqn && fqn in WRAPPERS) return { scalar: WRAPPERS[fqn], wrapper: fqn }
+  // wrapper well-known types take the tags and rules of their scalar
+  if (fqn && hasKey(WRAPPERS, fqn)) return { scalar: WRAPPERS[fqn], wrapper: fqn }
   return { message: true, messageFqn: fqn }
 }
 
@@ -74,7 +74,7 @@ const presence = (
   }
 }
 
-/** A descriptor `default_value` that cannot be parsed for the field's type is an `invalid-option`, dropped (desc#13). */
+/** A descriptor `default_value` that cannot be parsed for the field's type is an `invalid-option`, dropped (spec §3.6). */
 const descriptorDefault = (t: VType, s: string): string | number | boolean | undefined => {
   if (t.kind === "enum") return t.def && !t.def.values.some((v) => v.name === s) ? undefined : s
   if (t.kind !== "scalar") return s
@@ -200,7 +200,7 @@ const checkNumber = (cx: LowerContext, f: MField, file: MFile, pointer: string) 
     cx.issue("invalid-number", `field number ${f.number} is not allowed`, file, pointer, f.locs.number ?? f.locs[""])
 }
 
-/** F-3: resolved features against the fixed modern baseline (proto3 / editions defaults are not written). */
+/** Resolved features against the fixed modern baseline of spec §3.5 rule D (proto3 / editions defaults are not written). */
 const resolvedKeywords = (
   f: MField,
   options: OptionTree,
@@ -237,7 +237,7 @@ const annotationKeywords = (out: Record<string, unknown>, ann: AnnotationResult)
   if (ann.xDefault !== undefined) out["x-default"] = ann.xDefault
 }
 
-/** Source map entries of the resolved keywords (F-3): the option that sets them on the field itself, when there is one. */
+/** Source map entries of the resolved keywords (spec §5): the option that sets them on the field itself, when there is one. */
 const resolvedEntries = (
   f: MField,
   options: OptionTree,

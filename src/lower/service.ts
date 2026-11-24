@@ -6,7 +6,7 @@ import { HTTP_RULE } from "../conventions/keys.ts"
 import { withoutFeatureKeys } from "../features.ts"
 import { ptr } from "../paths.ts"
 import { servicePointer } from "../common/names.ts"
-import { isPlainObject } from "../common/objects.ts"
+import { hasKey, isPlainObject, setKey } from "../common/objects.ts"
 import type { LowerContext } from "./context.ts"
 import { DEPRECATED, docKeywords, finish, head, refOf } from "./emit.ts"
 
@@ -17,7 +17,7 @@ const METHOD_KEYWORDS: Record<string, string> = {
   deprecation: "deprecated",
 }
 
-/** google.api.HttpRule -> { method, path, body?, responseBody?, additionalBindings? } (D16) */
+/** google.api.HttpRule -> { method, path, body?, responseBody?, additionalBindings? } (spec §3.2 Method) */
 export const normalizeHttp = (rule: Record<string, unknown>): ProtoApiHttpRule => {
   const out: Record<string, unknown> = {}
   for (const m of ["get", "put", "post", "delete", "patch"]) {
@@ -85,11 +85,11 @@ export const lowerService = (cx: LowerContext, s: MService): ProtoApiService => 
   const methods: Record<string, ProtoApiMethod> = {}
   for (const m of s.methods) {
     const mp = `${pointer}/methods/${ptr(m.name)}`
-    if (m.name in methods) {
+    if (hasKey(methods, m.name)) {
       cx.issue("duplicate-name", `method ${m.name} is declared more than once in ${s.fqn}`, file, mp, m.locs[""])
       continue
     }
-    methods[m.name] = lowerMethod(cx, m, s, file, mp)
+    setKey(methods, m.name, lowerMethod(cx, m, s, file, mp))
   }
   out.methods = methods
   if (Object.keys(ann.options).length) out.options = ann.options

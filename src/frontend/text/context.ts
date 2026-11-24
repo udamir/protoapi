@@ -27,7 +27,7 @@ export const span = (ctx: Ctx, n: Span | undefined): Location | undefined => {
 
 export const src = (ctx: Ctx, n: Span): string => ctx.text.slice(n.start, n.end)
 
-/** A dotted name as written, without the whitespace and comments between its tokens (C-15). */
+/** A dotted name as written, without the whitespace and comments between its tokens. */
 export const identText = (ctx: Ctx, n: Span): string => tokensText(n, (x) => src(ctx, x))
 
 export const intOf = (ctx: Ctx, n: Span | undefined): number => {
@@ -66,9 +66,4 @@ export const report = (
   if (!ctx.check) return
   const location = at && "file" in at ? at : span(ctx, at)
   ctx.issues.push({ code, message, file: ctx.path, location, pointer })
-}
-
-/** A syntax issue (reported for bundled files too). */
-export const syntaxIssue = (ctx: Ctx, n: Span, message: string) => {
-  ctx.issues.push({ code: "syntax", message, file: ctx.path, location: span(ctx, n) })
 }

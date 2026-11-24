@@ -1,7 +1,7 @@
-// Symbol table and protoc's name lookup (design §5.3, `DescriptorBuilder::LookupSymbol` + `FindSymbol`).
+// Symbol table and protoc's name lookup (`DescriptorBuilder::LookupSymbol` + `FindSymbol`).
 
 import type { MEnum, MField, MFile, MMessage, MService } from "./model/index.ts"
-import { defaultVisibility } from "./features.ts"
+import { BUNDLED_FEATURE_DEFAULTS, type FeatureDefaults, defaultVisibility } from "./features.ts"
 import { qualify } from "./common/names.ts"
 
 export type SymbolKind =
@@ -22,6 +22,8 @@ export interface SymbolEntry {
   node?: MMessage | MEnum | MService | MField
   /** edition 2024+: visible only within its own file (explicit `local`, or the file's default symbol visibility) */
   local?: boolean
+  /** messages and enums: declared inside a message (EXPORT_TOP_LEVEL makes it local) */
+  nested?: boolean
   /** packages: the files that declare this package or one of its sub-packages */
   files?: Set<string>
 }
@@ -35,8 +37,7 @@ export interface Duplicate {
   second: SymbolEntry
 }
 
-/** Where a name is looked up from: the referring file, and whether the reference is an option name or value (types
- *  and extensions of `import option` files are visible there only, validation decision 18). */
+/** Where a name is looked up from: the referring file, and whether the reference is an option name or value (types and extensions of `import option` files are visible there only). */
 export interface LookupFrom {
   file: MFile
   options?: boolean
@@ -72,6 +73,8 @@ export class SymbolTable {
   readonly extensionByName = new Map<string, { field: MField; fqn: string; file: MFile; scope: string }>()
   private visibleCache = new Map<string, Set<string>>()
   private optionCache = new Map<string, Set<string>>()
+  /** the edition defaults that decide the default symbol visibility (see `useFeatureDefaults`) */
+  private featureDefaults: FeatureDefaults = BUNDLED_FEATURE_DEFAULTS
 
   constructor(files: MFile[]) {
     for (const file of files) this.addFile(file)
@@ -99,7 +102,7 @@ export class SymbolTable {
         this.add({ kind: "package", fqn: parts.slice(0, i).join("."), files: new Set([file.path]) })
     }
     const scope = file.package
-    const defaults = defaultVisibility(file)
+    const defaults = this.defaultVisibility(file)
     for (const m of file.messages) this.addMessage(m, file, defaults, false)
     for (const e of file.enums) this.addEnum(e, file, defaults, false)
     for (const x of file.extensions) this.addExtension(x, scope, file)
@@ -114,20 +117,43 @@ export class SymbolTable {
   }
 
   private addMessage(m: MMessage, file: MFile, defaults: string, nested: boolean) {
-    this.add({ kind: "message", fqn: m.fqn, file, node: m, local: isLocal(m.visibility, nested, defaults) })
+    this.add({ kind: "message", fqn: m.fqn, file, node: m, local: isLocal(m.visibility, nested, defaults), nested })
     for (const n of m.nested) this.addMessage(n, file, defaults, true)
     for (const e of m.enums) this.addEnum(e, file, defaults, true)
     for (const x of m.extensions) this.addExtension(x, m.fqn, file)
   }
 
   private addEnum(e: MEnum, file: MFile, defaults: string, nested: boolean) {
-    this.add({ kind: "enum", fqn: e.fqn, file, node: e, local: isLocal(e.visibility, nested, defaults) })
+    this.add({ kind: "enum", fqn: e.fqn, file, node: e, local: isLocal(e.visibility, nested, defaults), nested })
+  }
+
+  /** The default visibility of a file's messages and enums, from the edition defaults in effect. */
+  defaultVisibility(file: MFile): string {
+    return defaultVisibility(file, this.featureDefaults)
+  }
+
+  /** Take the default symbol visibility from the build's own edition defaults (its descriptor.proto) instead of the bundled ones; call before any lookup that depends on visibility. */
+  useFeatureDefaults(defaults: FeatureDefaults) {
+    if (defaults === this.featureDefaults) return
+    const before = this.featureDefaults
+    this.featureDefaults = defaults
+    // the files whose default visibility changes (usually none: the bundled descriptor.proto gives the same defaults)
+    const changed = new Map<MFile, string>()
+    for (const file of this.files.values()) {
+      const d = this.defaultVisibility(file)
+      if (d !== defaultVisibility(file, before)) changed.set(file, d)
+    }
+    if (!changed.size) return
+    for (const entry of this.symbols.values()) {
+      const d = entry.file && changed.get(entry.file)
+      if (d === undefined || (entry.kind !== "message" && entry.kind !== "enum")) continue
+      const node = entry.node as MMessage | MEnum
+      entry.local = isLocal(node.visibility, entry.nested === true, d)
+    }
   }
 
   /**
-   * Fields, oneofs, enum values (siblings of their enum, C++ scoping) and methods of a scope. protoc's type and
-   * extension lookups skip them and continue outward, so they are not in `symbols`; only `any` lookups (option names,
-   * where protoc and buf take the first symbol of any kind) see them. Indexed per scope on first use.
+   * Fields, oneofs, enum values (siblings of their enum, C++ scoping) and methods of a scope. protoc's field type and extension lookups skip them and continue outward, so they are not in `symbols`; only `any` lookups (option names, method types and extendees, where protoc and buf take the first symbol of any kind) see them. Indexed per scope on first use.
    */
   member(fqn: string): SymbolEntry | undefined {
     const dot = fqn.lastIndexOf(".")
@@ -228,12 +254,7 @@ export class SymbolTable {
   }
 
   /**
-   * protoc's lookup: a name starting with `.` is fully qualified; otherwise the first component is looked up from
-   * the innermost scope outward and the remaining components must resolve inside the first match (no backtracking).
-   * `scope` is the fully qualified name of the scope the reference appears in (message, service or package).
-   * Symbols outside the referring file's import closure (or `local` to another file) are not found, and the search
-   * continues outward (C-1). In `type` mode a single-component name skips symbols that are not types, in `extension`
-   * mode those that are not extensions; `any` takes the first symbol found.
+   * protoc's lookup: a name starting with `.` is fully qualified; otherwise the first component is looked up from the innermost scope outward and the remaining components must resolve inside the first match (no backtracking). `scope` is the fully qualified name of the scope the reference appears in (message, service or package). Symbols outside the referring file's import closure (or `local` to another file) are not found, and the search continues outward. In `type` mode a single-component name skips symbols that are not types, in `extension` mode those that are not extensions; `any` takes the first symbol found.
    */
   lookup(name: string, scope: string, mode: "type" | "extension" | "any", from?: LookupFrom): LookupResult {
     const result: LookupResult = {}
@@ -296,8 +317,7 @@ export class SymbolTable {
 /** The kind of a symbol as written in issue messages. */
 export const kindName = (kind: SymbolKind): string => (kind === "enumValue" ? "enum value" : kind)
 
-/** Best-effort key for an unresolved name (design §5.3): dotted names as written without the leading dot, simple
- *  names qualified with the current package. */
+/** Best-effort key for an unresolved name: dotted names as written without the leading dot, simple names qualified with the current package. */
 export const unresolvedKey = (name: string, pkg: string): string => {
   if (name.startsWith(".")) return name.slice(1)
   if (name.includes(".")) return name

@@ -5,12 +5,12 @@ import type { Location } from "../types.ts"
 import type { MField, MMessage } from "../model/index.ts"
 import type { AggregateNode, Spanned, TextprotoFieldNode } from "../frontend/text/nodes.ts"
 import { tokensText } from "../frontend/text/nodes.ts"
-import { isPlainObject } from "../common/objects.ts"
+import { hasKey, isPlainObject, setKey } from "../common/objects.ts"
 import { canonFloat, fromBase64 } from "../values/canonical.ts"
 import { decodeStringLiteral, parseFloatText, parseIntText } from "../values/literals.ts"
 import { decodeWire } from "../wire.ts"
 import { OptionReader } from "./context.ts"
-import { type Converted, type VType, fromScalarText, invalid, valid } from "./scalar.ts"
+import { type Converted, type VType, fromScalarText, invalid, valid, zeroValue } from "./scalar.ts"
 import { fieldByName, mapValueType, typeOfRef } from "./definitions.ts"
 import { isAbsentValue } from "./presence.ts"
 import { addRaw, orderTree } from "./tree.ts"
@@ -71,7 +71,7 @@ export class TextFormatReader extends OptionReader {
           })()
         if (!entry || entry.field.extendee?.resolved !== def.fqn) {
           this.issue("unknown-option", `unknown extension [${name}] in an option value of type ${def.fqn}`, loc)
-          out[name.replace(/^\./, "")] = this.src(tf.value)
+          setKey(out, name.replace(/^\./, ""), this.src(tf.value))
           continue
         }
         field = entry.field
@@ -80,7 +80,7 @@ export class TextFormatReader extends OptionReader {
         const url = this.src(fname)
           .replace(/^\[|\]$/g, "")
           .replace(/\s+/g, "")
-        Object.assign(out, this.anyText(url, tf.value, loc))
+        for (const [k, v] of Object.entries(this.anyText(url, tf.value, loc))) setKey(out, k, v)
         continue
       } else {
         const name = this.src(fname)
@@ -89,7 +89,7 @@ export class TextFormatReader extends OptionReader {
           def.fields.find((f) => f.group && f.type.kind === "named" && lastName(f.type) === name)
         key = field?.name ?? name
         if (!field) {
-          // C-11: a field the definition does not have (an older or newer version of it) is kept raw
+          // a field the definition does not have (an older or newer version of it) is kept raw (spec §3.7)
           this.issue("unknown-option", `${def.fqn} has no field "${name}"; the value is kept as written`, loc)
           addRaw(out, name, this.bestEffort(tf.value))
           continue
@@ -103,9 +103,13 @@ export class TextFormatReader extends OptionReader {
       for (const v of values) {
         if (field.map) {
           const entry = this.mapEntryValue(v, field, loc)
-          if (!entry) continue
-          const m = (out[key] ??= {}) as Record<string, unknown>
-          m[entry.key] = entry.value
+          if (!entry.ok) {
+            this.issue("invalid-option", `invalid value for ${def.fqn}.${field.name}: ${entry.reason}`, loc)
+            continue
+          }
+          if (!hasKey(out, key)) setKey(out, key, {})
+          const { key: k, value } = entry.value as { key: string; value: unknown }
+          setKey(out[key] as Record<string, unknown>, k, value)
           continue
         }
         const result = this.textprotoValue(v, t as VType, loc)
@@ -115,16 +119,16 @@ export class TextFormatReader extends OptionReader {
         }
         const converted = result.value
         if (!field.repeated && isAbsentValue(converted, field, def, this.ctx.symbols)) {
-          if (key in out) this.issue("invalid-option", `${def.fqn}.${field.name} is set more than once`, loc)
-          out[key] = ABSENT
+          if (hasKey(out, key)) this.issue("invalid-option", `${def.fqn}.${field.name} is set more than once`, loc)
+          setKey(out, key, ABSENT)
           continue
         }
         if (field.repeated) {
-          const arr = (out[key] ??= []) as unknown[]
-          arr.push(converted)
+          if (!hasKey(out, key)) setKey(out, key, [])
+          ;(out[key] as unknown[]).push(converted)
         } else {
-          if (key in out) this.issue("invalid-option", `${def.fqn}.${field.name} is set more than once`, loc)
-          out[key] = converted
+          if (hasKey(out, key)) this.issue("invalid-option", `${def.fqn}.${field.name} is set more than once`, loc)
+          setKey(out, key, converted)
         }
       }
     }
@@ -132,19 +136,27 @@ export class TextFormatReader extends OptionReader {
     return def.fqn === "google.protobuf.Any" ? this.anyFields(out, loc) : out
   }
 
-  /** An `Any` written with its fields (`{ type_url: "…" value: "\x08\x01" }`) in the expanded form of `anyText`, the payload decoded from `value` as buf does. An empty `Any` stays `{}`; a `value` without `type_url`, an unknown type or bytes that do not decode are an `unknown-option`, kept as written. */
-  private anyFields(any: Record<string, unknown>, loc?: Location): Record<string, unknown> {
+  /** An `Any` written with its fields (`{ type_url: "…" value: "\x08\x01" }`) in the expanded form of `anyText`, the payload decoded from `value` as buf does. An empty `Any` stays `{}`; an unknown type (as in `anyText`), a `value` without `type_url` or bytes that do not decode are an `unknown-option`, kept as written. */
+  protected anyFields(any: Record<string, unknown>, loc?: Location): Record<string, unknown> {
     const url = any.type_url
     // an expanded or an empty Any
-    if (url === undefined && (any.value === undefined || "@type" in any)) return any
+    if (url === undefined && (any.value === undefined || hasKey(any, "@type"))) return any
     const fqn = String(url).slice(String(url).lastIndexOf("/") + 1)
-    const def = this.ctx.symbols.message(fqn) as MMessage
+    const def = url === undefined ? undefined : this.ctx.symbols.message(fqn)
+    if (url !== undefined && !def) {
+      this.issue(
+        "unknown-option",
+        `unknown type ${String(url)} in an Any option value; the value is kept as written`,
+        loc,
+      )
+      return any
+    }
     try {
       return anyValue(
         url as string,
         fqn,
         orderTree(
-          decodeWire(fromBase64(String(any.value ?? "")), def, this.ctx.symbols, (m) => this.anyFields(m)),
+          decodeWire(fromBase64(String(any.value ?? "")), def as MMessage, this.ctx.symbols, (m) => this.anyFields(m)),
           def,
           this.ctx.symbols,
         ),
@@ -159,33 +171,35 @@ export class TextFormatReader extends OptionReader {
     }
   }
 
-  /** A map entry message (`{ key: … value: … }`); undefined when it is not one or a key or value is not valid. */
-  private mapEntryValue(
-    v: Spanned & { statements?: Spanned[] },
-    field: MField,
-    loc?: Location,
-  ): { key: string; value: unknown } | undefined {
-    if (v.type !== "textproto-message-value") return undefined
-    let k: Converted | undefined
-    let val: Converted | undefined
+  /** A map entry message (`{ key: … value: … }`) as `{ key, value }`; a missing key or value is the zero value of its type (as in protobuf). Not valid: a value that is not a message, a key or value of the wrong type, a field other than `key` and `value`, or one set twice. */
+  private mapEntryValue(v: Spanned & { statements?: Spanned[] }, field: MField, loc?: Location): Converted {
+    if (v.type !== "textproto-message-value") return invalid("a map entry needs a message value { key: … value: … }")
+    const kt: VType = { kind: "scalar", scalar: field.map?.key ?? "string" }
+    const vt = mapValueType(field, this.ctx.symbols)
+    const set: { key?: unknown; value?: unknown } = {}
     for (const st of v.statements ?? []) {
       if (st.type !== "textproto-field") continue
       const tf = st as TextprotoFieldNode
       const n = this.src(tf.fieldName)
-      if (n === "key") k = this.textprotoScalar(tf.value, { kind: "scalar", scalar: field.map?.key ?? "string" })
-      else if (n === "value") {
-        const vt = mapValueType(field, this.ctx.symbols)
-        val = this.textprotoValue(tf.value, vt, loc)
-      }
+      if (n !== "key" && n !== "value") return invalid(`a map entry has no field ${n} (only key and value)`)
+      if (n in set) return invalid(`the map entry ${n} is set more than once`)
+      const c = this.textprotoValue(tf.value, n === "key" ? kt : vt, loc)
+      if (!c.ok) return invalid(`map entry ${n}: ${c.reason}`)
+      set[n] = c.value
     }
-    if (k === undefined || !k.ok || (val !== undefined && !val.ok)) return undefined
-    return { key: String(k.value), value: val?.ok ? val.value : undefined }
+    return valid({
+      key: String("key" in set ? set.key : zeroValue(kt)),
+      value:
+        "value" in set
+          ? set.value
+          : vt.kind === "message" && vt.def
+            ? this.textprotoMessage([], vt.def, loc)
+            : zeroValue(vt),
+    })
   }
 
   /**
-   * An expanded `Any` (`[type.googleapis.com/pkg.T] { … }`) in the ProtoJSON form `{ "@type": url, …fields }`, typed
-   * against the payload type (C-9, decision 2). Well-known payload types use their ProtoJSON `value` form. An unknown
-   * type gives an `unknown-option` issue and a best-effort value.
+   * An expanded `Any` (`[type.googleapis.com/pkg.T] { … }`) in the ProtoJSON form `{ "@type": url, …fields }`, typed against the payload type (spec §3.6). Well-known payload types use their ProtoJSON `value` form. An unknown type gives an `unknown-option` issue and a best-effort value.
    */
   private anyText(url: string, value: Spanned & { statements?: Spanned[] }, loc?: Location): Record<string, unknown> {
     const fqn = url.slice(url.lastIndexOf("/") + 1)
@@ -200,10 +214,7 @@ export class TextFormatReader extends OptionReader {
   }
 
   /**
-   * A text-format value without a definition, as JSON (C-11, decision 3): messages as objects keyed by the field names
-   * as written (a name set twice gives an array), lists as arrays, strings decoded, `true` / `false` as booleans,
-   * numbers as JSON numbers (integers beyond 2^53 as decimal strings, non-finite floats per D7), identifiers as
-   * strings.
+   * A text-format value without a definition, as JSON (kept raw, spec §3.7): messages as objects keyed by the field names as written (a name set twice gives an array), lists as arrays, strings decoded, `true` / `false` as booleans, numbers as JSON numbers (integers beyond 2^53 as decimal strings, non-finite floats as the strings of spec §3.6), identifiers as strings.
    */
   bestEffort(node: Spanned & { statements?: Spanned[]; valueOrCommas?: Spanned[] }): unknown {
     if (node.type === "aggregate" || node.type === "textproto-message-value") {

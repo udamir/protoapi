@@ -4,8 +4,8 @@
 import type { KnownProtoSyntax, ProtoSyntax } from "../types.ts"
 import { bundledFeatureDefaults } from "../bundle/features.ts"
 
-/** Editions this version supports, by `Edition` enum name. */
-export const KNOWN_EDITIONS: Readonly<Record<string, KnownProtoSyntax>> = {
+/** Editions this version supports, by `Edition` enum name. Look names up with `knownSyntaxOfEdition` (own properties only: `constructor` is not an edition). */
+const KNOWN_EDITIONS: Readonly<Record<string, KnownProtoSyntax>> = {
   EDITION_PROTO2: "proto2",
   EDITION_PROTO3: "proto3",
   EDITION_2023: "2023",
@@ -24,6 +24,14 @@ const EDITION_OF: Record<KnownProtoSyntax, string> = {
 /** Numbers of the `Edition` values (of the bundled descriptor.proto), used when a descriptor.proto lacks a value. */
 export const EDITION_NUMBERS: Readonly<Record<string, number>> = bundledFeatureDefaults.editions
 
+/** The syntax of an edition this version supports, by `Edition` enum name (`EDITION_2024` -> "2024"); undefined for any other name. */
+export const knownSyntaxOfEdition = (name: string): KnownProtoSyntax | undefined =>
+  Object.hasOwn(KNOWN_EDITIONS, name) ? KNOWN_EDITIONS[name] : undefined
+
+/** The number of an `Edition` enum name of the bundled descriptor.proto (`EDITION_2024` -> 1001); undefined for any other name. */
+export const editionNumberOfName = (name: string): number | undefined =>
+  Object.hasOwn(EDITION_NUMBERS, name) ? EDITION_NUMBERS[name] : undefined
+
 const EDITION_BY_NUMBER: Record<number, string> = Object.fromEntries(
   Object.entries(EDITION_NUMBERS).map(([name, n]) => [n, name]),
 )
@@ -31,7 +39,7 @@ const EDITION_BY_NUMBER: Record<number, string> = Object.fromEntries(
 /** The newest edition this version supports; editions it does not know resolve features with its defaults. */
 export const NEWEST_EDITION: KnownProtoSyntax = "2026"
 
-export const isKnownSyntax = (syntax: ProtoSyntax): syntax is KnownProtoSyntax => syntax in EDITION_OF
+export const isKnownSyntax = (syntax: ProtoSyntax): syntax is KnownProtoSyntax => Object.hasOwn(EDITION_OF, syntax)
 
 export const isEditions = (syntax: ProtoSyntax) => syntax !== "proto2" && syntax !== "proto3"
 
@@ -44,7 +52,8 @@ export const editionNumber = (syntax: ProtoSyntax): number => EDITION_NUMBERS[ed
 
 /** The `Edition` enum name of a known syntax (`2024` -> `EDITION_2024`), undefined for any other syntax. */
 export const knownEditionName = (syntax: ProtoSyntax): string | undefined =>
-  Object.hasOwn(EDITION_OF, syntax) ? EDITION_OF[syntax as KnownProtoSyntax] : undefined
+  isKnownSyntax(syntax) ? EDITION_OF[syntax] : undefined
 
 /** The `Edition` enum name of an edition number (`1001` -> `EDITION_2024`); a number without a name as its decimal string. */
-export const editionNameOfNumber = (n: number): string => EDITION_BY_NUMBER[n] ?? String(n)
+export const editionNameOfNumber = (n: number): string =>
+  Object.hasOwn(EDITION_BY_NUMBER, n) ? EDITION_BY_NUMBER[n] : String(n)

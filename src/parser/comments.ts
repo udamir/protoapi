@@ -1,6 +1,6 @@
 /**
  * Origin: pbkit 0.0.72, `core/parser/proto.{js,d.ts}` (https://github.com/pbkit/pbkit),
- * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0 (see ./LICENSE-MIT, ./LICENSE-APACHE).
+ * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0, used here under MIT (see ./LICENSE-MIT).
  *
  * Comment attachment of the `.proto` grammar: which comment groups lead, trail or are detached from a declaration.
  *

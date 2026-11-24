@@ -15,10 +15,7 @@ export const pushOption = (
   constant: Constant,
   at: Option | FieldOption,
 ) => {
-  // buf: an option statement `option (name) = { … };` (one name segment, aggregate value; at file level too) is
-  // located from the option name to the closing brace; other option statements (sub-paths, scalar values) cover the
-  // whole statement. For a repeated option field the whole statement is used too (C-10); the interpreter picks
-  // `stmtLoc` once the field is known.
+  // buf: an option statement `option (name) = { … };` (one name segment, aggregate value; at file level too) is located from the option name to the closing brace; other option statements (sub-paths, scalar values) cover the whole statement. For a repeated option field the whole statement is used too (as in protoc and buf); the interpreter picks `stmtLoc` once the field is known.
   const whole = span(ctx, at)
   const nameToBrace =
     at.type === "option" &&

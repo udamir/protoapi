@@ -1,4 +1,4 @@
-// Annotation layer (design §3.8, D13, D14): comment tags, AIP prefixes and convention options lifted into JSON Schema keywords, with precedence built-in -> google.api -> buf.validate -> validate.rules -> openapiv2 -> comment tags / prefixes, and conflicts recorded. The conventions themselves live in conventions/.
+// Annotation layer (spec §3.8): comment tags, AIP prefixes and convention options lifted into JSON Schema keywords, with precedence built-in -> google.api -> buf.validate -> validate.rules -> openapiv2 -> comment tags / prefixes, and conflicts recorded. The conventions themselves live in conventions/.
 
 import type { AnnotationSource } from "./types.ts"
 import type { AnnotationInput, AnnotationResult, Candidate, CommentLine } from "./conventions/types.ts"
@@ -51,7 +51,7 @@ export const annotate = (input: AnnotationInput): AnnotationResult => {
     liftOpenapiField(options, shape, candidates)
   }
   if (useOptions && kind === "message") liftOpenapiSchema(options, candidates, input.fieldOf, result)
-  // A-13: openapiv2_operation.deprecated -> deprecation
+  // openapiv2_operation.deprecated on a method -> deprecation
   if (useOptions && kind === "method" && liftOpenapiOperation(options)) deprecate("openapiv2")
   for (const c of candidates) c.option ??= optionKeyOf(c, kind)
   for (const e of input.extra ?? []) candidates.push({ target: "", ...e })
@@ -88,7 +88,7 @@ export const annotate = (input: AnnotationInput): AnnotationResult => {
   }
   if (deprecated) result.deprecation = reason ? { reason } : {}
 
-  // --- precedence: sources in D13 order, first wins
+  // --- precedence: sources in the order of spec §3.8, first wins
   mergeCandidates(candidates, shape, result)
   return result
 }

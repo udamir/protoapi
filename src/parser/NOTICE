@@ -1,11 +1,6 @@
 protoapi .proto parser (src/parser)
 
-This directory contains code derived from pbkit 0.0.72
-(https://github.com/pbkit/pbkit, npm package "pbkit", version 0.0.72),
-Copyright (c) JongChan Choi <jong@chan.moe>, dual licensed under the MIT
-licence (LICENSE-MIT) or the Apache License, Version 2.0 (LICENSE-APACHE),
-at your option. The derived files are used under the MIT licence; both licence
-texts are reproduced in this directory as published with pbkit 0.0.72.
+This directory contains code derived from pbkit 0.0.72 (https://github.com/pbkit/pbkit, npm package "pbkit", version 0.0.72), Copyright (c) JongChan Choi <jong@chan.moe>, dual licensed under the MIT licence or the Apache License, Version 2.0, at your option. The derived files are used under the MIT licence, whose text is reproduced in LICENSE-MIT as published with pbkit 0.0.72.
 
 Derived files (origin in pbkit 0.0.72):
   scanner.ts                    core/parser/recursive-descent-parser.{js,d.ts}
@@ -27,14 +22,10 @@ Summary of modifications (each derived file lists its own in its header):
   exec() on input.substr(loc); keywords require a word boundary; the global
   per-accept loop counter is replaced by progress checks; the linear
   offsetToColRow / getAroundText helpers are removed (see position.ts).
-- Comment attachment (leading / trailing / detached groups) re-implemented
-  after protoc's tokenizer and parser rules; block statements take their
-  trailing comment after "{" instead of after "}".
+- Comment attachment (leading / trailing / detached groups) re-implemented after buf 1.75 (protocompile experimental/fdp `commentTracker`, the code that fills buf's SourceCodeInfo), with buf 1.75.0 as the oracle; protoc differs in rare block-comment layouts (listed under KNOWN_DEVIATIONS in proto.ts). Block statements take their trailing comment after "{" instead of after "}".
 - Grammar extensions: edition 2024 "export" / "local" visibility on messages
   and enums, "import option", identifiers in "reserved", options on oneof
   groups, "\u" / "\U" string escapes, hexadecimal values in text-format
   aggregates, "map" and "stream" usable as type names, dotted option names
   mixing plain and parenthesised segments split into separate segments.
-- Error handling: parsing never throws; a syntax error (including pbkit's
-  recovered "malformed-field" and trailing input) is returned with the offset
-  of the unexpected token and an empty AST.
+- Error handling: parsing never throws; the first syntax error (including trailing input) is returned with the offset of the unexpected token and an empty AST. pbkit's error recovery inside fields (acceptComplexSequence and the "malformed-field" AST node) is removed.

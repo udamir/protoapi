@@ -218,6 +218,23 @@ describe("U3: emission mode", () => {
     expect(user.components?.messages?.["x.Unused"]).toBeDefined()
   })
 
+  test("U3.8b: an import path named like a member of Object.prototype is looked up as an own key of the bundle", () => {
+    const a = L('syntax = "proto3";', 'import "toString";', 'import "__proto__";', "message M {}")
+    for (const bundle of [undefined, {}]) {
+      const r = buildFromProto({ "a.proto": a }, { bundle })
+      expect(r.issues.map((i) => `${i.code}: ${i.message}`)).toEqual([
+        'missing-import: import "toString" not found',
+        'missing-import: import "__proto__" not found',
+      ])
+    }
+    const bundle = JSON.parse('{"toString": "syntax = \\"proto3\\";", "__proto__": "syntax = \\"proto3\\";"}')
+    const r = buildFromProto({ "a.proto": a }, { bundle, imports: "all" })
+    expect(r.issues).toEqual([])
+    expect(JSON.stringify(r.document.files)).toBe(
+      '{"toString":{"syntax":"proto3","bundled":true},"__proto__":{"syntax":"proto3","bundled":true},"a.proto":{"syntax":"proto3","imports":["toString","__proto__"]}}',
+    )
+  })
+
   test("U3.9: protoapi/core: a well-known type supplied by the loader is a user file", () => {
     const doc = core.buildFromProto({ "a.proto": wkt }, { loader: (p) => bundledFiles[p] }).document
     expect(doc.files?.[TS]?.bundled).toBeUndefined()

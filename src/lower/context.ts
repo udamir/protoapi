@@ -9,6 +9,7 @@ import { annotate } from "../annotate.ts"
 import type { AnnotationInput, AnnotationResult } from "../conventions/types.ts"
 import {
   BUNDLED_FEATURE_DEFAULTS,
+  FEATURE_SET,
   FeatureDefaults,
   type ResolvedFeatures,
   featureDefaultsSource,
@@ -29,6 +30,8 @@ export interface LowerInput {
   /** source text by file path (text producer) */
   sources: Map<string, string>
   issues: BuildIssue[]
+  /** the build's options context so far (typed options and edition defaults read while linking) */
+  optionsContext?: OptionsContext
 }
 
 export interface LowerOutput {
@@ -41,14 +44,17 @@ const definitionDefaults = new WeakMap<MMessage, FeatureDefaults>()
 
 /** The typed options of the build's elements, interpreted once per build, and the edition defaults of the build. */
 export class OptionsContext {
-  private readonly interpreted = new WeakSet<MOptionHolder>()
+  private readonly interpreted: WeakSet<MOptionHolder>
   private featureDefaults?: FeatureDefaults
   private readonly symbols: SymbolTable
   private readonly sources: Map<string, string>
 
-  constructor(symbols: SymbolTable, sources: Map<string, string>) {
+  /** `shared`: a context of the same build whose typed options and edition defaults this one continues (the pipeline reads the edition defaults before linking, see `linkAll`). */
+  constructor(symbols: SymbolTable, sources: Map<string, string>, shared?: OptionsContext) {
     this.symbols = symbols
     this.sources = sources
+    this.interpreted = shared?.interpreted ?? new WeakSet()
+    this.featureDefaults = shared?.featureDefaults
   }
 
   /** The typed options of `holder`, interpreted once per build (`scope`: where option names are looked up from). */
@@ -68,13 +74,16 @@ export class OptionsContext {
   }
 
   /**
-   * Edition defaults (F-4): the `edition_defaults` of `google.protobuf.FeatureSet` in the descriptor.proto of this
-   * build (a user-supplied one wins over the bundle, design §5.2); features it does not define, or a build without a
-   * descriptor.proto (protoapi/core), use the bundled descriptor.proto's defaults.
+   * Edition defaults: the `edition_defaults` of `google.protobuf.FeatureSet` in the descriptor.proto of this build (a user-supplied one wins over the bundle); features it does not define, or a build without a descriptor.proto (protoapi/core), use the bundled descriptor.proto's defaults.
    */
   defaults(syntax: MFile["syntax"]): ResolvedFeatures {
+    return this.featureTable().forSyntax(syntax)
+  }
+
+  /** The edition defaults of this build (see `defaults`), read once. */
+  featureTable(): FeatureDefaults {
     if (!this.featureDefaults) {
-      const fs = this.symbols.message("google.protobuf.FeatureSet")
+      const fs = this.symbols.message(FEATURE_SET)
       let table = fs ? definitionDefaults.get(fs) : BUNDLED_FEATURE_DEFAULTS
       if (!table && fs) {
         const editions = this.symbols.enum("google.protobuf.Edition")
@@ -90,7 +99,7 @@ export class OptionsContext {
       }
       this.featureDefaults = table ?? BUNDLED_FEATURE_DEFAULTS
     }
-    return this.featureDefaults.forSyntax(syntax)
+    return this.featureDefaults
   }
 }
 
@@ -103,7 +112,7 @@ export class LowerContext extends OptionsContext {
   readonly entry: Set<string>
 
   constructor(input: LowerInput) {
-    super(input.symbols, input.sources)
+    super(input.symbols, input.sources, input.optionsContext)
     this.input = input
     this.entry = new Set(input.entry)
     this.sourceMap = new SourceMapWriter(input.options.sourceMap !== false)

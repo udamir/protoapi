@@ -12,9 +12,7 @@ export const tagLine = (tag: TagSpelling | undefined, t: TagName, value?: string
 }
 
 /**
- * Comment lines of an element: the `Deprecated:` line (first: it applies to the first line, item 10), the
- * description, `@Title`, then `extra`. `bareDeprecated`: deprecation without a reason prints as a bare
- * `Deprecated:` line (oneofs have no `deprecated` option, A-4).
+ * Comment lines of an element: the `Deprecated:` line (first: it is read from the first line only, spec §3.8), the description, `@Title`, then `extra`. `bareDeprecated`: deprecation without a reason prints as a bare `Deprecated:` line (oneofs have no `deprecated` option).
  */
 export const elementComment = (
   tag: TagSpelling | undefined,
@@ -35,7 +33,7 @@ export const elementComment = (
   return out
 }
 
-/** Comment lines of a field: AIP prefixes and the `Deprecated:` line on the first line (they apply to the first line, item 10), the description, then the tags of the plan. */
+/** Comment lines of a field: AIP prefixes and the `Deprecated:` line on the first line (they are read from the first line only, spec §3.8), the description, then the tags of the plan. */
 export const fieldComment = (tag: TagSpelling | undefined, f: ProtoApiField, plan: FieldPlan): string[] => {
   const first: string[] = [...plan.prefixes]
   if (tag && f.deprecation?.reason) first.push(`Deprecated: ${f.deprecation.reason}`)

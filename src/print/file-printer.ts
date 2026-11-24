@@ -23,6 +23,8 @@ export interface PrintContext {
   /** tag spelling of the `tags` print option; undefined (`tags: false`): no comment annotations (tags, AIP prefixes, `Deprecated:` lines) */
   tag?: TagSpelling
   names: Set<string>
+  /** `names` and the document's members (fields, oneofs, enum values, extensions, methods), for extendees and method types */
+  members: Set<string>
   /** component key -> file it is printed in */
   placement: Map<string, string>
   /** files of the document (or of the printed output for documents without `files`) */
@@ -79,12 +81,12 @@ export class FilePrinter {
     }
   }
 
-  /** The name of a referenced type from the current scope, importing its file when needed. */
-  typeName(ref: string): string {
+  /** The name of a referenced type (or extendee) from the current scope, importing its file when needed; shortened over `names`, or over `members` for an extendee or a method request / response type, which protoc looks up taking the first symbol of any kind. */
+  typeName(ref: string, names = this.ctx.names): string {
     const fqn = refFqn(ref)
     if (!this.ctx.names.has(fqn)) return unresolvedName(fqn, this.file.package)
-    this.imports.need(this.ctx.placement.get(fqn) ?? this.ctx.oracle.typeFile(fqn))
-    return shortestName(fqn, this.scope, this.ctx.names)
+    this.imports.needType(this.ctx.placement.get(fqn) ?? this.ctx.oracle.typeFile(fqn))
+    return shortestName(fqn, this.scope, names)
   }
 
   /** The type of a field or type reference: its scalar, else its referenced type. */
@@ -93,13 +95,5 @@ export class FilePrinter {
     if (scalar) return scalar
     if ("$ref" in t && t.$ref) return this.typeName(t.$ref)
     return "bytes"
-  }
-
-  /** The name of an extendee printed in `scope` (an extend block), importing its file when needed. */
-  extendeeName(extendee: string, scope: string): string {
-    this.imports.need(this.ctx.placement.get(extendee) ?? this.ctx.oracle.typeFile(extendee))
-    return this.ctx.names.has(extendee)
-      ? shortestName(extendee, scope, this.ctx.names)
-      : unresolvedName(extendee, this.file.package)
   }
 }

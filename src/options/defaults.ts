@@ -3,6 +3,7 @@
 import type { ProtoSyntax } from "../types.ts"
 import type { OptionTree } from "../model/index.ts"
 import type { OptionsKind } from "./kinds.ts"
+import { hasKey, setKey } from "../common/objects.ts"
 
 const RULE_D: Record<OptionsKind | "any", Record<string, unknown>> = {
   any: { deprecated: false },
@@ -37,11 +38,11 @@ export const dropDefaults = (kind: OptionsKind, tree: OptionTree, syntax: ProtoS
   const out: OptionTree = {}
   const table = { ...RULE_D.any, ...RULE_D[kind] }
   for (const [k, v] of Object.entries(tree)) {
-    if (k in table && table[k] === v) continue
+    if (hasKey(table, k) && table[k] === v) continue
     if (kind === "message" && k === "map_entry") continue
     if (kind === "field" && k === "packed" && v === (syntax === "proto3")) continue
     if (kind === "field" && k === "targets" && Array.isArray(v) && v.length === 0) continue
-    out[k] = v
+    setKey(out, k, v)
   }
   return out
 }

@@ -5,7 +5,7 @@ import type { Location } from "../types.ts"
 import type { MField, MRawOption, OptionTree } from "../model/index.ts"
 import { kindName } from "../symbols.ts"
 import { type Spanned, optionNameSegments } from "../frontend/text/nodes.ts"
-import { isPlainObject } from "../common/objects.ts"
+import { getKey, hasKey, isPlainObject, setKey } from "../common/objects.ts"
 import { OPTIONS_MESSAGE, type OptionsKind } from "./kinds.ts"
 import { fieldByName, typeOfRef } from "./definitions.ts"
 import { isAbsentValue } from "./presence.ts"
@@ -15,8 +15,7 @@ import { TextFormatReader } from "./textproto.ts"
 /** The option statement layer of the option interpreter. */
 export class OptionStatementReader extends TextFormatReader {
   /**
-   * Interpret one text option statement into `tree`. Returns the top-level key it set and the location to record for
-   * it: the statement as located by the front end, or the whole statement for a repeated field (C-10).
+   * Interpret one text option statement into `tree`. Returns the top-level key it set and the location to record for it: the statement as located by the front end, or the whole statement for a repeated field (as protoc and buf locate it).
    */
   interpretText(
     raw: Extract<MRawOption, { kind: "text" }>,
@@ -46,7 +45,7 @@ export class OptionStatementReader extends TextFormatReader {
             raw.loc,
             `options/${rawKey}`,
           )
-          tree[rawKey] = raw.text
+          setKey(tree, rawKey, raw.text)
           return { key: rawKey, loc: raw.loc }
         }
         const entry = found ? symbols.extensionByName.get(found.fqn) : undefined
@@ -65,7 +64,7 @@ export class OptionStatementReader extends TextFormatReader {
         key = seg.name
         if (!field) {
           if (i === 0) return this.unknown(raw, rawKey, tree)
-          // C-11: a sub-field the definition does not have (protovalidate before 1.0, a newer FeatureSet) is kept raw
+          // a sub-field the definition does not have (protovalidate before 1.0, a newer FeatureSet) is kept raw (spec §3.7)
           this.issue(
             "unknown-option",
             `option ${rawKey}: ${def.fqn} has no field "${seg.name}"; the value is kept as written`,
@@ -92,7 +91,7 @@ export class OptionStatementReader extends TextFormatReader {
       }
     }
     const leaf = path[path.length - 1]
-    // C-10: protoc / buf locate an option statement that sets a repeated field by the whole statement
+    // protoc / buf locate an option statement that sets a repeated field by the whole statement
     const loc = leaf.field.repeated && raw.stmtLoc ? raw.stmtLoc : raw.loc
     this.currentSub = `options/${path[0].key}`
     const result = this.constantValue(raw.value as unknown as Spanned, leaf.field, raw.loc)
@@ -115,7 +114,7 @@ export class OptionStatementReader extends TextFormatReader {
         !leaf.field.repeated &&
         isAbsentValue(value, leaf.field, parent.def, symbols)
       ) {
-        // an implicit-presence zero is the same as an absent value; the enclosing message is still set (C-14)
+        // an implicit-presence zero is the same as an absent value; the enclosing message is still set
         this.setPath(tree, path.slice(0, -1), {}, raw.loc, false)
         return { key: path[0].key, loc }
       }
@@ -140,14 +139,12 @@ export class OptionStatementReader extends TextFormatReader {
       `options/${key}`,
     )
     if (names && names.length > 1) setRaw(tree, names, raw.text)
-    else tree[rawKey] = raw.text
+    else setKey(tree, rawKey, raw.text)
     return { key, loc: raw.loc }
   }
 
   /**
-   * Set `value` at `path`. A non-repeated field set twice is an `invalid-option` (last wins). A sub-path statement
-   * merges into a message set before; an aggregate replaces it and is an `invalid-option` when the message was set
-   * already (A-5; buf: "message extension `p.agg` set multiple times").
+   * Set `value` at `path`. A non-repeated field set twice is an `invalid-option` (last wins). A sub-path statement merges into a message set before; an aggregate replaces it and is an `invalid-option` when the message was set already (buf: "message extension `p.agg` set multiple times").
    */
   private setPath(
     tree: OptionTree,
@@ -159,24 +156,25 @@ export class OptionStatementReader extends TextFormatReader {
     let cur = tree as Record<string, unknown>
     for (let i = 0; i < path.length - 1; i++) {
       const k = path[i].key
-      if (!isPlainObject(cur[k])) cur[k] = {}
+      if (!isPlainObject(getKey(cur, k))) setKey(cur, k, {})
       cur = cur[k] as Record<string, unknown>
     }
     const { key, field } = path[path.length - 1]
     if (field.repeated && !field.map) {
-      const arr = (Array.isArray(cur[key]) ? cur[key] : (cur[key] = [])) as unknown[]
-      arr.push(value)
-    } else if ((field.map || !aggregate) && isPlainObject(cur[key]) && isPlainObject(value)) {
+      const old = getKey(cur, key)
+      if (Array.isArray(old)) old.push(value)
+      else setKey(cur, key, [value])
+    } else if ((field.map || !aggregate) && isPlainObject(getKey(cur, key)) && isPlainObject(value)) {
       deepMerge(cur[key] as Record<string, unknown>, value)
     } else {
-      if (key in cur)
+      if (hasKey(cur, key))
         this.issue(
           "invalid-option",
           `option ${path.map((p) => p.key).join(".")} is set more than once`,
           loc,
           `options/${path[0].key}`,
         )
-      cur[key] = value
+      setKey(cur, key, value)
     }
   }
 }

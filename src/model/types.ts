@@ -1,4 +1,4 @@
-// Internal resolved model (design §4.2 `model/`), produced by both front ends and consumed by the lowering.
+// Internal resolved model, produced by both front ends and consumed by the lowering.
 // Everything from the model onward (option typing, features, lowering, annotations, source map) is shared, which is
 // what makes the conformance test a test of the two front ends only.
 
@@ -25,7 +25,7 @@ export type MRawOption =
       /** source text of the constant, kept for unknown options */
       text: string
       loc?: Location
-      /** the whole statement, when `loc` is the IN-5 "name to `}`" span (used for repeated fields, C-10) */
+      /** the whole statement, when `loc` is buf's "name to `}`" span of an aggregate option (used for repeated fields) */
       stmtLoc?: Location
     }
   | {
@@ -34,9 +34,18 @@ export type MRawOption =
       value: Record<string, unknown>
       /** option locations by option field number path, e.g. "1159" for buf.validate.field */
       locs?: Record<string, Location>
+      /** option fields of a binary set without a ProtoJSON form, as their wire bytes (`WIRE_OPTIONS`) */
+      wire?: MWireField[]
     }
 
-/** Canonical typed option tree: keys are built-in field names or extension fqns, values canonical (design §3.6). */
+/** A field as read from the wire: its number, wire type and the bytes after the tag (a length prefix included). */
+export interface MWireField {
+  no: number
+  wireType: number
+  data: Uint8Array
+}
+
+/** Canonical typed option tree: keys are built-in field names or extension fqns, values canonical (spec §3.6). */
 export type OptionTree = Record<string, unknown>
 
 /** An issue found before lowering; the lowering attaches the element's pointer (plus `sub`) when it emits it. */
@@ -65,7 +74,7 @@ export type MTypeRef =
       name: string
       /** resolved by name resolution */
       resolved?: { kind: "message" | "enum"; fqn: string }
-      /** best-effort key for unresolved names (design §5.3) */
+      /** best-effort key for unresolved names (`unresolvedKey`) */
       unresolvedKey?: string
       /** descriptor hint: TYPE_MESSAGE / TYPE_GROUP / TYPE_ENUM */
       hint?: "message" | "enum"
@@ -79,6 +88,7 @@ export interface MField extends MOptionHolder {
   required: boolean
   /** explicit `optional` label (proto2, or proto3 optional) */
   optional: boolean
+  /** the field's type; for a map field the map entry message (`FooEntry`), which is not linked: its types are in `map` */
   type: MTypeRef
   map?: { key: ProtoScalar; value: MTypeRef }
   /** proto2 group syntax / TYPE_GROUP */
@@ -195,14 +205,14 @@ export interface MFile extends MOptionHolder {
   extensions: MField[]
   services: MService[]
   locs: Locs
-  /** The build resolved the file from the bundle (the built-in one or `BuildOptions.bundle`, design §5.2); for a descriptor set, its path is a key of the bundle in effect. Marked `bundled: true` in `files` unless an entry (U3). */
+  /** The build resolved the file from the bundle (the built-in one or `BuildOptions.bundle`); for a descriptor set, its path is a key of the bundle in effect. Marked `bundled: true` in `files` unless an entry (spec §4.1). */
   bundled?: boolean
   /** descriptor sets: bufExtension.isImport */
   isImport?: boolean
   /** false when the file failed to parse */
   parsed: boolean
-  /** a file that failed to parse before its syntax could be read: `syntax` is a placeholder, not written (text#14) */
+  /** a file that failed to parse before its syntax could be read: `syntax` is a placeholder, not written */
   syntaxUnknown?: boolean
-  /** text producer: the file is validated (design D-E checks run on it) */
+  /** text producer: the file is validated (the definition checks of src/validate/ run on it) */
   validate?: boolean
 }

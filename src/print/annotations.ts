@@ -1,4 +1,4 @@
-// Annotation keywords of a field printed back (decision 11): as the convention option they can come from when the file can use it (in the precedence order of D13), else as a comment tag or an AIP prefix. The convention tables are in conventions/; this module plans one field against the file's imports and the option definitions.
+// Annotation keywords of a field printed back (spec §6): as the convention option they can come from when the file can use it (in the precedence order of spec §3.8), else as a comment tag or an AIP prefix. The convention tables are in conventions/; this module plans one field against the file's imports and the option definitions.
 
 import type { ProtoApiField, ProtoScalar } from "../types.ts"
 import { INT64_KINDS, WRAPPERS } from "../values/scalars.ts"
@@ -17,8 +17,11 @@ import {
   DECIMAL,
   FORMAT_RULE,
   NUMERIC_RULES,
+  PGV,
+  PROTOVALIDATE,
   RULE_OF_KEYWORD,
   RULE_PATH,
+  type RuleDialect,
   WKT_FAMILY,
   outsideRange,
   ruleFamilyOf,
@@ -26,7 +29,7 @@ import {
 import { OPENAPI_FIELD_OF_KEYWORD } from "../conventions/openapiv2.ts"
 import { TAG_OF_KEYWORD, type TagPrintKind, type TagSpelling, VALUE_KEYWORDS } from "../conventions/tags.ts"
 import { IDENTIFIER_PREFIX, PREFIX_OF_KEYWORD } from "../conventions/prefixes.ts"
-import { isPlainObject } from "../common/objects.ts"
+import { getKey, hasKey, isPlainObject } from "../common/objects.ts"
 import { type Oracle, refFqn, scalarOf } from "./oracle.ts"
 import type { ImportTracker } from "./imports.ts"
 import { coerce, fitsScalar } from "./literals.ts"
@@ -59,7 +62,7 @@ export interface FieldPlan {
   tags: string[]
 }
 
-/** The position a keyword is read back at: value keywords and value tags at the value position (design §3.8). */
+/** The position a keyword is read back at: value keywords and value tags at the value position (spec §3.2 Field). */
 const targetOf = (kw: string, shape: ShapeKind): Target => (VALUE_KEYWORDS.has(kw) ? valueTarget(shape) : "")
 
 /** The positions of a field: itself, items, map key, map value. */
@@ -74,7 +77,7 @@ const positionsOf = (f: ProtoApiField): Pos[] => {
       if (n.$ref.includes("/enums/")) p.enumFqn = fqn
       else {
         p.messageFqn = fqn
-        if (fqn in WRAPPERS) p.scalar = WRAPPERS[fqn]
+        if (hasKey(WRAPPERS, fqn)) p.scalar = WRAPPERS[fqn]
       }
     }
     return p
@@ -90,7 +93,7 @@ const positionsOf = (f: ProtoApiField): Pos[] => {
   return [posOf("", self)]
 }
 
-/** `@Enum` text for string, numeric and enum positions (decision 11), or undefined. */
+/** `@Enum` text for string, numeric and enum positions, or undefined. */
 const enumTag = (v: unknown, slot: Pos): string | undefined => {
   if (!Array.isArray(v) || !v.length) return undefined
   const s = slot.scalar
@@ -156,26 +159,29 @@ const enumNumbers = (oracle: Oracle, p: Pos, v: unknown): unknown => {
   return out.includes(undefined) ? undefined : Array.isArray(v) ? out : out[0]
 }
 
-/** protovalidate / PGV (`key`) for keyword `kw` of position `p` (rule families as the annotation layer lifts them). `raw`: the field's options as the document holds them (the raw remainder of lifted conventions). */
+/** protovalidate / PGV (`dialect`) for keyword `kw` of position `p` (rule families as the annotation layer lifts them). `raw`: the field's options as the document holds them (the raw remainder of lifted conventions). */
 const tryRules = (
   ac: AnnotationContext,
   raw: Obj,
   o: Obj,
-  key: string,
+  dialect: RuleDialect,
   p: Pos,
   shape: ShapeKind,
   kw: string,
   v: unknown,
 ): boolean => {
+  // PGV has no `example` rules
+  if (kw === "examples" && !dialect.examples) return false
+  const key = dialect.key
   const r = RULE_OF_KEYWORD[kw]
   if (p.target === "" && shape !== "singular")
     return !!r && r.families.includes(shape) && trySet(ac, o, key, [shape, r.rule], v)
-  const fam = p.scalar ?? (p.enumFqn ? "enum" : p.messageFqn ? WKT_FAMILY[p.messageFqn] : undefined)
+  const fam = p.scalar ?? (p.enumFqn ? "enum" : p.messageFqn ? getKey(WKT_FAMILY, p.messageFqn) : undefined)
   if (!fam) return false
   const family = ruleFamilyOf(fam)
   let rule = r && family && r.families.includes(family) ? r.rule : undefined
   let value = v
-  if (kw === "format" && family === "string" && typeof v === "string" && FORMAT_RULE[v]) {
+  if (kw === "format" && family === "string" && typeof v === "string" && Object.hasOwn(FORMAT_RULE, v)) {
     rule = FORMAT_RULE[v]
     value = true
   }
@@ -183,8 +189,7 @@ const tryRules = (
   if (family === "enum") value = enumNumbers(ac.oracle, p, v)
   const base = RULE_PATH[p.target]
   if (BOUND_KEYWORDS.has(kw)) {
-    // A-9: bounds next to raw bounds of the family, or a lower bound above the upper one, are read back as
-    // protovalidate's outside range (raw)
+    // bounds next to raw bounds of the family, or a lower bound above the upper one, are read back as protovalidate's outside range (raw)
     let rawRules: unknown = raw[key]
     for (const s of [...base, fam]) rawRules = isPlainObject(rawRules) ? rawRules[s] : undefined
     if (outsideRange(p.node) || (isPlainObject(rawRules) && ["gt", "gte", "lt", "lte"].some((b) => b in rawRules)))
@@ -193,7 +198,7 @@ const tryRules = (
   return value !== undefined && trySet(ac, o, key, [...base, fam, rule], value)
 }
 
-/** openapiv2_field for keyword `kw`: value keywords at the value position (decision 5), the rest on the field. */
+/** openapiv2_field for keyword `kw`: value keywords at the value position (spec §3.2 Field), the rest on the field. */
 const tryOpenapi = (ac: AnnotationContext, o: Obj, p: Pos, shape: ShapeKind, kw: string, v: unknown): boolean => {
   const rule = OPENAPI_FIELD_OF_KEYWORD[kw]
   if (!rule || p.target !== targetOf(kw, shape)) return false
@@ -217,7 +222,7 @@ const tagValues = (kind: TagPrintKind, v: unknown, shape: ShapeKind, slot: Pos):
   const ok = (c: unknown, x: unknown = v) => (c ? String(x) : undefined)
   switch (kind) {
     case "bound":
-      // decimal numbers; on 64-bit fields decimal integer digits (A-1, A-6)
+      // decimal numbers; on 64-bit fields decimal integer digits
       return [
         ok(
           slot.scalar && INT64_KINDS.has(slot.scalar)
@@ -228,7 +233,7 @@ const tagValues = (kind: TagPrintKind, v: unknown, shape: ShapeKind, slot: Pos):
     case "count":
     case "itemCount":
     case "entryCount": {
-      // counts; @MinItems on repeated fields, on maps it counts entries (decision 4)
+      // counts; @MinItems on repeated fields, on maps it counts entries
       const fits = kind === "count" || shape === (kind === "itemCount" ? "repeated" : "map")
       return [ok(fits && Number.isSafeInteger(v) && (v as number) >= 0)]
     }
@@ -255,7 +260,7 @@ const tagValues = (kind: TagPrintKind, v: unknown, shape: ShapeKind, slot: Pos):
   }
 }
 
-/** A comment tag for keyword `kw`; value tags target the value position of the field (design §3.8). */
+/** A comment tag for keyword `kw`; value tags target the value position of the field (spec §3.2 Field). */
 const tryTag = (
   ac: AnnotationContext,
   plan: FieldPlan,
@@ -276,7 +281,7 @@ const tryTag = (
   return true
 }
 
-/** Print every annotation keyword of a field back as options, tags or prefixes (decision 11). */
+/** Print every annotation keyword of a field back as options, tags or prefixes (spec §6). */
 export const planField = (ac: AnnotationContext, f: ProtoApiField, comments: boolean): FieldPlan => {
   const raw: Obj = isPlainObject(f.options) ? f.options : {}
   const o = structuredClone(raw) as Obj
@@ -347,17 +352,17 @@ export const planField = (ac: AnnotationContext, f: ProtoApiField, comments: boo
             shape !== "map" &&
             p.scalar === "string" &&
             typeof v === "string" &&
-            !!FIELD_INFO_FORMAT_OF[v] &&
+            Object.hasOwn(FIELD_INFO_FORMAT_OF, v) &&
             trySet(ac, o, FIELD_INFO, ["format"], FIELD_INFO_FORMAT_OF[v]),
-          () => tryRules(ac, raw, o, BUF_VALIDATE_FIELD, p, shape, kw, v),
-          () => tryRules(ac, raw, o, PGV_RULES, p, shape, kw, v),
+          () => tryRules(ac, raw, o, PROTOVALIDATE, p, shape, kw, v),
+          () => tryRules(ac, raw, o, PGV, p, shape, kw, v),
           () => tryOpenapi(ac, o, p, shape, kw, v),
           () => tags && tryTag(ac, plan, p, shape, kw, v, slot),
           () => p.target === "" && v === true && prefix(kw),
         ],
         behavior
           ? forced(FIELD_BEHAVIOR, () => fb(behavior))
-          : forced(BUF_VALIDATE_FIELD, () => tryRules(ac, raw, o, BUF_VALIDATE_FIELD, p, shape, kw, v)),
+          : forced(BUF_VALIDATE_FIELD, () => tryRules(ac, raw, o, PROTOVALIDATE, p, shape, kw, v)),
       )
     }
   for (const [kw, v] of [

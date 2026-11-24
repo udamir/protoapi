@@ -1,5 +1,4 @@
-// Builders (design §4.3): .proto text -> ProtoApi, FileDescriptorSet -> ProtoApi. The loading of each producer is
-// here; argument checks, the bundle cache, the import closure walk and the shared pipeline are in src/build/.
+// Builders: .proto text -> ProtoApi, FileDescriptorSet -> ProtoApi. The loading of each producer is here; argument checks, the bundle cache, the import closure walk and the shared pipeline are in src/build/.
 
 import type {
   AsyncProtoLoader,
@@ -12,7 +11,7 @@ import type {
   TextBuildOptions,
 } from "./types.ts"
 import type { MFile } from "./model/index.ts"
-import { textToModel } from "./frontend/text/convert.ts"
+import { DEFAULT_TAB_WIDTH, textToModel } from "./frontend/text/convert.ts"
 import { convertFile } from "./frontend/descriptor/convert.ts"
 import { normalizePath } from "./paths.ts"
 import { type BufbuildModules, decodeWithBufbuild, loadBufbuild } from "./binary.ts"
@@ -123,13 +122,13 @@ export const createBuilders = (
         file = pre.file
         issues.push(...pre.issues)
       } else file = textToModel(path, t.text, issues, false, { tabWidth })
-      // D-E: the build checks the definitions of every non-bundled file
+      // the build checks the definitions of every non-bundled file
       if (!t.bundled) file.validate = true
       loaded.files.push(file)
       loaded.byPath.set(file.path, file)
       loaded.sources.set(file.path, t.text)
       file.imports.forEach((imp, i) => {
-        // C-17: every import statement of a missing file gets its own issue
+        // every import statement of a missing file gets its own issue
         if (missing.has(imp.path)) {
           missingImport(file, i, imp.path, issues, failures?.get(imp.path))
           return
@@ -175,9 +174,7 @@ export const createBuilders = (
     const prefetched = new Map<string, Prefetched>()
     const failures = new Map<string, string>()
     if (loader) {
-      // C-16: prefetch the import closure with the async loader. Imports are found by parsing each file (the parsed
-      // model is reused by the build), so imports anywhere on a line, after comments or split over lines are found.
-      // A loader that throws or rejects makes that one import missing; the build never rejects.
+      // prefetch the import closure with the async loader. Imports are found by parsing each file (the parsed model is reused by the build), so imports anywhere on a line, after comments or split over lines are found. A loader that throws or rejects makes that one import missing; the build never rejects.
       const { tabWidth } = settings
       const closure = new ImportClosure(entry)
       for (let path = closure.next(); path !== undefined; path = closure.next()) {
@@ -261,9 +258,10 @@ export const createBuilders = (
     const entry = (options.entry ?? loaded.files.filter((f) => !f.isImport && !f.bundled).map((f) => f.path)).map(
       normalizePath,
     )
-    // U3: a set does not record where a file came from; a file whose path is a key of the bundle in effect counts as resolved from the bundle, as the text producer resolves it when no source overrides that path
+    // a set does not record where a file came from; a file whose path is a key of the bundle in effect counts as resolved from the bundle, as the text producer resolves it when no source overrides that path
     for (const f of loaded.files) if (bundleText(f.path, options.bundle) !== undefined) f.bundled = true
-    return finish(bundleText, loaded, entry, options, settings, issues)
+    // `tabWidth` is a text-producer option: every bundled file of a descriptor build (the descriptor.proto that `finish` adds too) is read with the default tab stop
+    return finish(bundleText, loaded, entry, options, { ...settings, tabWidth: DEFAULT_TAB_WIDTH }, issues)
   }
 
   const buildFromDescriptorSetBinary = (

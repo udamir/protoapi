@@ -86,6 +86,8 @@ describe("D-C: editions", () => {
     ["unknown name", { syntax: "editions", edition: "EDITION_2027" }, "2027", "edition EDITION_2027"],
     ["no syntax, unnamed number", { edition: 1003 }, "1003", "edition 1003"],
     ["editions without an edition", { syntax: "editions" }, "editions", 'syntax "editions" without an edition'],
+    ["an Object.prototype name", { syntax: "editions", edition: "toString" }, "toString", "edition toString"],
+    ["constructor", { syntax: "editions", edition: "constructor" }, "constructor", "edition constructor"],
   ]
   for (const [label, fields, syntax, what] of unknown) {
     test(`descriptor, ${label}: syntax "${syntax}" verbatim, unsupported, newest known defaults`, () => {
@@ -105,6 +107,8 @@ describe("D-C: editions", () => {
   for (const [label, text, syntax] of [
     ["UNSTABLE", "UNSTABLE", "UNSTABLE"],
     ["a future year", "2027", "2027"],
+    ["an Object.prototype name", "constructor", "constructor"],
+    ["__proto__", "__proto__", "__proto__"],
   ]) {
     test(`text, ${label}: the same spelling and issue as the descriptor producer`, () => {
       const r = buildFromProto({ "a.proto": `edition = "${text}";\npackage p;\nmessage M { string s = 1; }\n` })

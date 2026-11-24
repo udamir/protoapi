@@ -1,6 +1,6 @@
 /**
  * Origin: pbkit 0.0.72, `core/parser/textproto.{js,d.ts}` (https://github.com/pbkit/pbkit),
- * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0 (see ./LICENSE-MIT, ./LICENSE-APACHE).
+ * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0, used here under MIT (see ./LICENSE-MIT).
  *
  * Modifications:
  * - strict TypeScript port; comments are recorded with `parser.addComment` instead of a "comment" event.

@@ -1,6 +1,4 @@
-// .proto text front end (design §5): parser AST -> model. Name resolution, option typing and lowering are shared.
-// The syntactic rules of a syntax or edition are checked here, while the AST is at hand (rules.ts, validation
-// decision D-E); the semantic checks are in src/validate/.
+// .proto text front end: parser AST -> model. Name resolution, option typing and lowering are shared. The syntactic rules of a syntax or edition are checked here, while the AST is at hand (rules.ts); the semantic checks are in src/validate/.
 
 import type { BuildIssue, Location } from "../../types.ts"
 import type {
@@ -37,9 +35,16 @@ import { isScalar } from "../../values/scalars.ts"
 import { decodeStringLiteral } from "../../values/literals.ts"
 import { normalizePath, ptr } from "../../paths.ts"
 import { FIELD_NUMBER_MAX, INT32_MAX, MESSAGE_SET_NUMBER_MAX } from "../../common/limits.ts"
-import { enumPointer, extensionPointer, filePointer, messagePointer, qualify } from "../../common/names.ts"
+import {
+  enumPointer,
+  extensionPointer,
+  filePointer,
+  mapEntryName,
+  messagePointer,
+  qualify,
+} from "../../common/names.ts"
 import { createLineIndex, parseProtoSource } from "../../parser/index.ts"
-import { type Ctx, identText, intOf, locsOf, span, src, syntaxIssue, typeRefOf } from "./context.ts"
+import { type Ctx, identText, intOf, locsOf, span, src, typeRefOf } from "./context.ts"
 import { commentsOf, groupsText, tokenRange } from "./nodes.ts"
 import { applyFieldOptions, isMessageSet, pushFieldOptions, pushOption } from "./options.ts"
 import { convertReserved, ranges } from "./ranges.ts"
@@ -55,7 +60,7 @@ import {
   checkVisibility,
 } from "./rules.ts"
 
-/** buf's tab stop (validation decision D-A) */
+/** buf's tab stop: source-map and issue columns follow buf, not protoc (8) */
 export const DEFAULT_TAB_WIDTH = 4
 
 export interface TextModelOptions {
@@ -97,10 +102,12 @@ const convertField = (ctx: Ctx, st: Field, pointerOf: (name: string) => string, 
   return f
 }
 
-/** `map<K, V> name = N;`: a field whose type is the map value. */
+/** `map<K, V> name = N;`: as in a descriptor, `type` names the map entry message and `map` holds the key and value types. */
 const convertMapField = (ctx: Ctx, st: MapField, fieldPointer: (name: string) => string): MField => {
   const key = identText(ctx, st.keyType)
-  const f = newField(ctx, st, src(ctx, st.mapName), { kind: "named", name: "" }, undefined, {
+  const name = src(ctx, st.mapName)
+  const entry: MTypeRef = { kind: "named", name: mapEntryName(name), hint: "message" }
+  const f = newField(ctx, st, name, entry, undefined, {
     name: st.mapName,
     number: st.fieldNumber,
     type: st.keyword,
@@ -108,7 +115,6 @@ const convertMapField = (ctx: Ctx, st: MapField, fieldPointer: (name: string) =>
   const l = span(ctx, { start: st.keyword.start, end: st.typeBracketClose.end })
   if (l) f.locs.type = l
   f.map = { key: isScalar(key) ? key : "string", value: typeRefOf(ctx, st.valueType) }
-  f.type = f.map.value
   checkMapKey(ctx, key, isScalar(key), st.keyType, `${fieldPointer(f.name)}/propertyNames`)
   applyFieldOptions(ctx, f, st.fieldOptions)
   return f
@@ -152,11 +158,9 @@ const convertExtend = (ctx: Ctx, n: Extend, scopeFqn: string, out: MField[], nes
   const pointerOf = (name: string) => extensionPointer(qualify(scopeFqn, name))
   for (const st of n.extendBody?.statements ?? []) {
     let field: MField | undefined
-    if (st.type === "field") {
-      field = convertField(ctx, st, pointerOf, true)
-    } else if (st.type === "group") {
+    if (st.type === "field") field = convertField(ctx, st, pointerOf, true)
+    else if (st.type === "group")
       field = convertGroup(ctx, st, st.groupLabel, scopeFqn, nested, pointerOf, undefined, true)
-    } else if (st.type === "malformed-field") syntaxIssue(ctx, st, "malformed extension field")
     if (!field) continue
     field.extendee = { name: extendee }
     const el = span(ctx, n.messageType)
@@ -270,12 +274,9 @@ const convertMessageBody = (ctx: Ctx, n: Message | GroupNode, nameNode: Token, n
       case "option":
         pushOption(ctx, msg, st.optionName, st.constant, st)
         break
-      case "malformed-field":
-        syntaxIssue(ctx, st, "malformed field")
-        break
     }
   }
-  // C-7: `reserved N to max` in a message set ends at 2147483646, like its extension ranges (IN-5b)
+  // `reserved N to max` in a message set ends at 2147483646, like its extension ranges (as in protoc)
   if (reservedToMax.length && isMessageSet(ctx, msg))
     for (const i of reservedToMax) msg.reservedRanges[i][1] = MESSAGE_SET_NUMBER_MAX
   return msg
@@ -392,8 +393,7 @@ export const textToModel = (
   if (result.error) {
     file.parsed = false
     issues.push(...result.issues)
-    // text#14: keep the syntax and package statements parsed before the error. A file whose first complete statement
-    // is not a syntax / edition statement is proto2; with no complete statement the syntax is not known.
+    // keep the syntax and package statements parsed before the error. A file whose first complete statement is not a syntax / edition statement is proto2; with no complete statement the syntax is not known.
     const partial: TopLevelStatement[] = result.ast.statements.filter((st) => st.type !== "empty")
     if (partial.length) readHeader({ ...ctx, check: false }, partial)
     else file.syntaxUnknown = true

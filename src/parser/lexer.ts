@@ -1,6 +1,6 @@
 /**
  * Origin: pbkit 0.0.72, `core/parser/misc.{js,d.ts}`, `core/parser/proto.{js,d.ts}` and `core/parser/textproto.{js,d.ts}` (https://github.com/pbkit/pbkit),
- * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0 (see ./LICENSE-MIT, ./LICENSE-APACHE).
+ * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0, used here under MIT (see ./LICENSE-MIT).
  *
  * Tokens shared by the `.proto` and text-format grammars: character codes, identifiers, keywords, string literals, whitespace and comments.
  *
@@ -8,7 +8,7 @@
  * - collected from misc.ts (`acceptSpecialToken`, the comment patterns, `skipTrivia`), proto.ts (`keywordPattern`, `acceptKeyword`) and textproto.ts (`strLitPattern`, `acceptStrLitToken`); the identifier pattern, defined in each of those three files before, is defined once here, and raw character codes are named constants.
  * - sticky regular expressions compiled once (see scanner.ts); comment patterns use `[\s\S]` / `[^\n]` so that a lone `\r`, U+2028 or U+2029 inside a comment no longer breaks the comment token.
  * - keywords require a word boundary (pbkit matched `message` in `messageType`) and are pre-checked by their first letter.
- * - string literals accept `\u` / `\U` escapes and 1-2 digit `\x` / `\X` escapes; other escape letters are case-sensitive (protoc). They are scanned without a regular expression, and a malformed literal throws a `TokenSyntaxError`.
+ * - string literals accept `\u` / `\U` escapes and 1-2 digit `\x` / `\X` escapes; other escape letters are case-sensitive (protoc). A `\u` / `\U` escape must be a Unicode scalar value: a surrogate (even a high + low pair, which protoc combines) or a code point above U+10FFFF is an invalid escape (buf). They are scanned without a regular expression, and a malformed literal throws a `TokenSyntaxError`.
  * - `skipTrivia` is one loop over whitespace and comments for both grammars (`#` comments only with `hash`, for text format) and reports whether it skipped a newline.
  */
 import type { Keyword } from "./ast/index.ts"
@@ -75,8 +75,7 @@ export function acceptKeyword(parser: AnyParser, pattern: Pattern = identPattern
 // ---- string literals ------------------------------------------------------------------------------------------------
 
 /**
- * Protobuf string literal token (shared with proto.ts). Escapes: `\a \b \f \n \r \t \v \\ \? \' \"`, octal `\N`..`\NNN`,
- * hex `\xH` / `\xHH` (also `\X`), `\uXXXX`, `\UXXXXXXXX`. Raw NUL and newline are not allowed inside the quotes.
+ * Protobuf string literal token (shared with proto.ts). Escapes: `\a \b \f \n \r \t \v \\ \? \' \"`, octal `\N`..`\NNN`, hex `\xH` / `\xHH` (also `\X`), `\uXXXX`, `\UXXXXXXXX`. Raw NUL and newline are not allowed inside the quotes. The pattern only names the token in errors: `acceptStrLitToken` scans it, and also rejects surrogate and out-of-range `\u` / `\U` escapes.
  */
 export const strLitPattern = namePattern(
   /'(?:\\[xX][0-9a-fA-F]{1,2}|\\[0-7]{1,3}|\\u[0-9a-fA-F]{4}|\\U[0-9a-fA-F]{8}|\\[abfnrtv\\?'"]|[^'\0\n\\])*'|"(?:\\[xX][0-9a-fA-F]{1,2}|\\[0-7]{1,3}|\\u[0-9a-fA-F]{4}|\\U[0-9a-fA-F]{8}|\\[abfnrtv\\?'"]|[^"\0\n\\])*"/y,
@@ -98,11 +97,7 @@ function stringLiteralError(parser: RecursiveDescentParser<Token>, offset: numbe
 }
 
 /**
- * Scans one string literal token at the current position (the grammar of `strLitPattern`) without a regular
- * expression: a per-character alternation hits the regex engine's backtracking limit on literals of about a million
- * characters (validation text#15). Returns `undefined` when the input does not start with a quote. A literal that
- * starts but is malformed throws: an invalid escape at its backslash ("invalid escape sequence", as buf), a raw
- * newline / NUL or the end of the input at the opening quote ("unterminated string literal").
+ * Scans one string literal token at the current position (the grammar of `strLitPattern`) without a regular expression: a per-character alternation hits the regex engine's backtracking limit on literals of about a million characters. Returns `undefined` when the input does not start with a quote. A literal that starts but is malformed throws: an invalid escape at its backslash ("invalid escape sequence", as buf; this includes a surrogate or out-of-range `\u` / `\U` escape), a raw newline / NUL or the end of the input at the opening quote ("unterminated string literal").
  */
 export function acceptStrLitToken(parser: RecursiveDescentParser<Token>): Token | undefined {
   const input = parser.input
@@ -130,10 +125,16 @@ export function acceptStrLitToken(parser: RecursiveDescentParser<Token>): Token 
       if (isOctal(input.charCodeAt(i))) i++
       if (isOctal(input.charCodeAt(i))) i++
     } else if (n === 117 || n === 85) {
-      // \uXXXX, \UXXXXXXXX
+      // \uXXXX, \UXXXXXXXX: a Unicode scalar value (buf rejects every surrogate, even a high + low pair that protoc combines)
       const digits = n === 117 ? 4 : 8
-      for (let k = 0; k < digits; k++)
-        if (!isHex(input.charCodeAt(i + 2 + k))) throw stringLiteralError(parser, i, "invalid escape sequence")
+      let cp = 0
+      for (let k = 0; k < digits; k++) {
+        const h = input.charCodeAt(i + 2 + k)
+        if (!isHex(h)) throw stringLiteralError(parser, i, "invalid escape sequence")
+        cp = cp * 16 + (h <= 57 ? h - 48 : (h | 32) - 87)
+      }
+      if (cp > 0x10ffff || (cp >= 0xd800 && cp <= 0xdfff))
+        throw stringLiteralError(parser, i, "invalid escape sequence")
       i += 2 + digits
     } else throw stringLiteralError(parser, i, "invalid escape sequence")
   }

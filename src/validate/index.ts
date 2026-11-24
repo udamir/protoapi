@@ -1,10 +1,7 @@
-// Definition checks of the text producer (validation decision D-E): what buf rejects in a well-formed file. Runs
-// after the lowering on the files the build validates (non-bundled `.proto` sources), reusing the lowering's typed
-// options and edition defaults. Never throws and never changes the document: every finding is a `BuildIssue`.
+// Definition checks of the text producer: what buf rejects in a well-formed file (`invalid-definition` and the other issues of spec §4.2). Runs after the lowering on the files the build validates (non-bundled `.proto` sources), reusing the lowering's typed options and edition defaults. Never throws and never changes the document: every finding is a `BuildIssue`.
 // The syntactic rules (labels, groups, statement order, keywords per edition) are checked in text.ts.
 
 import type { MEnum, MField, MFile, MMessage, MService, OptionTree } from "../model/index.ts"
-import { defaultVisibility } from "../features.ts"
 import { OPTIONS_MESSAGES } from "../options/kinds.ts"
 import type { ResolvedFeatures } from "../features.ts"
 import { defaultJsonName } from "../values/json-name.ts"
@@ -97,7 +94,7 @@ class Validator {
     this.options.check(f, "file", f, f.package, fp)
     const features = cx.features(f, [fileOpts])
     if (isStyled(features) && f.package) checkName(cx, "package", f.package, f, `${fp}/package`, f.locs.package)
-    const strict = isEditions(f.syntax) && defaultVisibility(f) === "STRICT"
+    const strict = isEditions(f.syntax) && cx.symbols.defaultVisibility(f) === "STRICT"
     for (const m of f.messages) this.message(m, f, [fileOpts], strict, false)
     for (const e of f.enums) this.enumeration(e, f, [fileOpts], strict, undefined)
     for (const x of f.extensions) this.extension(x, f, [fileOpts], f.package)

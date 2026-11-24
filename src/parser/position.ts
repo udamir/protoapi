@@ -8,9 +8,7 @@
  *   its line: in `"a\r\nb"`, offset 1 (`\r`) is line 0 column 1 and offset 3 (`b`) is line 1 column 0.
  * - Offsets are clamped to `[0, text.length]`; `text.length` (end of input) is a valid position.
  *
- * With `tabWidth` (the text producer's columns, validation decision D-A), columns are counted the way buf records
- * them in `SourceCodeInfo`: a tab advances to the next multiple of `tabWidth`; `\r`, `\f`, `\v` and a byte order mark
- * at the start of the text have no width (so a CR-only file is one line, as in buf).
+ * With `tabWidth` (the text producer's columns), columns are counted the way buf records them in `SourceCodeInfo`: a tab advances to the next multiple of `tabWidth`; `\r`, `\f`, `\v` and a byte order mark at the start of the text have no width (so a CR-only file is one line, as in buf).
  */
 
 export interface Position {

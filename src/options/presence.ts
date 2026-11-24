@@ -1,4 +1,4 @@
-// Presence of option fields (C-14): which values equal an absent one and are therefore not written.
+// Presence of option fields (spec §3.6): which values equal an absent one and are therefore not written.
 
 import type { MField, MMessage, MOptionHolder } from "../model/index.ts"
 import type { SymbolTable } from "../symbols.ts"
@@ -6,10 +6,7 @@ import { isPlainObject } from "../common/objects.ts"
 import { INT64_KINDS } from "../values/scalars.ts"
 
 /**
- * Whether a field of an option message (or of an option value's type) has implicit presence: a singular scalar or
- * enum field of a proto3 file without `optional`, or of an editions file where `features.field_presence = IMPLICIT`
- * is set on the field, an enclosing message or the file. Such a field set to its zero value is never serialized, so
- * the value is the same as an absent one (C-14). Editions features are read from ProtoJSON or interpreted options.
+ * Whether a field of an option message (or of an option value's type) has implicit presence: a singular scalar or enum field of a proto3 file without `optional`, or of an editions file where `features.field_presence = IMPLICIT` is set on the field, an enclosing message or the file. Such a field set to its zero value is never serialized, so the value is the same as an absent one. Editions features are read from ProtoJSON or interpreted options.
  */
 const implicitPresence = (f: MField, def: MMessage): boolean => {
   if (f.repeated || f.map || f.oneof !== undefined || f.fqn !== undefined) return false
@@ -68,7 +65,7 @@ const isZeroValue = (v: unknown, f: MField, symbols: SymbolTable): boolean => {
   return false
 }
 
-/** An option value that equals an absent one: an empty repeated or map field, or an implicit-presence zero (C-14). */
+/** An option value that equals an absent one: an empty repeated or map field, or an implicit-presence zero. */
 export const isAbsentValue = (v: unknown, f: MField, def: MMessage, symbols: SymbolTable): boolean => {
   if (f.repeated || f.map) return Array.isArray(v) ? v.length === 0 : isPlainObject(v) && Object.keys(v).length === 0
   return implicitPresence(f, def) && isZeroValue(v, f, symbols)

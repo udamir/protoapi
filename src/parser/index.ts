@@ -18,8 +18,7 @@ export { parseConstant, parseTextprotoMessage }
 
 export interface ParseProtoResult {
   /**
-   * The file's statements. With a syntax error: the complete top-level statements that end before it (a partial
-   * AST; the builders still take no declarations from such a file, design EX-DIAG-3).
+   * The file's statements. With a syntax error: the complete top-level statements that end before it (a partial AST; the builders still take no declarations from such a file).
    */
   ast: ast.Proto
   /**
@@ -34,9 +33,7 @@ export interface ParseProtoResult {
 }
 
 /**
- * Parses `.proto` source text (design §4.3, validation decision 14). `path` names the file in the issues (default
- * `"input.proto"`); columns use buf's tab stop of 4, like the builders' default `tabWidth`. Never throws on bad
- * input; throws a TypeError when `text` is not a string.
+ * Parses `.proto` source text. `path` names the file in the issues (default `"input.proto"`); columns use buf's tab stop of 4, like the builders' default `tabWidth`. Never throws on bad input; throws a TypeError when `text` is not a string.
  */
 export function parseProto(text: string, path = "input.proto"): ParseProtoResult {
   if (typeof text !== "string" || typeof path !== "string") throw new TypeError("parseProto: text and path are strings")

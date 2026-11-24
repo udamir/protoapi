@@ -89,8 +89,7 @@ export const unescapeC = (text: string): Uint8Array => {
   return new Uint8Array(out)
 }
 
-/** Decode the source text of one or more adjacent protobuf string literals (`"a" 'b'`) to bytes. Escapes: \a \b \f
- *  \n \r \t \v \\ \' \" \?, octal \NNN, hex \xHH, \uXXXX, \UXXXXXXXX (UTF-8 encoded). */
+/** Decode the source text of one or more adjacent protobuf string literals (`"a" 'b'`), as the parser accepted it, to bytes. Escapes: \a \b \f \n \r \t \v \\ \' \" \?, octal \NNN, hex \xHH, \uXXXX, \UXXXXXXXX (UTF-8 encoded). */
 export const decodeStringLiteralBytes = (text: string): Uint8Array => {
   const out: number[] = []
   let i = 0
@@ -125,9 +124,10 @@ export const decodeStringLiteralBytes = (text: string): Uint8Array => {
         out.push(Number.parseInt(s || "0", 16) & 255)
       } else if (n === "u" || n === "U") {
         const len = n === "u" ? 4 : 8
-        const hex = text.slice(i, i + len)
+        const cp = Number.parseInt(text.slice(i, i + len), 16)
         i += len
-        pushUtf8(String.fromCodePoint(Number.parseInt(hex, 16)))
+        // the parser rejects surrogate and out-of-range escapes (buf): only hand-written text reaches the U+FFFD
+        pushUtf8(cp >= 0xd800 && (cp <= 0xdfff || cp > 0x10ffff) ? "\u{fffd}" : String.fromCodePoint(cp))
       } else if (n !== undefined) pushUtf8(n)
     }
     i++ // closing quote

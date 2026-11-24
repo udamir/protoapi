@@ -1,13 +1,10 @@
-// Canonical values (design §3.6, D7): 64-bit integers as decimal strings, non-finite floats as "Infinity" /
-// "-Infinity" / "NaN", bytes as standard padded base64, enums as names.
+// Canonical values (spec §3.6): 64-bit integers as decimal strings, non-finite floats as "Infinity" / "-Infinity" / "NaN", bytes as standard padded base64, enums as names.
 
 import type { ProtoScalar } from "../types.ts"
 import { INT64_KINDS } from "./scalars.ts"
 
 /**
- * Canonical form of a float / double value: finite numbers as JSON numbers; `"Infinity"`, `"-Infinity"`, `"NaN"`
- * (D7) and `"-0"` (negative zero, which JSON cannot carry: `JSON.stringify(-0)` is `0`; validation F-2) as strings.
- * A document never holds `null` or a non-finite number.
+ * Canonical form of a float / double value (spec §3.6): finite numbers as JSON numbers; `"Infinity"`, `"-Infinity"`, `"NaN"` and `"-0"` (negative zero, which JSON cannot carry: `JSON.stringify(-0)` is `0`) as strings. A document never holds `null` or a non-finite number.
  */
 export const canonFloat = (v: number): number | string => {
   if (Number.isNaN(v)) return "NaN"
@@ -18,9 +15,7 @@ export const canonFloat = (v: number): number | string => {
 }
 
 /**
- * The shortest decimal that rounds to the same float32 as `v` (C-5, IN-5c): `float` values are narrowed to 32 bits
- * as protoc stores them (`16777217` -> `16777216`, `1e-46` -> `0`, `1e39` -> Infinity); buf writes them widened to
- * double (`0.1` -> `0.10000000149011612`), both producers write `0.1`. The sign of zero is kept.
+ * The shortest decimal that rounds to the same float32 as `v` (spec §3.6): `float` values are narrowed to 32 bits as protoc stores them (`16777217` -> `16777216`, `1e-46` -> `0`, `1e39` -> Infinity); buf writes them widened to double (`0.1` -> `0.10000000149011612`), both producers write `0.1`. The sign of zero is kept.
  */
 const shortestFloat32 = (v: number): number => {
   if (!Number.isFinite(v)) return v

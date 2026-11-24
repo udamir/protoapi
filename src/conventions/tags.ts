@@ -71,7 +71,7 @@ const VALUE_TAGS = new Set<TagName>([
   "maxLength",
 ])
 
-/** Value keywords: read back at `items` / `additionalProperties` for repeated and map fields (decision 5). */
+/** Value keywords: read back at `items` / `additionalProperties` for repeated and map fields (spec §3.2 Field). */
 export const VALUE_KEYWORDS = new Set<string>([...VALUE_TAGS, "const"])
 
 // ---- tag names --------------------------------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ export const VALUE_KEYWORDS = new Set<string>([...VALUE_TAGS, "const"])
 interface TagTable {
   /** lower-cased tag name -> tag */
   names: Map<string, TagName>
-  /** renames that took another tag's name (A-14) */
+  /** renames that took another tag's name */
   collisions: string[]
 }
 
@@ -116,7 +116,7 @@ const buildTagTable = (tags: BuildOptions["tags"]): TagTable => {
   return { names, collisions }
 }
 
-/** The `BuildOptions.tags` renames that collide with another tag's name (one `invalid-tag` issue each, A-14). */
+/** The `BuildOptions.tags` renames that collide with another tag's name (one `invalid-tag` issue each). */
 export const tagCollisions = (tags: BuildOptions["tags"]): string[] => (tags ? tagTable(tags).collisions : [])
 
 /** Tag name -> spelling the builder recognises with the same `tags` option, or undefined when it is disabled. */
@@ -132,7 +132,7 @@ export const tagSpelling = (tags: PrintOptions["tags"]): TagSpelling | undefined
     const r = map[t]
     if (r === false) return undefined
     if (typeof r === "string") return r.replace(/^@/, "")
-    // a default name another tag was renamed to now means that tag (A-14)
+    // a default name another tag was renamed to now means that tag
     const name = TAG_ALIASES[t][0]
     return renamed.has(name.toLowerCase()) ? undefined : name
   }
@@ -140,7 +140,7 @@ export const tagSpelling = (tags: PrintOptions["tags"]): TagSpelling | undefined
 
 // ---- tag values -----------------------------------------------------------------------------------------------------
 
-/** A JSON value without `null` or non-finite numbers (a document never holds them, D7). */
+/** A JSON value without `null` or non-finite numbers (a document never holds them, spec §3.6). */
 const jsonSafe = (v: unknown): boolean => {
   if (v === null) return false
   if (typeof v === "number") return Number.isFinite(v) && !Object.is(v, -0)
@@ -160,7 +160,7 @@ export const jsonish = (v: string): unknown => {
   }
 }
 
-/** `a, "b,c", 'd'` -> `["a", "b,c", "d"]`: commas inside quotes do not split, quotes are removed (A-14). */
+/** `a, "b,c", 'd'` -> `["a", "b,c", "d"]`: commas inside quotes do not split, quotes are removed. */
 const splitList = (v: string): string[] => {
   const parts: string[] = []
   let cur = ""
@@ -199,9 +199,7 @@ const splitList = (v: string): string[] => {
 }
 
 /**
- * `@Enum` items in the canonical form of the field type (decision 11): strings as written; numbers and enum values as
- * protobuf constants, canonical like option values (64-bit integers as decimal strings, `float` narrowed, an enum
- * number named by its value when the enum has one). Returns the reason when an item does not fit.
+ * `@Enum` items in the canonical form of the field type (spec §3.6): strings as written; numbers and enum values as protobuf constants, canonical like option values (64-bit integers as decimal strings, `float` narrowed, an enum number named by its value when the enum has one). Returns the reason when an item does not fit.
  */
 const enumTagValues = (items: string[], slot: Slot): unknown[] | string => {
   if (slot.scalar === "string") return items
@@ -284,7 +282,7 @@ interface TagValue {
   deprecate: () => void
 }
 
-/** boolean tags: no value, `true` or `false` (A-14) */
+/** boolean tags: no value, `true` or `false` */
 const flag = (t: TagValue): boolean | undefined => {
   if (t.value === "" || t.value === "true") return true
   if (t.value === "false") return false
@@ -307,7 +305,7 @@ const TAG_PARSERS: Record<TagKind, (t: TagValue) => void> = {
     if (flag(t)) t.push(t.keyword, true)
   },
   bound: (t) => {
-    // A-1 / A-6: decimal numbers only; on 64-bit fields decimal integer digits, kept exact as a string
+    // decimal numbers only; on 64-bit fields decimal integer digits, kept exact as a string
     if (t.slot?.scalar && INT64_KINDS.has(t.slot.scalar)) {
       if (!DIGITS.test(t.value)) t.bad("decimal integer digits are expected on a 64-bit field")
       else t.push(t.keyword, BigInt(t.value).toString())
@@ -322,13 +320,13 @@ const TAG_PARSERS: Record<TagKind, (t: TagValue) => void> = {
     else t.push(t.keyword, Number(t.value))
   },
   itemCount: (t) => {
-    // A-8: on a map they count entries (decision 4); on a singular field they do not apply
+    // on a map they count entries; on a singular field they do not apply
     if (!isCount(t.value)) t.bad("a non-negative integer is expected")
     else if (t.shape?.map) t.push(ENTRY_COUNT[t.tag] as string, Number(t.value))
     else if (t.shape?.repeated) t.push(t.keyword, Number(t.value))
     else t.bad("applies to repeated and map fields only")
   },
-  // `@Title` is a candidate like the option sources, so openapiv2 titles win (A-3, D13); A-14: not empty
+  // `@Title` is a candidate like the option sources, so openapiv2 titles win (spec §3.8 precedence); not empty
   text: (t) => {
     if (t.value === "") t.bad(TEXT_EXPECTED[t.tag] as string)
     else t.push(t.keyword, t.value)
@@ -339,7 +337,7 @@ const TAG_PARSERS: Record<TagKind, (t: TagValue) => void> = {
     else t.push(t.keyword, t.value)
   },
   enumList: (t) => {
-    // decision 11: string, numeric and enum fields (protovalidate `in` printed without its import)
+    // string, numeric and enum fields (protovalidate `in` printed without its import)
     const items = t.value === "" ? [] : splitList(t.value)
     const slot = t.slot
     if (!slot?.enumDef && !(slot?.scalar && (slot.scalar === "string" || NUMERIC_RULES.has(slot.scalar))))

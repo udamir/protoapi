@@ -200,6 +200,75 @@ describe("PB-5 descriptor side of C-11 (option sets compiled against other defin
     expect(issuesOf(d)).toEqual(["unknown-option @ #/components/messages/v.M/options/v.an"])
   })
 
+  test("PB-5.51: a ProtoJSON Timestamp is RFC 3339; another date form is not read as one (kept as written)", () => {
+    const values = [
+      "2024-01-01T00:00:00.5+01:00",
+      "0001-01-01T00:00:00Z",
+      "2024-01-01",
+      "2024-01-01T00:00:00",
+      "Jan 1 2024",
+    ]
+    const set = {
+      file: [
+        {
+          name: "a.proto",
+          package: "v",
+          dependency: ["google/protobuf/timestamp.proto", "google/protobuf/descriptor.proto"],
+          syntax: "proto3",
+          messageType: [{ name: "M", options: { "[v.ts]": values } }],
+          extension: [
+            {
+              name: "ts",
+              number: 50001,
+              label: "LABEL_REPEATED",
+              type: "TYPE_MESSAGE",
+              typeName: ".google.protobuf.Timestamp",
+              extendee: ".google.protobuf.MessageOptions",
+              jsonName: "ts",
+            },
+          ],
+        },
+      ],
+    }
+    const d = buildFromDescriptorSet(set)
+    expect(d.document.components?.messages?.["v.M"]?.options).toEqual({
+      "v.ts": [{ seconds: "1704063600", nanos: 500000000 }, { seconds: "-62135596800" }, ...values.slice(2)],
+    })
+  })
+
+  test("PB-5.52: an Any with a Timestamp or Duration that has no ProtoJSON form keeps the payload's fields", () => {
+    // protobuf's ProtoJSON limits Timestamp to 0001-01-01..9999-12-31 with nanos 0..999999999, Duration to ±315576000000 s with nanos of its sign (buf accepts the text; only its JSON image fails)
+    const any = (t: string, body: string) =>
+      `  option (an) = { [type.googleapis.com/google.protobuf.${t}] { ${body} } };\n`
+    const r = buildFromProto({
+      "a.proto": `syntax = "proto3";\npackage v;\nimport "google/protobuf/any.proto";\nimport "google/protobuf/descriptor.proto";\nimport "google/protobuf/duration.proto";\nimport "google/protobuf/timestamp.proto";\nextend google.protobuf.MessageOptions { repeated google.protobuf.Any an = 50001; }\nmessage M {\n${[
+        any("Timestamp", "seconds: 253402300799 nanos: 999999999"),
+        any("Timestamp", "seconds: 253402300800"),
+        any("Timestamp", "seconds: -62135596801"),
+        any("Timestamp", "seconds: 100000000000000"),
+        any("Timestamp", "seconds: 1 nanos: -1"),
+        any("Duration", "seconds: -315576000000"),
+        any("Duration", "seconds: 315576000001"),
+        any("Duration", "seconds: 1 nanos: -1"),
+      ].join("")}}\n`,
+    })
+    expect(r.issues).toEqual([])
+    const T = "type.googleapis.com/google.protobuf.Timestamp"
+    const D = "type.googleapis.com/google.protobuf.Duration"
+    expect(r.document.components?.messages?.["v.M"]?.options).toEqual({
+      "v.an": [
+        { "@type": T, value: "9999-12-31T23:59:59.999999999Z" },
+        { "@type": T, seconds: "253402300800" },
+        { "@type": T, seconds: "-62135596801" },
+        { "@type": T, seconds: "100000000000000" },
+        { "@type": T, seconds: "1", nanos: -1 },
+        { "@type": D, value: "-315576000000s" },
+        { "@type": D, seconds: "315576000001" },
+        { "@type": D, seconds: "1", nanos: -1 },
+      ],
+    })
+  })
+
   test('PB-5.46: F-2: a descriptor that carries a negative zero option value (ProtoJSON -0) gives "-0"', () => {
     const set = {
       file: [

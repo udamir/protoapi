@@ -1,6 +1,6 @@
 /**
  * Origin: pbkit 0.0.72, `core/parser/proto.{js,d.ts}` (https://github.com/pbkit/pbkit),
- * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0 (see ./LICENSE-MIT, ./LICENSE-APACHE).
+ * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0, used here under MIT (see ./LICENSE-MIT).
  *
  * Modifications:
  * - strict TypeScript port of the compiled `.js` + `.d.ts`; AST node shapes are kept, and function names except as noted below.
@@ -16,10 +16,8 @@
  *   `reserved` (editions); options on oneof groups; `map` not followed by `<` and `(stream)` are parsed as type names
  *   (protoc accepts the former); a `FullIdent` never ends with a dot (`features.(pb.cpp).x` now yields segments
  *   `features`, `.`, `(pb.cpp)`, `.`, `x`).
- * - `parse` / `parseConstant` never throw: they return `error` (with the offset of the unexpected token) and an
- *   empty AST; `parse` requires the whole input to be consumed (pbkit silently ignored trailing garbage) and turns a
- *   `malformed-field` (pbkit's error recovery) into an error. Non-syntax failures (a stack overflow on nesting deeper
- *   than ~10,000 levels) are reported the same way at the current position.
+ * - `parse` / `parseConstant` never throw: they return `error` (with the offset of the unexpected token) and an empty AST; `parse` requires the whole input to be consumed (pbkit silently ignored trailing garbage). Non-syntax failures (a stack overflow on nesting deeper than ~10,000 levels) are reported the same way at the current position.
+ * - pbkit's error recovery inside a field (`acceptComplexSequence` and the `malformed-field` node) is removed: a field is parsed like every other statement, so the first syntax error is reported, as buf does.
  * - split: the shared token patterns, `keywordPattern` and `acceptKeyword` moved to lexer.ts and the comment attachment (`sweepComments`, `takeUpcomingComments`, `acceptTrailingComments`, `skipWsAndComments`) to comments.ts. The six `expectXxxBody` functions are one `expectBlock`; `acceptSyntax` / `acceptEdition` share `acceptQuotedValueStatement` and `acceptGroup` / `acceptOneofGroup` share `acceptGroupRest`; the signed literals are built with `signed` (combinators.ts); raw character codes are named constants (lexer.ts).
  *
  * KNOWN_DEVIATIONS (comment attachment). The rules implemented are buf 1.75's (protocompile experimental/fdp `commentTracker`, read from the revision buf 1.75.0 is built with, v0.14.2-0.20261020145055-56248e843b50), with buf 1.75.0 as the executable oracle: every leading / trailing / detached group of the bundled files, of every test fixture with a buf image and of a differential fuzz (scripts/comment-fuzz.ts; 2,000 random files, about 124,000 declarations, no layout excluded) equals buf's SourceCodeInfo. protoc (tokenizer.cc `NextWithComments`, parser.cc `TryConsumeEndOfDeclaration`) attaches differently in rare layouts: a block comment after a declaration's `;` or a block's `}` followed by a newline, or between `{` and `}` on one line; a block comment followed by a `//` comment on the declaration's line; a block comment that ends on the line of the next token; a group after a same-line trailing comment followed by a blank line; comments after the last token of the file; and which groups are detached around such block comments.
@@ -45,7 +43,6 @@ import {
   keywordPattern,
   OPEN_BRACE,
   OPEN_BRACKET,
-  skipTrivia,
   strLitPattern,
 } from "./lexer.ts"
 import {
@@ -57,7 +54,6 @@ import {
   eof,
   namePattern,
   ParserSyntaxError,
-  TokenSyntaxError,
 } from "./scanner.ts"
 import { acceptTextprotoStatements } from "./textproto.ts"
 
@@ -86,8 +82,6 @@ export interface ParseResult<T = ast.Proto> {
 export interface ProtoParser extends RecursiveDescentParser<Comment> {
   /** Leading / detached comment groups swept after the last end of declaration, for the next statement. */
   upcoming: PendingComments | undefined
-  /** First error behind a `malformed-field` node. */
-  malformed: ParserSyntaxError | undefined
 }
 
 type StatementFn<T> = (
@@ -99,7 +93,6 @@ type StatementFn<T> = (
 function createProtoParser(text: string): ProtoParser {
   const parser = createRecursiveDescentParser<Comment>(text) as ProtoParser
   parser.upcoming = undefined
-  parser.malformed = undefined
   return parser
 }
 
@@ -123,12 +116,11 @@ export function parse(text: string): ParseResult {
     const initial = sweepComments(parser, true)
     parser.upcoming = { leading: initial.leading, detached: [...initial.trailing, ...initial.detached] }
     acceptStatements(parser, topLevelStatementFns, statements)
-    if (parser.malformed) throw parser.malformed
     parser.expect(eof, topLevelKeywords)
     return { ast: { statements }, parser, comments: parser.comments }
   } catch (err) {
     const error = toParseError(parser, err)
-    // the complete top-level statements that end before the error (validation text#14)
+    // the complete top-level statements that end before the error (the file keeps its syntax and package)
     const partial = statements.filter((st) => st.end <= error.offset)
     return { ast: { statements: [] }, parser, comments: parser.comments, error, partial }
   }
@@ -148,10 +140,7 @@ export function parseConstant(text: string): ParseResult<ast.Constant | undefine
 }
 
 function toParseError(parser: ProtoParser, err: unknown): ParseError {
-  let syntaxError = err instanceof ParserSyntaxError ? err : undefined
-  if (parser.malformed && (!syntaxError || parser.malformed.offset <= syntaxError.offset)) {
-    syntaxError = parser.malformed
-  }
+  const syntaxError = err instanceof ParserSyntaxError ? err : undefined
   if (syntaxError) {
     const error: ParseError = {
       message: syntaxError.message,
@@ -163,41 +152,6 @@ function toParseError(parser: ProtoParser, err: unknown): ParseError {
   }
   // not a syntax error (e.g. stack overflow on absurdly deep nesting): report at the current position
   return { message: err instanceof Error ? err.message : String(err), offset: parser.loc }
-}
-
-type ComplexSequence<T> = { [K in keyof T]-?: [K, (parser: ProtoParser) => T[K]] }[keyof T][]
-
-function acceptComplexSequence<T extends object>(
-  parser: ProtoParser,
-  expectFnSeq: ComplexSequence<T>,
-  escapePattern?: Pattern,
-): { partial: boolean; result: Partial<T>; error?: ParserSyntaxError } {
-  const result: Partial<T> = {}
-  let partial = false
-  let hasNewline = false
-  let error: ParserSyntaxError | undefined
-  let recoveryPoint: { loc: number; result: Partial<T> } | undefined
-  for (const [key, expectFn] of expectFnSeq) {
-    const loc = parser.loc
-    hasNewline = skipTrivia(parser)
-    if (hasNewline && !recoveryPoint) {
-      recoveryPoint = { loc: parser.loc, result: { ...result } }
-    }
-    try {
-      result[key] = expectFn(parser)
-    } catch (err) {
-      if (!(err instanceof ParserSyntaxError) || err instanceof TokenSyntaxError) throw err
-      error ??= err
-      parser.loc = loc
-      partial = true
-      if (escapePattern && parser.try(escapePattern)) break
-    }
-  }
-  if (partial && recoveryPoint) {
-    parser.loc = recoveryPoint.loc
-    return { partial, result: recoveryPoint.result, error }
-  }
-  return { partial, result, error }
 }
 
 function acceptStatements<T>(parser: ProtoParser, acceptStatementFns: StatementFn<T>[], statements: T[] = []): T[] {
@@ -256,7 +210,6 @@ const floatLitPattern = namePattern(
   "float literal",
 )
 const boolLitPattern = namePattern(/(?:true|false)\b/y, "boolean literal")
-const messageBodyStatementKeywordPattern = /(?:enum|message|extend|extensions|group|option|oneof|map|reserved)\b/y
 const syntaxPattern = keywordPattern("syntax")
 const editionPattern = keywordPattern("edition")
 const importPattern = keywordPattern("import")
@@ -753,26 +706,17 @@ function acceptEnum(
   })
 }
 
-interface FieldRest {
-  fieldName: Token
-  eq: Token
-  fieldNumber: ast.IntLit
-  fieldOptions: ast.FieldOptions | undefined
-  semi: ast.Semi
-}
-
 function acceptField(
   parser: ProtoParser,
   leadingComments: ast.CommentGroup[],
   leadingDetachedComments: ast.CommentGroup[],
-): ast.Field | ast.MalformedField | undefined {
+): ast.Field | undefined {
   const loc = parser.loc
   let fieldLabel = acceptKeyword(parser, fieldLabelPattern)
   skipWsAndComments(parser)
   let fieldType = acceptType(parser)
   if (fieldLabel && fieldType && parser.input.charCodeAt(parser.loc) === EQUALS) {
-    // `optional o = 9;`: the "label" is the type name and the "type" the field name (buf accepts this in proto3 and
-    // editions, validation text#13)
+    // `optional o = 9;`: the "label" is the type name and the "type" the field name (buf accepts this in proto3 and editions)
     parser.loc = loc
     fieldLabel = undefined
     fieldType = acceptType(parser)
@@ -781,27 +725,27 @@ function acceptField(
     parser.loc = loc
     return
   }
-  const rest = acceptComplexSequence<FieldRest>(
-    parser,
-    [
-      ["fieldName", (parser) => parser.expect(identPattern)],
-      ["eq", (parser) => parser.expect("=")],
-      ["fieldNumber", expectIntLit],
-      ["fieldOptions", acceptFieldOptions],
-      ["semi", expectSemi],
-    ],
-    messageBodyStatementKeywordPattern,
-  )
-  const trailingComments = rest.result.semi ? acceptTrailingComments(parser) : []
-  if (rest.partial && !parser.malformed) parser.malformed = rest.error
-  const node = statement(
-    leadingComments,
-    leadingDetachedComments,
-    trailingComments,
-    [fieldLabel, fieldType, Object.values(rest.result) as (Span | undefined)[]],
-    { type: rest.partial ? "malformed-field" : "field", fieldLabel, fieldType, ...rest.result },
-  )
-  return node as ast.Field | ast.MalformedField
+  skipWsAndComments(parser)
+  const fieldName = parser.expect(identPattern)
+  skipWsAndComments(parser)
+  const eq = parser.expect("=")
+  skipWsAndComments(parser)
+  const fieldNumber = expectIntLit(parser)
+  skipWsAndComments(parser)
+  const fieldOptions = acceptFieldOptions(parser)
+  skipWsAndComments(parser)
+  const semi = expectSemi(parser)
+  const trailingComments = acceptTrailingComments(parser)
+  return statement(leadingComments, leadingDetachedComments, trailingComments, [fieldLabel, fieldType, semi], {
+    type: "field",
+    fieldLabel,
+    fieldType,
+    fieldName,
+    eq,
+    fieldNumber,
+    fieldOptions,
+    semi,
+  })
 }
 
 function acceptOneofField(
@@ -1062,7 +1006,7 @@ interface GroupRest {
 }
 
 /**
- * `group Name = N [options] { ... }` at the current position (after the label, if any). Without the `group` keyword, or without the `{` (`optional group g = 1;` and `group g = 1;` are fields whose type is named `group`, validation text#13), the position is reset to `loc`.
+ * `group Name = N [options] { ... }` at the current position (after the label, if any). Without the `group` keyword, or without the `{` (`optional group g = 1;` and `group g = 1;` are fields whose type is named `group`, as in buf), the position is reset to `loc`.
  */
 function acceptGroupRest(parser: ProtoParser, loc: number): GroupRest | undefined {
   const keyword = acceptKeyword(parser, groupPattern)
@@ -1133,15 +1077,13 @@ function acceptOneofGroup(
 const typeKeywordPattern = keywordPattern("message", "enum", "extend", "extensions", "oneof", "reserved")
 
 /**
- * A label-less field whose type name is a statement keyword (`message message = 5;`, `enum e = 7;`,
- * `reserved r = 2;`, `message.Inner x = 1;`): buf accepts these in proto3 and editions files (validation text#13).
- * Recognised by looking ahead for `Type Name =` before the keyword's own statement is tried.
+ * A label-less field whose type name is a statement keyword (`message message = 5;`, `enum e = 7;`, `reserved r = 2;`, `message.Inner x = 1;`): buf accepts these in proto3 and editions files. Recognised by looking ahead for `Type Name =` before the keyword's own statement is tried.
  */
 function acceptKeywordTypeField(
   parser: ProtoParser,
   leadingComments: ast.CommentGroup[],
   leadingDetachedComments: ast.CommentGroup[],
-): ast.Field | ast.MalformedField | undefined {
+): ast.Field | undefined {
   const loc = parser.loc
   if (!acceptKeyword(parser, typeKeywordPattern)) return
   parser.loc = loc

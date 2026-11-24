@@ -3,7 +3,7 @@
 
 import type { BuildIssue } from "../types.ts"
 import type { MFile } from "../model/index.ts"
-import { KNOWN_EDITIONS, editionNameOfNumber } from "../common/editions.ts"
+import { editionNameOfNumber, knownSyntaxOfEdition } from "../common/editions.ts"
 
 /** The first @bufbuild/protobuf release that supports edition 2024 (the peer dependency minimum). */
 export const BUFBUILD_MINIMUM = "2.8.0"
@@ -40,7 +40,7 @@ export interface UnknownField {
 export interface WithUnknown {
   $unknown?: UnknownField[]
 }
-interface WithOptions extends WithUnknown {
+export interface WithOptions extends WithUnknown {
   options?: WithUnknown
 }
 export interface FieldProto extends WithOptions {}
@@ -72,6 +72,6 @@ export interface FileProto extends WithOptions {
 /** An edition number as written in issue messages. */
 export const editionLabel = (n: number): string => {
   const name = editionNameOfNumber(n)
-  const known = KNOWN_EDITIONS[name]
+  const known = knownSyntaxOfEdition(name)
   return known ? `edition ${known}` : /^\d+$/.test(name) ? `edition ${name}` : name
 }

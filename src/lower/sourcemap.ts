@@ -5,6 +5,7 @@ import type { Locs, MComments, MExtensionRange, MMessage, MOptionHolder } from "
 import type { AnnotationResult, CommentLine } from "../conventions/types.ts"
 import { OPENAPIV2_OPERATION, OPENAPIV2_SCHEMA } from "../conventions/keys.ts"
 import { ptr } from "../paths.ts"
+import { getKey } from "../common/objects.ts"
 
 /** An element with options, a location and comments: what `mapElement` and `mapAnnotations` write entries for. */
 export type MappedElement = MOptionHolder & { locs: Locs; comments: MComments }
@@ -22,10 +23,7 @@ export interface ElementEntries {
 }
 
 /**
- * Location of a comment line of an element (validation L-3: keyword entries from comment tags point at the tag line),
- * computed from the element's span and its leading comment text alone, so that both producers give the same span:
- * the `//` lines of a leading comment end on the line above the element and start at its column. Block comments
- * (text without a final newline) and trailing comments give no entry.
+ * Location of a comment line of an element (spec §5: keyword entries from comment tags point at the tag line), computed from the element's span and its leading comment text alone, so that both producers give the same span: the `//` lines of a leading comment end on the line above the element and start at its column. Block comments (text without a final newline) and trailing comments give no entry.
  */
 export const commentLineLoc = (
   element: Location | undefined,
@@ -84,21 +82,20 @@ export class SourceMapWriter {
   mapOptions(pointer: string, holder: MOptionHolder, written: object | undefined) {
     if (!this.enabled || !written) return
     for (const key of Object.keys(written)) {
-      const loc = holder.optionLocs[key]
+      const loc = getKey(holder.optionLocs, key)
       if (loc) this.map(`${pointer}/options/${ptr(key)}`, loc)
     }
   }
 
   /**
-   * Keyword-level entries of the annotation layer (validation L-3): a keyword lifted from an option points at the
-   * option statement, one from a comment tag or an AIP prefix at the comment line; `deprecation` likewise.
+   * Keyword-level entries of the annotation layer (spec §5): a keyword lifted from an option points at the option statement, one from a comment tag or an AIP prefix at the comment line; `deprecation` likewise.
    */
   mapAnnotations(pointer: string, holder: MappedElement, ann: AnnotationResult, outer: MOptionHolder = holder) {
     if (!this.enabled) return
     const line = (c: CommentLine | undefined) => commentLineLoc(holder.locs[""], holder.comments.leading, c)
     for (const o of ann.origins) {
       const base = o.target ? `${pointer}/${o.target}` : pointer
-      // `json_schema.required` of the message (S1): the message's option statement
+      // `json_schema.required` of the message: the message's option statement
       const at = o.option === OPENAPIV2_SCHEMA ? outer : holder
       this.map(`${base}/${ptr(o.keyword)}`, o.option ? at.optionLocs[o.option] : line(o.comment))
     }
@@ -133,8 +130,7 @@ export class SourceMapWriter {
     this.mapOptions(pointer, el, out.options as object | undefined)
   }
 
-  /** Reserved numbers and names, one entry per document index (validation L-2): the written range that starts the
-   *  merged interval, the first occurrence of the name. */
+  /** Reserved numbers and names, one entry per document index (spec §5): the written range that starts the merged interval, the first occurrence of the name. */
   mapReserved(
     pointer: string,
     el: { reservedRanges: [number, number][]; reservedNames: string[]; reservedLocs?: MMessage["reservedLocs"] },
@@ -150,7 +146,7 @@ export class SourceMapWriter {
     )
   }
 
-  /** Extension ranges, one entry per document interval (validation L-2): the written range that starts it. */
+  /** Extension ranges, one entry per document interval (spec §5): the written range that starts it. */
   mapExtensionRanges(pointer: string, ranges: MExtensionRange[], intervals: [number, number][]) {
     if (!this.enabled) return
     const written = ranges.map((r): [number, number] => [r.start, r.end])

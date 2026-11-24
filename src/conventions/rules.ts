@@ -2,15 +2,15 @@
 
 import type { AnnotationSource } from "../types.ts"
 import type { MEnum } from "../model/index.ts"
-import { isPlainObject } from "../common/objects.ts"
+import { getKey, isPlainObject } from "../common/objects.ts"
 import { BUF_VALIDATE_FIELD, PGV_RULES, asNumber, putRest } from "./keys.ts"
 import type { AnnotationResult, Candidate, FieldShape, Slot, Target } from "./types.ts"
 
 type Obj = Record<string, unknown>
 
-/** decimal number literal of a bound (no hexadecimal, no `Infinity`, A-1) */
+/** decimal number literal of a bound (no hexadecimal, no `Infinity`) */
 export const DECIMAL = /^-?(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?$/
-/** decimal integer digits of a 64-bit bound (A-6) */
+/** decimal integer digits of a 64-bit bound */
 export const DIGITS = /^-?\d+$/
 
 /** `a > b` for canonical bound values (numbers, 64-bit decimal strings, `"Infinity"` strings). */
@@ -19,7 +19,7 @@ export const greater = (a: unknown, b: unknown): boolean => {
   return Number(a) > Number(b)
 }
 
-/** A lower bound above the upper bound of a document position: the protovalidate / PGV lift keeps such bounds raw (A-9, D-D). */
+/** A lower bound above the upper bound of a document position: the protovalidate / PGV lift keeps such bounds raw. */
 export const outsideRange = (node: Obj): boolean => {
   const lower = node.exclusiveMinimum ?? node.minimum
   const upper = node.exclusiveMaximum ?? node.maximum
@@ -101,7 +101,7 @@ export interface RuleDialect {
   source: AnnotationSource
   /** PGV: a `message` family (`message.required`) that applies to every message field, wrappers included */
   messageFamily: boolean
-  /** protovalidate: `<family>.example` values feed `examples` (A-13) */
+  /** protovalidate: `<family>.example` values feed `examples` */
   examples: boolean
 }
 
@@ -113,7 +113,7 @@ export const PROTOVALIDATE: RuleDialect = {
 }
 export const PGV: RuleDialect = { key: PGV_RULES, source: "validate.rules", messageFamily: true, examples: false }
 
-/** The dialects in precedence order (D13). */
+/** The dialects in precedence order (spec §3.8). */
 export const RULE_DIALECTS: readonly RuleDialect[] = [PROTOVALIDATE, PGV]
 
 // ---- rule fields ----------------------------------------------------------------------------------------------------
@@ -218,7 +218,7 @@ const expectedFamilies = (
   if (slot.scalar) return [slot.scalar, ...(slot.wrapper ? pgvMessage : [])]
   if (slot.enumDef) return ["enum"]
   if (slot.message && slot.messageFqn) {
-    const w = WKT_FAMILY[slot.messageFqn]
+    const w = getKey(WKT_FAMILY, slot.messageFqn)
     return w ? [w, ...pgvMessage] : pgvMessage
   }
   return undefined
@@ -265,7 +265,7 @@ const liftFields = (r: Obj, fields: readonly RuleField[], push: Push) => {
   }
 }
 
-/** A-13: protovalidate `<family>.example` values feed `examples`. */
+/** protovalidate `<family>.example` values feed `examples`. */
 const liftExamples = (r: Obj, at: RuleLift, map: (v: unknown) => unknown = (v) => v) => {
   if (!at.dialect.examples || !Array.isArray(r.example) || !r.example.length) return
   at.push("examples", r.example.map(map))
@@ -273,8 +273,7 @@ const liftExamples = (r: Obj, at: RuleLift, map: (v: unknown) => unknown = (v) =
 }
 
 const liftNumeric = (r: Obj, at: RuleLift) => {
-  // A-9 / D-D: a lower bound above the upper bound is protovalidate's / PGV's exclusive ("outside") range; the
-  // bounds stay raw under options and no bound keyword is written
+  // a lower bound above the upper bound is protovalidate's / PGV's exclusive ("outside") range; the bounds stay raw under options and no bound keyword is written
   const lower = "gt" in r ? r.gt : r.gte
   const upper = "lt" in r ? r.lt : r.lte
   const outside = lower !== undefined && upper !== undefined && greater(lower, upper)
@@ -371,7 +370,7 @@ const liftRules = (
       continue
     }
     if (RULE_FAMILIES.has(kind) && isPlainObject(raw)) {
-      // A-11: a rule family that does not match the field type stays raw (protovalidate: "mismatched rule type")
+      // a rule family that does not match the field type stays raw (protovalidate: "mismatched rule type")
       const expected = expectedFamilies(target, slot, shape, dialect)
       if (expected && !expected.includes(kind)) {
         mismatch(kind, expected, target)

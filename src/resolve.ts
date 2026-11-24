@@ -1,9 +1,9 @@
-// Linking (design §5.3): resolve type names, extendees and method types against the symbol table, index
-// extensions by extendee. Shared by both front ends (descriptor names are absolute, text names relative).
+// Linking: resolve type names, extendees and method types against the symbol table, index extensions by extendee. Shared by both front ends (descriptor names are absolute, text names relative).
 
 import type { MField, MFile, MMessage, MOptionHolder, MTypeRef } from "./model/index.ts"
 import { type LookupFrom, type LookupResult, type SymbolTable, kindName, unresolvedKey } from "./symbols.ts"
 import { addPending } from "./model/index.ts"
+import { FEATURE_SET, type FeatureDefaults } from "./features.ts"
 
 const kindPhrase = (kind: string) => (kind === "message" || kind === "enum" ? `${kind} type` : kindName(kind as never))
 
@@ -29,12 +29,12 @@ const resolveType = (
   symbols: SymbolTable,
   holder: MOptionHolder,
   sub?: string,
-  /** method request / response types must be messages (D-E: an enum is `unresolved-type`, wrong kind) */
+  /** method request / response types must be messages (an enum is an `unresolved-type`: the wrong kind, spec §4.2); protoc looks them up like extendees, taking the first symbol of any kind (a method of the service included) */
   messageOnly = false,
 ) => {
   if (!t || t.kind !== "named" || t.resolved) return
   const from = { file }
-  const r = symbols.lookup(t.name, scope, "type", from)
+  const r = symbols.lookup(t.name, scope, messageOnly ? "any" : "type", from)
   const found = r.found
   if (found && (found.kind === "message" || found.kind === "enum")) {
     t.resolved = { kind: found.kind, fqn: found.fqn }
@@ -56,7 +56,8 @@ const resolveExtendee = (x: MField, scope: string, file: MFile, symbols: SymbolT
   if (!x.extendee) return
   if (!x.extendee.resolved) {
     const from = { file }
-    const r = symbols.lookup(x.extendee.name, scope, "type", from)
+    // protoc / buf: the first symbol of any kind (a field of the enclosing message included); the wrong kind is an error, not skipped
+    const r = symbols.lookup(x.extendee.name, scope, "any", from)
     if (r.found?.kind === "message") x.extendee.resolved = r.found.fqn
     else {
       x.extendee.unresolvedKey = unresolvedKey(x.extendee.name, file.package)
@@ -71,10 +72,8 @@ const resolveExtendee = (x: MField, scope: string, file: MFile, symbols: SymbolT
 }
 
 const linkMessage = (m: MMessage, file: MFile, symbols: SymbolTable) => {
-  for (const f of m.fields) {
-    resolveType(f.type, m.fqn, file, symbols, f)
-    resolveType(f.map?.value, m.fqn, file, symbols, f)
-  }
+  // a map field's `type` is its entry message, which no source names: only the value type is linked
+  for (const f of m.fields) resolveType(f.map ? f.map.value : f.type, m.fqn, file, symbols, f)
   for (const x of m.extensions) {
     resolveType(x.type, m.fqn, file, symbols, x)
     resolveExtendee(x, m.fqn, file, symbols)
@@ -96,6 +95,14 @@ export const linkFile = (file: MFile, symbols: SymbolTable) => {
   }
 }
 
-export const linkAll = (files: MFile[], symbols: SymbolTable) => {
-  for (const f of files) linkFile(f, symbols)
+/**
+ * Link every file. `featureDefaults` gives the build's edition defaults, read from the typed options of its `google.protobuf.FeatureSet`: the file declaring FeatureSet (descriptor.proto, whose own references do not depend on visibility) is linked first, then the defaults set the symbol visibility (`default_symbol_visibility`, as buf reads it from the build's descriptor.proto) before the other files are linked. Without it the bundled defaults apply.
+ */
+export const linkAll = (files: MFile[], symbols: SymbolTable, featureDefaults?: () => FeatureDefaults) => {
+  const fs = featureDefaults ? symbols.message(FEATURE_SET) : undefined
+  if (featureDefaults && fs) {
+    linkFile(fs.file, symbols)
+    symbols.useFeatureDefaults(featureDefaults())
+  }
+  for (const f of files) if (f !== fs?.file) linkFile(f, symbols)
 }

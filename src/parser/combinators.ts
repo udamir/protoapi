@@ -1,6 +1,6 @@
 /**
  * Origin: pbkit 0.0.72, `core/parser/misc.{js,d.ts}` (https://github.com/pbkit/pbkit),
- * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0 (see ./LICENSE-MIT, ./LICENSE-APACHE).
+ * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0, used here under MIT (see ./LICENSE-MIT).
  *
  * Parser combinators shared by the `.proto` and text-format grammars.
  *

@@ -1,11 +1,12 @@
-// The @bufbuild/protobuf registry of a binary set, built per file from the set plus the bundled definitions
-// (validation decision 16): a file that cannot be loaded loses only its own definitions, and the loss is reported.
+// The @bufbuild/protobuf registry of a binary set, built per file from the set plus the bundled definitions: a file that cannot be loaded loses only its own definitions, and the loss is reported.
 
 import type { MFile } from "../model/index.ts"
 import { SymbolTable } from "../symbols.ts"
 import { linkAll } from "../resolve.ts"
-import { EDITION_NUMBERS, KNOWN_EDITIONS, editionNameOfNumber } from "../common/editions.ts"
+import { OptionsContext } from "../lower/context.ts"
+import { EDITION_NUMBERS, editionNameOfNumber, knownSyntaxOfEdition } from "../common/editions.ts"
 import { ImportClosure } from "../build/closure.ts"
+import { convertFile } from "../frontend/descriptor/convert.ts"
 import { modelToDescriptorJson } from "./descriptor-json.ts"
 import {
   type Any,
@@ -55,7 +56,7 @@ export const buildRegistry = (
     for (const dep of proto.dependency ?? []) visit(dep)
     const edition: number = rawEdition.get(proto) ?? proto.edition
     if (proto.syntax === "editions" && edition > maxEdition && edition !== EDITION_NUMBERS.EDITION_UNSTABLE) {
-      const known = KNOWN_EDITIONS[editionNameOfNumber(edition)] !== undefined
+      const known = knownSyntaxOfEdition(editionNameOfNumber(edition)) !== undefined
       fail(
         name,
         proto,
@@ -87,27 +88,34 @@ export const buildRegistry = (
 /** FileDescriptorProto messages for bundled files the set imports but does not contain (transitively). */
 const bundledProtos = (pb: Any, wkt: Any, files: FileProto[], ctx: BinaryContext): Map<string, FileProto> => {
   const out = new Map<string, FileProto>()
-  const inSet = new Set(files.map((f) => f.name as string))
+  const byName = new Map(files.map((f) => [f.name as string, f]))
   const wanted = new Set<string>()
   const models = new Map<string, MFile>()
-  const deps: string[] = files.flatMap((f) => (f.dependency ?? []) as string[]).filter((d) => !inSet.has(d))
+  const texts = new Map<string, string>()
+  const deps: string[] = files.flatMap((f) => (f.dependency ?? []) as string[]).filter((d) => !byName.has(d))
   if (!deps.length || !wkt.FileDescriptorProtoSchema || typeof pb.fromJson !== "function") return out
   for (const d of deps) wanted.add(d)
-  // the closure of the wanted bundled files (also the ones the set has, so that names resolve)
+  // the closure of the wanted bundled files, with the set's version of a file the set has (so that names resolve, and its descriptor.proto gives the edition defaults)
   const closure = new ImportClosure(deps)
   for (let path = closure.next(); path !== undefined; path = closure.next()) {
-    const text = ctx.bundleText(path)
-    if (text === undefined) continue
-    const model = ctx.bundledFile(path, text)
+    const own = byName.get(path)
+    const text = own ? undefined : ctx.bundleText(path)
+    if (!own && text === undefined) continue
+    const model = own
+      ? convertFile(pb.toJson(wkt.FileDescriptorProtoSchema, own), [])
+      : ctx.bundledFile(path, text as string)
     models.set(path, model)
+    if (text !== undefined) texts.set(path, text)
     for (const imp of model.imports) {
-      if (!inSet.has(imp.path)) wanted.add(imp.path)
+      if (!byName.has(imp.path)) wanted.add(imp.path)
       closure.add(imp.path)
     }
   }
   if (!models.size) return out
   const symbols = new SymbolTable([...models.values()])
-  linkAll([...models.values()], symbols)
+  // the edition defaults of the descriptor.proto among them (`BuildOptions.bundle` may replace it) decide the symbol visibility, as in a build
+  const options = new OptionsContext(symbols, texts)
+  linkAll([...models.values()], symbols, () => options.featureTable())
   for (const path of wanted) {
     const model = models.get(path)
     if (!model) continue

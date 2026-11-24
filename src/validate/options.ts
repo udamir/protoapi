@@ -5,7 +5,7 @@ import type { MField, MFile, MOptionHolder, OptionTree } from "../model/index.ts
 import { OPTIONS_MESSAGE, type OptionsKind } from "../options/kinds.ts"
 import { optionNameSegments } from "../frontend/text/nodes.ts"
 import { ptr } from "../paths.ts"
-import { EDITION_NUMBERS, editionNumber, isEditions } from "../common/editions.ts"
+import { EDITION_NUMBERS, editionNumber, editionNumberOfName, isEditions } from "../common/editions.ts"
 import { parentScope, syntaxName } from "../common/names.ts"
 import { isPlainObject } from "../common/objects.ts"
 import type { ValidateContext } from "./context.ts"
@@ -106,8 +106,8 @@ export class OptionChecks {
   ) {
     if (!info) return
     const edition = editionNumber(file.syntax)
-    const introduced = info.introduced ? EDITION_NUMBERS[info.introduced] : undefined
-    const removed = info.removed ? EDITION_NUMBERS[info.removed] : undefined
+    const introduced = info.introduced ? editionNumberOfName(info.introduced) : undefined
+    const removed = info.removed ? editionNumberOfName(info.removed) : undefined
     if (introduced !== undefined && edition < introduced)
       this.cx.issue(
         "invalid-definition",

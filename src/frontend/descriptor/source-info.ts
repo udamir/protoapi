@@ -87,7 +87,7 @@ export class SourceIndex {
     return this.locations.length === 0
   }
 
-  /** The detached comments of the file header (§3.3, C-12): those of `syntax` / `edition`, else of the location that starts first in the file, preferring one with detached comments. */
+  /** The detached comments of the file header (spec §3.3): those of `syntax` / `edition`, else of the location that starts first in the file, preferring one with detached comments. */
   header(): string[] {
     let first = this.node([FILE.syntax])?.loc ?? this.node([FILE.edition])?.loc
     if (!first) {

@@ -45,13 +45,13 @@ export const liftGoogleApi = (options: Record<string, unknown>, shape: FieldShap
     }
     putRest(options, FIELD_BEHAVIOR, rest)
   }
-  // A-7: field_info.format describes string values only; on other types it stays under options
+  // field_info.format describes string values only; on other types it stays under options
   const fi = options[FIELD_INFO]
   const fiTarget: Target = shape?.repeated ? "items" : ""
   if (
     isPlainObject(fi) &&
     typeof fi.format === "string" &&
-    fi.format in FIELD_INFO_FORMATS &&
+    Object.hasOwn(FIELD_INFO_FORMATS, fi.format) &&
     !shape?.map &&
     slotOf(shape, fiTarget)?.scalar === "string"
   ) {

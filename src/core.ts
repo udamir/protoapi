@@ -1,7 +1,4 @@
-// protoapi/core: the protoapi API without the bundled convention sources (validation decision PK-1). It keeps
-// google/protobuf/descriptor.proto and cpp/java/go_features.proto, so built-in options and `features.*` are typed
-// (design §17 item 4, "registry always included"). Imports of the well-known types, googleapis, protovalidate, PGV
-// and grpc-gateway must come from `sources`, a loader, the `bundle` option or the descriptor set.
+// protoapi/core: the protoapi API without the bundled convention sources. It keeps google/protobuf/descriptor.proto and cpp/java/go_features.proto, so built-in options and `features.*` are always typed. Imports of the well-known types, googleapis, protovalidate, PGV and grpc-gateway must come from `sources`, a loader, the `bundle` option or the descriptor set.
 
 import { type ProtoApi, createProtoApi } from "./api.ts"
 import { coreSources } from "./bundle/core-sources.ts"

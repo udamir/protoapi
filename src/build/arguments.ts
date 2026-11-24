@@ -1,5 +1,4 @@
-// Arguments of the public builders: type checks (validation decision 15: wrong argument types are programming errors
-// and throw a TypeError; bad input content never throws, it gives issues) and the options normalised once, up front.
+// Arguments of the public builders: type checks (wrong argument types are programming errors and throw a TypeError; bad input content never throws, it gives issues) and the options normalised once, up front.
 
 import type { BuildOptions, ImportsMode, ProtoSources } from "../types.ts"
 import { normalizePath } from "../paths.ts"
@@ -16,7 +15,7 @@ export const checkStrings = (fn: string, name: string, v: unknown, allowFalse = 
     fail(fn, name)
 }
 
-/** Option checks: [name, test] (decision 15). */
+/** Option checks: [name, test]; a failed test is a TypeError. */
 const OPTION_CHECKS: [string, (v: unknown) => boolean][] = [
   ["entry", (v) => Array.isArray(v) && v.every((e) => typeof e === "string")],
   ["imports", (v) => ["user", "referenced", "all"].includes(v as string)],
@@ -34,7 +33,7 @@ export const checkOptions = (fn: string, options: unknown) => {
   if (!isPlainObjectNotBytes(options)) fail(fn, "options")
   const o = options as Record<string, unknown>
   for (const [k, ok] of OPTION_CHECKS) if (o[k] !== undefined && !ok(o[k])) fail(fn, `options.${k}`)
-  // decision 15: the deprecated alias may repeat `imports`, never contradict it
+  // the deprecated alias may repeat `imports`, never contradict it
   if (o.imports && o.includeImports !== undefined && (o.includeImports ? "all" : "referenced") !== o.imports)
     throw new TypeError(`${fn}: options.imports conflicts with options.includeImports`)
   if (o.tags !== undefined) checkStrings(fn, "options.tags", o.tags, true)

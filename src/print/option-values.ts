@@ -35,7 +35,7 @@ export const valueText = (oracle: Oracle, v: unknown, t: FType | undefined): str
   return scalarLit(v, t)
 }
 
-/** An `Any` in its ProtoJSON form (`{ "@type": url, … }`) as the expanded text form `{ [url] { … } }` (P-8). */
+/** An `Any` in its ProtoJSON form (`{ "@type": url, … }`) as the expanded text form `{ [url] { … } }`. */
 const anyText = (oracle: Oracle, v: Obj): string => {
   const url = String(v["@type"])
   const fqn = url.slice(url.lastIndexOf("/") + 1)
@@ -54,7 +54,7 @@ export const aggregate = (oracle: Oracle, v: Obj, fqn: string): string => {
   const parts: string[] = []
   for (const [k, x] of Object.entries(v)) {
     const t = fqn ? oracle.field(fqn, k) : undefined
-    const name = k.includes(".") || k.includes("/") ? `[${k}]` : k
+    const name = k.includes("/") || (fqn ? oracle.isExtension(fqn, k) : k.includes(".")) ? `[${k}]` : k
     const single = t ? ({ ...t, repeated: false } as FType) : undefined
     if (Array.isArray(x)) parts.push(`${name}: [${x.map((y) => valueText(oracle, y, single)).join(", ")}]`)
     else if (isPlainObject(x) && !(t && "map" in t && t.map)) parts.push(`${name} ${valueText(oracle, x, single)}`)
@@ -83,7 +83,7 @@ export const optionAssignments = (
     if (key === "visibility" || key === "extension_declarations" || v === undefined || (Array.isArray(v) && !v.length))
       continue
     const t = oracle.field(optFqn, key)
-    const isExt = key.includes(".")
+    const isExt = oracle.isExtension(optFqn, key)
     const name = isExt ? `(${key})` : key
     if (!t && (typeof v === "string" || isPlainObject(v))) {
       // an unknown option: the source text as written, a sub-path (`(unk.sub).x`) from nested keys
@@ -98,8 +98,9 @@ export const optionAssignments = (
       const flat = (prefix: string, obj: Obj, fqn: string) => {
         for (const [fk, fv] of Object.entries(obj)) {
           const ft = oracle.field(fqn, fk)
-          const seg = fk.includes(".") ? `(${fk})` : fk
-          if (fk.includes(".")) imports.need(oracle.extensionFile(fk))
+          const ext = oracle.isExtension(fqn, fk)
+          const seg = ext ? `(${fk})` : fk
+          if (ext) imports.need(oracle.extensionFile(fk))
           if (isPlainObject(fv) && ft?.kind === "message") flat(`${prefix}.${seg}`, fv, ft.fqn)
           else push(`${prefix}.${seg}`, fv, ft)
         }

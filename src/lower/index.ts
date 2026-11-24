@@ -1,4 +1,4 @@
-// Lowering (design §7): model -> ProtoApiDocument + source map + issues. Shared by both producers.
+// Lowering: model -> ProtoApiDocument + source map + issues. Shared by both producers.
 
 import type {
   ProtoApiDocument,
@@ -10,7 +10,8 @@ import type {
 } from "../types.ts"
 import type { Locs, MEnum, MField, MMessage, OptionTree } from "../model/index.ts"
 import { tagCollisions } from "../conventions/tags.ts"
-import { enumPointer, filePointer, messagePointer, parentScope, servicePointer } from "../common/names.ts"
+import { enumPointer, extensionFqn, filePointer, messagePointer, parentScope, servicePointer } from "../common/names.ts"
+import { hasKey, setKey } from "../common/objects.ts"
 import { LowerContext, type LowerInput, type LowerOutput, type OptionsContext } from "./context.ts"
 import { Emission } from "./emission.ts"
 import { lowerMessage } from "./message.ts"
@@ -48,7 +49,7 @@ export class Lowering {
 
   constructor(input: LowerInput) {
     this.cx = new LowerContext(input)
-    // A-14: a tag rename that takes another tag's name
+    // a tag rename that takes another tag's name
     if (this.cx.mode === "all")
       for (const message of tagCollisions(input.options.tags)) input.issues.push({ code: "invalid-tag", message })
   }
@@ -79,8 +80,8 @@ export class Lowering {
       const walk = (m: MMessage, chain: OptionTree[]) => {
         const mo = cx.opts(m, "message", file, parentScope(m.fqn))
         const inner = [...chain, mo]
-        if (emission.messages.has(m.fqn) && !(m.fqn in messages)) {
-          messages[m.fqn] = lowerMessage(cx, m, chain)
+        if (emission.messages.has(m.fqn) && !hasKey(messages, m.fqn)) {
+          setKey(messages, m.fqn, lowerMessage(cx, m, chain))
           usedFiles.add(file.path)
         }
         for (const e of m.enums) enumQueue.push({ e, chain: inner })
@@ -90,27 +91,28 @@ export class Lowering {
       for (const m of file.messages) walk(m, [fileOpts])
       if (emitAll) {
         for (const s of file.services) {
-          if (!(s.fqn in services)) services[s.fqn] = lowerService(cx, s)
+          if (!hasKey(services, s.fqn)) setKey(services, s.fqn, lowerService(cx, s))
           usedFiles.add(file.path)
         }
       }
       for (const { e, chain } of enumQueue) {
-        if (emission.enums.has(e.fqn) && !(e.fqn in enums)) {
-          enums[e.fqn] = lowerEnum(cx, e, chain)
+        if (emission.enums.has(e.fqn) && !hasKey(enums, e.fqn)) {
+          setKey(enums, e.fqn, lowerEnum(cx, e, chain))
           usedFiles.add(file.path)
         }
       }
       for (const { x, chain, scope } of extQueue) {
-        const fqn = x.fqn ?? x.name
-        if (fqn in extensions) continue
-        extensions[fqn] = lowerExtension(cx, x, file, chain, scope)
+        // the same fqn as the extension's pointer (lowerExtension)
+        const fqn = extensionFqn(x, scope)
+        if (hasKey(extensions, fqn)) continue
+        setKey(extensions, fqn, lowerExtension(cx, x, file, chain, scope))
         usedFiles.add(file.path)
       }
     }
     reportDuplicates(cx)
     if (cx.useFiles) {
       for (const file of emission.files) {
-        if (emission.full(file) || usedFiles.has(file.path)) files[file.path] = lowerFile(cx, file)
+        if (emission.full(file) || usedFiles.has(file.path)) setKey(files, file.path, lowerFile(cx, file))
       }
     } else {
       for (const file of emission.files) cx.flush(file, filePointer(file.path), file, file.locs[""])

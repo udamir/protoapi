@@ -1,17 +1,18 @@
 /**
  * Origin: pbkit 0.0.72, `core/ast/top-level-definitions.d.ts` (https://github.com/pbkit/pbkit),
- * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0 (see ./../LICENSE-MIT, ./../LICENSE-APACHE).
+ * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0, used here under MIT (see ../LICENSE-MIT).
  *
  * Modifications:
  * - reconstructed as TypeScript source from the published `.d.ts`; type-only imports.
  * - `Message.visibility` and `Enum.visibility` added (edition 2024 `export` / `local`).
+ * - `MalformedField` removed from the message and extend body statements (the parser no longer recovers inside a field).
  * - doc comments: for block statements (`message`, `enum`, `extend`, `service`, `rpc` with a body, `oneof`,
  *   `group`) `trailingComments` are the comments after the opening `{`, as in protoc; comments after the closing
  *   `}` are not attached (pbkit attached those instead).
  */
 import type { Span, Token } from "../scanner.ts"
 import type { Extensions, Reserved } from "./extensions-and-reserved.ts"
-import type { Field, FieldOptions, Group, MalformedField, MapField, Oneof } from "./fields.ts"
+import type { Field, FieldOptions, Group, MapField, Oneof } from "./fields.ts"
 import type { Option, StatementBase } from "./index.ts"
 import type { Empty, Keyword, Semi, SignedIntLit, Type } from "./lexical-elements.ts"
 
@@ -73,7 +74,6 @@ export interface MessageBody extends Span {
 
 export type MessageBodyStatement =
   | Field
-  | MalformedField
   | Enum
   | Message
   | Extend
@@ -99,7 +99,7 @@ export interface ExtendBody extends Span {
   bracketClose: Token
 }
 
-export type ExtendBodyStatement = Field | MalformedField | Group | Empty
+export type ExtendBodyStatement = Field | Group | Empty
 
 export interface Service extends StatementBase {
   type: "service"

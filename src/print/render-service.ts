@@ -10,7 +10,7 @@ import { optionAssignments, withDeprecated } from "./option-values.ts"
 
 type Obj = Record<string, unknown>
 
-/** The google.api.HttpRule option tree of a normalised `http` keyword (D16, inverted). */
+/** The google.api.HttpRule option tree of a normalised `http` keyword (the inverse of `normalizeHttp`). */
 const httpRule = (h: ProtoApiHttpRule): Obj => {
   const m = `${h.method}`.toLowerCase()
   const t: Obj = ["get", "put", "post", "delete", "patch"].includes(m)
@@ -40,7 +40,7 @@ export const printService = (p: FilePrinter, fqn: string, s: ProtoApiService) =>
       const body = optionAssignments(oracle, p.imports, o, "method").map((line) => `option ${line};`)
       out.comment(1, elementComment(tag, m, undefined))
       const ref = (x: ProtoApiMethod["request"] | undefined) =>
-        typeof x?.schema?.$ref === "string" ? p.typeName(x.schema.$ref) : "google.protobuf.Empty"
+        typeof x?.schema?.$ref === "string" ? p.typeName(x.schema.$ref, p.ctx.members) : "google.protobuf.Empty"
       const req = `${m.request?.stream ? "stream " : ""}${ref(m.request)}`
       const res = `${m.response?.stream ? "stream " : ""}${ref(m.response)}`
       if (!body.length) out.emit(1, `rpc ${mn}(${req}) returns (${res});`)

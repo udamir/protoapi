@@ -5,6 +5,9 @@ import { isPlainObject } from "../../common/objects.ts"
 
 export type Json = Record<string, unknown>
 
+/** The option fields of a binary set's `*Options` message whose ProtoJSON @bufbuild/protobuf cannot write (an `Any` of a type the set does not define, an out-of-range `Timestamp`), as `MWireField`s under this key of the ProtoJSON `*Options` object; not part of the JSON (a symbol key), interpreted from the bytes as the text producer reads an `Any` payload. */
+export const WIRE_OPTIONS = Symbol("protoapi.wireOptions")
+
 /** Read a ProtoJSON field by lowerCamelCase or snake_case name. */
 const snakeCache = new Map<string, string>()
 export const get = <T = unknown>(o: Json | undefined, camel: string): T | undefined => {

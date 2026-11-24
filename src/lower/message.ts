@@ -7,6 +7,7 @@ import { defaultJsonName } from "../values/json-name.ts"
 import { ptr } from "../paths.ts"
 import { MESSAGE_SET_NUMBER_MAX } from "../common/limits.ts"
 import { messagePointer, parentScope } from "../common/names.ts"
+import { hasKey, setKey } from "../common/objects.ts"
 import type { LowerContext } from "./context.ts"
 import {
   DEPRECATED,
@@ -47,21 +48,15 @@ const lowerProperties = (
   const seenNumbers = new Map<number, string>()
   for (const f of m.fields) {
     const fp = `${pointer}/properties/${ptr(f.name)}`
-    if (f.name in properties) {
+    if (hasKey(properties, f.name)) {
       cx.issue("duplicate-name", `field name ${f.name} is used more than once in ${m.fqn}`, file, fp, f.locs[""])
       continue
     }
     const oneof = f.oneof ? m.oneofs.find((o) => o.name === f.oneof) : undefined
-    properties[f.name] = lowerField(
-      cx,
-      f,
-      file,
-      inner,
-      m.fqn,
-      fp,
-      oneof,
-      false,
-      schemaRequired.has(f.name) ? m : undefined,
+    setKey(
+      properties,
+      f.name,
+      lowerField(cx, f, file, inner, m.fqn, fp, oneof, false, schemaRequired.has(f.name) ? m : undefined),
     )
     if (seenNumbers.has(f.number))
       cx.issue(
@@ -93,17 +88,17 @@ const lowerOneofs = (cx: LowerContext, m: MMessage, pointer: string): Record<str
     const oo = cx.opts(o, "oneof", file, parentScope(m.fqn))
     const oa = cx.annotate("oneof", o, withoutFeatureKeys(oo))
     const entry: Record<string, unknown> = {}
-    // A-4: a `@Deprecated` tag or `Deprecated:` line on a oneof (OneofOptions has no `deprecated`)
+    // a `@Deprecated` tag or `Deprecated:` line on a oneof (OneofOptions has no `deprecated`)
     docKeywords(entry, oa)
     if (Object.keys(oa.options).length) entry.options = oa.options
-    oneofs[o.name] = entry
+    setKey(oneofs, o.name, entry)
     finish(cx, entry, oa, `oneof ${o.name}`, file, op, o, {})
   }
   return oneofs
 }
 
 /**
- * Extension ranges: ranges carrying declarations are kept apart; other range options -> extensionOptions (F-1). Writes `extensions` and `extensionOptions` with their source map entries and pending issues, and returns the declarations by range (`"start-end"`).
+ * Extension ranges: ranges carrying declarations are kept apart; other range options -> extensionOptions. Writes `extensions` and `extensionOptions` with their source map entries and pending issues, and returns the declarations by range (`"start-end"`).
  */
 const lowerExtensionRanges = (
   cx: LowerContext,
@@ -140,7 +135,7 @@ const lowerExtensionRanges = (
   rangeOptions.sort((a, b) => a.range[0] - b.range[0] || a.range[1] - b.range[1])
   if (rangeOptions.length) out.extensionOptions = rangeOptions.map((e) => ({ range: e.range, options: e.options }))
   rangeOptions.forEach((e, i) => {
-    // the statement of the range and its option statements (validation L-2)
+    // the statement of the range and its option statements (spec §5)
     cx.sourceMap.map(`${pointer}/extensionOptions/${i}`, e.holder.loc)
     cx.sourceMap.mapOptions(`${pointer}/extensionOptions/${i}`, e.holder, e.options)
   })
@@ -156,7 +151,7 @@ export const lowerMessage = (cx: LowerContext, m: MMessage, chain: OptionTree[])
   const options = { ...cx.opts(m, "message", file, parentScope(m.fqn)) }
   const inner = [...chain, options]
   const features = resolveFeatures(cx.defaults(file.syntax), file.syntax, inner)
-  // the message's own annotations first: openapiv2_schema.json_schema.required names fields (A-13)
+  // the message's own annotations first: openapiv2_schema.json_schema.required names fields
   const byName = fieldNames(m)
   const ann = cx.annotate("message", m, withoutFeatureKeys(options), { fieldOf: (name) => byName.get(name) })
   const reserved = reservedOf(m)
