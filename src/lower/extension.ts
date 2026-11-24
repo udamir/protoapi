@@ -1,7 +1,7 @@
 // Lowering of an extension: its field part (field.ts) with `extendee` and `file`.
 
 import type { ProtoApiExtension } from "../types.ts"
-import type { MField, MFile, OptionTree } from "../model.ts"
+import type { MField, MFile, OptionTree } from "../model/index.ts"
 import { extensionFqn, extensionPointer } from "../common/names.ts"
 import type { LowerContext } from "./context.ts"
 import { orderKeys } from "./emit.ts"

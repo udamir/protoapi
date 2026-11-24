@@ -1,7 +1,7 @@
 // Naming checks: the styles of edition 2024 `enforce_naming_style` (STYLE2024 / STYLE2026, as buf checks them) and protoc's key of an enum value for its uniqueness check.
 
 import type { Location } from "../types.ts"
-import type { MFile } from "../model.ts"
+import type { MFile } from "../model/index.ts"
 import type { ResolvedFeatures } from "../features.ts"
 import type { ValidateContext } from "./context.ts"
 

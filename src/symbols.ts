@@ -1,10 +1,8 @@
 // Symbol table and protoc's name lookup (design §5.3, `DescriptorBuilder::LookupSymbol` + `FindSymbol`).
 
-import type { MEnum, MField, MFile, MMessage, MOptionHolder, MService } from "./model.ts"
-import { BUNDLED_FEATURE_DEFAULTS } from "./features.ts"
-import { isEditions } from "./common/editions.ts"
+import type { MEnum, MField, MFile, MMessage, MService } from "./model/index.ts"
+import { defaultVisibility } from "./features.ts"
 import { qualify } from "./common/names.ts"
-import { isPlainObject } from "./common/objects.ts"
 
 export type SymbolKind =
   | "package"
@@ -53,45 +51,7 @@ export interface LookupResult {
   wrongKind?: SymbolEntry
 }
 
-/** The file's `features.default_symbol_visibility` as written (text or ProtoJSON options), if any. */
-const declaredDefaultVisibility = (file: MOptionHolder): string | undefined => {
-  for (const raw of file.raw) {
-    if (raw.kind === "json") {
-      const f = raw.value.features
-      if (!isPlainObject(f)) continue
-      const v = f.defaultSymbolVisibility ?? f.default_symbol_visibility
-      if (typeof v === "string") return v
-      if (typeof v === "number") return ["", "EXPORT_ALL", "EXPORT_TOP_LEVEL", "LOCAL_ALL", "STRICT"][v]
-      continue
-    }
-    const key = (raw.name.optionNameSegmentOrDots ?? [])
-      .map((s) => (s.type !== "option-name-segment" ? "" : s.bracketOpen ? "()" : identOf(s.name)))
-      .filter((s) => s)
-      .join(".")
-    if (key === "features.default_symbol_visibility") return raw.text
-    if (key === "features") {
-      const m = /default_symbol_visibility\s*:?\s*([A-Z_]+)/.exec(raw.text)
-      if (m) return m[1]
-    }
-  }
-  return undefined
-}
-
-const identOf = (n: unknown): string =>
-  ((n as { identOrDots?: { text: string }[] } | undefined)?.identOrDots ?? []).map((t) => t.text).join("")
-
-/**
- * The default visibility of a file's messages and enums (edition 2024 `default_symbol_visibility`): EXPORT_ALL before
- * edition 2024; EXPORT_TOP_LEVEL (2024 default) exports top-level types only; LOCAL_ALL and STRICT (2026 default)
- * make every type local unless it is marked `export`.
- */
-export const defaultVisibility = (file: MFile): string =>
-  isEditions(file.syntax)
-    ? (declaredDefaultVisibility(file) ??
-      BUNDLED_FEATURE_DEFAULTS.forSyntax(file.syntax).default_symbol_visibility ??
-      "EXPORT_ALL")
-    : "EXPORT_ALL"
-
+/** A message or enum visible only within its own file: its `export` / `local` keyword, else the file default. */
 const isLocal = (explicit: "export" | "local" | undefined, nested: boolean, defaults: string): boolean => {
   if (explicit) return explicit === "local"
   if (defaults === "EXPORT_TOP_LEVEL") return nested
@@ -334,8 +294,7 @@ export class SymbolTable {
 }
 
 /** The kind of a symbol as written in issue messages. */
-export const kindName = (kind: SymbolKind): string =>
-  kind === "enumValue" ? "enum value" : kind === "extension" ? "extension" : kind
+export const kindName = (kind: SymbolKind): string => (kind === "enumValue" ? "enum value" : kind)
 
 /** Best-effort key for an unresolved name (design §5.3): dotted names as written without the leading dot, simple
  *  names qualified with the current package. */

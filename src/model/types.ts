@@ -2,8 +2,8 @@
 // Everything from the model onward (option typing, features, lowering, annotations, source map) is shared, which is
 // what makes the conformance test a test of the two front ends only.
 
-import type { BuildIssueCode, Location, ProtoScalar, ProtoSyntax } from "./types.ts"
-import type { Constant, OptionName } from "./parser/index.ts"
+import type { BuildIssueCode, Location, ProtoScalar, ProtoSyntax } from "../types.ts"
+import type { Constant, OptionName } from "../parser/index.ts"
 
 /** Source locations of an element and its parts. Keys: "" (whole element) and sub-keys such as "name", "number",
  *  "type", "label", "jsonName", "default", "extendee", "request", "response", "request/stream", "response/stream",
@@ -46,12 +46,6 @@ export interface PendingIssue {
   loc?: Location
   /** pointer suffix below the element, e.g. "options/other.flags.hidden" */
   sub?: string
-}
-
-/** Record an issue on a model element, to be emitted by the lowering. */
-export const addPending = (holder: { pending?: PendingIssue[] }, issue: PendingIssue) => {
-  if (!holder.pending) holder.pending = []
-  holder.pending.push(issue)
 }
 
 export interface MOptionHolder {
@@ -212,5 +206,3 @@ export interface MFile extends MOptionHolder {
   /** text producer: the file is validated (design D-E checks run on it) */
   validate?: boolean
 }
-
-export const newHolder = (): MOptionHolder => ({ raw: [], options: {}, optionLocs: {} })

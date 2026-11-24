@@ -1,7 +1,7 @@
 // The state of one lowering: the typed options and edition defaults of the build (`OptionsContext`, also read by the validator) and what the element lowerers share (`LowerContext`).
 
 import type { BuildIssue, BuildOptions, ImportsMode, Location, ProtoApiDocument, SourceMap } from "../types.ts"
-import type { MFile, MMessage, MOptionHolder, OptionTree, PendingIssue } from "../model.ts"
+import type { MFile, MMessage, MOptionHolder, OptionTree, PendingIssue } from "../model/index.ts"
 import type { SymbolTable } from "../symbols.ts"
 import type { OptionsKind } from "../options/kinds.ts"
 import { OptionInterpreter } from "../options/interpret.ts"

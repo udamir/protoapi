@@ -1,7 +1,7 @@
 // Number checks: the reserved and extension ranges of messages and enums (empty, out of range, overlapping), names reserved twice, field numbers inside extension ranges, and extension numbers against their extendee.
 
 import type { BuildIssueCode, Location } from "../types.ts"
-import type { MEnum, MField, MFile, MMessage } from "../model.ts"
+import type { MEnum, MField, MFile, MMessage } from "../model/index.ts"
 import { FIELD_NUMBER_MAX, MESSAGE_SET_NUMBER_MAX } from "../common/limits.ts"
 import { extensionPointer, parentScope } from "../common/names.ts"
 import type { ValidateContext } from "./context.ts"

@@ -4,14 +4,14 @@ import { readFileSync, mkdirSync, writeFileSync, existsSync } from "node:fs"
 import { join } from "node:path"
 import { spawnSync } from "node:child_process"
 import { generate } from "./bench.ts"
-import { textToModel } from "../src/text.ts"
-import { convertFile } from "../src/descriptor.ts"
+import { textToModel } from "../src/frontend/text/convert.ts"
+import { convertFile } from "../src/frontend/descriptor/convert.ts"
 import { SymbolTable } from "../src/symbols.ts"
 import { linkAll } from "../src/resolve.ts"
 import { Lowering } from "../src/lower/index.ts"
 import { bundledSources } from "../src/bundle/sources.ts"
 import { parseProto } from "../src/parser/index.ts"
-import type { MFile } from "../src/model.ts"
+import type { MFile } from "../src/model/index.ts"
 
 const messages = Number(process.argv[2] ?? 1700)
 const src = generate(messages, "bench.p")

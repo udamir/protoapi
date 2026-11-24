@@ -10,7 +10,7 @@
 // (json.ts), and `OptionInterpreter` here, which interprets every raw option of a holder.
 
 import type { ProtoSyntax } from "../types.ts"
-import type { OptionTree } from "../model.ts"
+import type { OptionTree } from "../model/index.ts"
 import { OPTIONS_MESSAGE, type OptionsKind } from "./kinds.ts"
 import { keyByNumber } from "./definitions.ts"
 import { orderTree } from "./tree.ts"

@@ -2,7 +2,7 @@
 // segment against the `*Options` message and the extensions in scope, and the value set at its path in the tree.
 
 import type { Location } from "../types.ts"
-import type { MField, MRawOption, OptionTree } from "../model.ts"
+import type { MField, MRawOption, OptionTree } from "../model/index.ts"
 import { kindName } from "../symbols.ts"
 import { type Spanned, optionNameSegments } from "../frontend/text/nodes.ts"
 import { isPlainObject } from "../common/objects.ts"

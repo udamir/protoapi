@@ -1,7 +1,7 @@
 // Lowering of a service and its methods: request and response, idempotency and the `google.api.http` rule.
 
 import type { ProtoApiHttpRule, ProtoApiMethod, ProtoApiService } from "../types.ts"
-import type { MFile, MMethod, MService } from "../model.ts"
+import type { MFile, MMethod, MService } from "../model/index.ts"
 import { HTTP_RULE } from "../conventions/keys.ts"
 import { withoutFeatureKeys } from "../features.ts"
 import { ptr } from "../paths.ts"

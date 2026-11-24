@@ -2,7 +2,7 @@
 // (text format values, option statements, ProtoJSON, the whole holder) with issue reporting and source text.
 
 import type { Location } from "../types.ts"
-import { type MFile, type MOptionHolder, type PendingIssue, addPending } from "../model.ts"
+import { type MFile, type MOptionHolder, type PendingIssue, addPending } from "../model/index.ts"
 import type { SymbolTable } from "../symbols.ts"
 import type { Spanned } from "../frontend/text/nodes.ts"
 

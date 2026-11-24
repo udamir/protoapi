@@ -1,7 +1,7 @@
 // What the definition checks share: the build's symbols, its typed options and edition defaults (read through the lowering's `OptionsContext`), the source texts and the issue list.
 
 import type { BuildIssue, BuildIssueCode, Location } from "../types.ts"
-import type { MFile, MOptionHolder, OptionTree } from "../model.ts"
+import type { MFile, MOptionHolder, OptionTree } from "../model/index.ts"
 import type { SymbolTable } from "../symbols.ts"
 import type { OptionsKind } from "../options/kinds.ts"
 import { type ResolvedFeatures, resolveFeatures } from "../features.ts"

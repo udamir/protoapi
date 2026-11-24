@@ -1,7 +1,7 @@
 // Validation rule conventions: protovalidate (`buf.validate.field`) and PGV (`validate.rules`) as two dialects of one lift, the rule fields of each family, and the inverse table the printer reads keywords back into rules with.
 
 import type { AnnotationSource } from "../types.ts"
-import type { MEnum } from "../model.ts"
+import type { MEnum } from "../model/index.ts"
 import { isPlainObject } from "../common/objects.ts"
 import { BUF_VALIDATE_FIELD, PGV_RULES, asNumber, putRest } from "./keys.ts"
 import type { AnnotationResult, Candidate, FieldShape, Slot, Target } from "./types.ts"

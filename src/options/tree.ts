@@ -1,6 +1,6 @@
 // The canonical option tree: key order by definition, and the raw-value helpers for values without a definition.
 
-import type { MField, MMessage } from "../model.ts"
+import type { MField, MMessage } from "../model/index.ts"
 import type { SymbolTable } from "../symbols.ts"
 import { isPlainObject } from "../common/objects.ts"
 import { toSnake } from "../values/json-name.ts"

@@ -1,6 +1,6 @@
 // The emission set of a lowering: the files in import order, which files are emitted in full (`BuildOptions.imports`) and the messages and enums they reach.
 
-import type { MField, MFile, MMessage, MTypeRef } from "../model.ts"
+import type { MField, MFile, MMessage, MTypeRef } from "../model/index.ts"
 import type { LowerContext } from "./context.ts"
 
 export class Emission {

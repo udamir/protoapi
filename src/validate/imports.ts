@@ -1,6 +1,6 @@
 // Import checks of the validated files: self-imports, duplicate imports and import cycles.
 
-import type { MFile } from "../model.ts"
+import type { MFile } from "../model/index.ts"
 import { filePointer } from "../common/names.ts"
 import type { ValidateContext } from "./context.ts"
 

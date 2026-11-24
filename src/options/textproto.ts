@@ -2,7 +2,7 @@
 // `Any` values, and the best-effort JSON form of a value without a definition.
 
 import type { Location } from "../types.ts"
-import type { MField, MMessage } from "../model.ts"
+import type { MField, MMessage } from "../model/index.ts"
 import type { AggregateNode, Spanned, TextprotoFieldNode } from "../frontend/text/nodes.ts"
 import { tokensText } from "../frontend/text/nodes.ts"
 import { isPlainObject } from "../common/objects.ts"

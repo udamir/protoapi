@@ -1,7 +1,7 @@
 // Lowering of a message: its fields (with the duplicate and reserved checks of a message), oneofs, reserved numbers and names, extension ranges and their options.
 
 import type { ProtoApiField, ProtoApiMessage } from "../types.ts"
-import type { MExtensionRange, MMessage, OptionTree } from "../model.ts"
+import type { MExtensionRange, MMessage, OptionTree } from "../model/index.ts"
 import { resolveFeatures, withoutFeatureKeys } from "../features.ts"
 import { defaultJsonName } from "../values/json-name.ts"
 import { ptr } from "../paths.ts"

@@ -1,7 +1,7 @@
 // Rule D (spec §3.5): options equal to their protobuf default are not written.
 
 import type { ProtoSyntax } from "../types.ts"
-import type { OptionTree } from "../model.ts"
+import type { OptionTree } from "../model/index.ts"
 import type { OptionsKind } from "./kinds.ts"
 
 const RULE_D: Record<OptionsKind | "any", Record<string, unknown>> = {

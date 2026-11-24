@@ -1,7 +1,7 @@
 // Option checks driven by the option definitions: each option and feature an element sets against the `targets` and `feature_support` of its definition; features also against the syntax and their known values.
 
 import type { Location } from "../types.ts"
-import type { MField, MFile, MOptionHolder, OptionTree } from "../model.ts"
+import type { MField, MFile, MOptionHolder, OptionTree } from "../model/index.ts"
 import { OPTIONS_MESSAGE, type OptionsKind } from "../options/kinds.ts"
 import { optionNameSegments } from "../frontend/text/nodes.ts"
 import { ptr } from "../paths.ts"

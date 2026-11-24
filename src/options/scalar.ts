@@ -2,7 +2,7 @@
 // scalar constant (an option value, a text-format value, a `[default = …]`) to its canonical value.
 
 import type { ProtoScalar } from "../types.ts"
-import type { MEnum, MMessage } from "../model.ts"
+import type { MEnum, MMessage } from "../model/index.ts"
 import { canonFloatOf, canonInt, INT_RANGE, toBase64 } from "../values/canonical.ts"
 import { decodeStringLiteral, decodeStringLiteralBytes, parseFloatText, parseIntText } from "../values/literals.ts"
 import { FLOAT_KINDS } from "../values/scalars.ts"

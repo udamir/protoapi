@@ -1,7 +1,7 @@
 // The source map of a lowering: JSON Pointer -> Location entries, first location wins, and the entries of one element.
 
 import type { Location, SourceMap } from "../types.ts"
-import type { Locs, MComments, MExtensionRange, MMessage, MOptionHolder } from "../model.ts"
+import type { Locs, MComments, MExtensionRange, MMessage, MOptionHolder } from "../model/index.ts"
 import type { AnnotationResult, CommentLine } from "../conventions/types.ts"
 import { OPENAPIV2_OPERATION, OPENAPIV2_SCHEMA } from "../conventions/keys.ts"
 import { ptr } from "../paths.ts"

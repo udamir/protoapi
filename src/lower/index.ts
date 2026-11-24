@@ -8,7 +8,7 @@ import type {
   ProtoApiMessage,
   ProtoApiService,
 } from "../types.ts"
-import type { Locs, MEnum, MField, MMessage, OptionTree } from "../model.ts"
+import type { Locs, MEnum, MField, MMessage, OptionTree } from "../model/index.ts"
 import { tagCollisions } from "../conventions/tags.ts"
 import { enumPointer, filePointer, messagePointer, parentScope, servicePointer } from "../common/names.ts"
 import { LowerContext, type LowerInput, type LowerOutput, type OptionsContext } from "./context.ts"

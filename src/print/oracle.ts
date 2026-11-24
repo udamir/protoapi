@@ -1,10 +1,10 @@
 // The printer's type oracle: the types of option values (from the bundled option definitions, the caller's `sources` and the document), declaring files of types and options, and the document's type references.
 
 import type { ProtoApiDocument, ProtoApiField, ProtoApiTypeRef, ProtoScalar } from "../types.ts"
-import type { MField, MFile, MMessage } from "../model.ts"
+import type { MField, MFile, MMessage } from "../model/index.ts"
 import { SymbolTable } from "../symbols.ts"
 import { linkAll } from "../resolve.ts"
-import { textToModel } from "../text.ts"
+import { textToModel } from "../frontend/text/convert.ts"
 import { isScalar } from "../values/scalars.ts"
 import { normalizePath } from "../paths.ts"
 import { isPlainObject } from "../common/objects.ts"

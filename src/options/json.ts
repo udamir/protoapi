@@ -1,7 +1,7 @@
 // ProtoJSON option values (descriptor input): option messages and values with JSON keys and special forms converted
 // to the canonical tree.
 
-import type { MField, MMessage } from "../model.ts"
+import type { MField, MMessage } from "../model/index.ts"
 import { isPlainObject } from "../common/objects.ts"
 import { canonFloatOf, fromBase64, toBase64 } from "../values/canonical.ts"
 import { toSnake } from "../values/json-name.ts"

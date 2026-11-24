@@ -1,7 +1,7 @@
 // Lowering of a field (and of an extension's field part): type keywords, presence (rule P), JSON name and default, protoc's option checks, resolved features, annotations and source map entries.
 
 import type { Location, ProtoApiField } from "../types.ts"
-import type { MField, MFile, MOneof, MOptionHolder, MTypeRef, OptionTree } from "../model.ts"
+import type { MField, MFile, MOneof, MOptionHolder, MTypeRef, OptionTree } from "../model/index.ts"
 import { type VType, fromScalarText } from "../options/scalar.ts"
 import type { AnnotationResult, FieldShape, Slot, Target } from "../conventions/types.ts"
 import { OPENAPIV2_SCHEMA } from "../conventions/keys.ts"

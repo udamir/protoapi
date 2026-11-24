@@ -1,6 +1,6 @@
 // Definition lookups of the interpreter: the value type of a field, fields by name or ProtoJSON key, extensions.
 
-import type { MField, MMessage } from "../model.ts"
+import type { MField, MMessage } from "../model/index.ts"
 import type { SymbolTable } from "../symbols.ts"
 import { lowerCamel } from "../values/json-name.ts"
 import type { VType } from "./scalar.ts"

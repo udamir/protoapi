@@ -1,6 +1,6 @@
 // Name clashes inside a scope (C++ scoping): fields and oneofs against the types and extensions of their message, enum values against the other values and the symbols of the scope their enum is declared in.
 
-import type { MEnum, MField, MFile, MMessage, MOneof } from "../model.ts"
+import type { MEnum, MField, MFile, MMessage, MOneof } from "../model/index.ts"
 import { ptr } from "../paths.ts"
 import { enumPointer, mapEntryName, qualify } from "../common/names.ts"
 import type { ValidateContext } from "./context.ts"

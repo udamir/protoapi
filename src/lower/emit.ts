@@ -1,7 +1,7 @@
 // Writing document elements: the field key order, the common keys of a declaration, type references, the blocks messages and enums share, and the end of an element's lowering (annotation issues, source map entries, pending issues).
 
 import type { ProtoApiTypeRef } from "../types.ts"
-import type { MEnum, MFile, MMessage, MTypeRef, OptionTree } from "../model.ts"
+import type { MEnum, MFile, MMessage, MTypeRef, OptionTree } from "../model/index.ts"
 import type { AnnotationResult } from "../conventions/types.ts"
 import { type ResolvedFeatures, featuresOf } from "../features.ts"
 import { ptr } from "../paths.ts"

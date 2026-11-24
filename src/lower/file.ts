@@ -1,7 +1,7 @@
 // Lowering of a file entry of `files`: description, syntax, package, imports and their flags, options, `bundled`.
 
 import type { ProtoApiFile } from "../types.ts"
-import type { MFile } from "../model.ts"
+import type { MFile } from "../model/index.ts"
 import { withoutFeatureKeys } from "../features.ts"
 import { normalizeComment } from "../comments.ts"
 import { filePointer } from "../common/names.ts"

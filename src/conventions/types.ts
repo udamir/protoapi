@@ -1,7 +1,7 @@
 // The vocabulary of the annotation conventions, shared by the lift (annotate.ts) and the printer: the positions of a field, the keyword candidates the lifts produce, and the input and result of the annotation layer.
 
 import type { AnnotationConflict, AnnotationSource, BuildOptions, ProtoScalar } from "../types.ts"
-import type { MEnum } from "../model.ts"
+import type { MEnum } from "../model/index.ts"
 
 /** A position of a field: the field itself (""), its items, map keys or map values. */
 export type Target = "" | "items" | "propertyNames" | "additionalProperties"

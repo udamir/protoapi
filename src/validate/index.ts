@@ -3,8 +3,8 @@
 // options and edition defaults. Never throws and never changes the document: every finding is a `BuildIssue`.
 // The syntactic rules (labels, groups, statement order, keywords per edition) are checked in text.ts.
 
-import type { MEnum, MField, MFile, MMessage, MService, OptionTree } from "../model.ts"
-import { defaultVisibility } from "../symbols.ts"
+import type { MEnum, MField, MFile, MMessage, MService, OptionTree } from "../model/index.ts"
+import { defaultVisibility } from "../features.ts"
 import { OPTIONS_MESSAGES } from "../options/kinds.ts"
 import type { ResolvedFeatures } from "../features.ts"
 import { defaultJsonName } from "../values/json-name.ts"

@@ -1,9 +1,9 @@
 // Linking (design §5.3): resolve type names, extendees and method types against the symbol table, index
 // extensions by extendee. Shared by both front ends (descriptor names are absolute, text names relative).
 
-import type { MField, MFile, MMessage, MOptionHolder, MTypeRef } from "./model.ts"
+import type { MField, MFile, MMessage, MOptionHolder, MTypeRef } from "./model/index.ts"
 import { type LookupFrom, type LookupResult, type SymbolTable, kindName, unresolvedKey } from "./symbols.ts"
-import { addPending } from "./model.ts"
+import { addPending } from "./model/index.ts"
 
 const kindPhrase = (kind: string) => (kind === "message" || kind === "enum" ? `${kind} type` : kindName(kind as never))
 

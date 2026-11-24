@@ -2,7 +2,7 @@
 // payload of an `Any` written with `type_url` and `value`, and for the records of a binary descriptor set.
 
 import type { ProtoScalar } from "./types.ts"
-import type { MField, MMessage } from "./model.ts"
+import type { MField, MMessage } from "./model/index.ts"
 import type { SymbolTable } from "./symbols.ts"
 import { canonFloat, canonFloatOf, canonInt, toBase64 } from "./values/canonical.ts"
 import { utf8Decode } from "./values/literals.ts"

@@ -1,6 +1,6 @@
 // Presence of option fields (C-14): which values equal an absent one and are therefore not written.
 
-import type { MField, MMessage, MOptionHolder } from "../model.ts"
+import type { MField, MMessage, MOptionHolder } from "../model/index.ts"
 import type { SymbolTable } from "../symbols.ts"
 import { isPlainObject } from "../common/objects.ts"
 import { INT64_KINDS } from "../values/scalars.ts"

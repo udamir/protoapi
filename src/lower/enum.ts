@@ -1,7 +1,7 @@
 // Lowering of an enum: its values (with the duplicate name check), reserved numbers and names, `closed` and `jsonFormat`.
 
 import type { ProtoApiEnum } from "../types.ts"
-import type { MEnum, OptionTree } from "../model.ts"
+import type { MEnum, OptionTree } from "../model/index.ts"
 import { resolveFeatures, withoutFeatureKeys } from "../features.ts"
 import { ptr } from "../paths.ts"
 import { enumPointer, parentScope } from "../common/names.ts"
