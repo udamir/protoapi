@@ -5,7 +5,8 @@
 import type { AnnotationConflict, AnnotationSource, BuildOptions, ProtoScalar, TagName } from "./types.ts"
 import type { MEnum } from "./model.ts"
 import { normalizeComment } from "./comments.ts"
-import { INT64_KINDS, isPlainObject } from "./values.ts"
+import { INT64_KINDS } from "./values/scalars.ts"
+import { isPlainObject } from "./common/objects.ts"
 import { INVALID, type VType, fromScalarText, lastInvalidReason } from "./options.ts"
 
 export type Target = "" | "items" | "propertyNames" | "additionalProperties"

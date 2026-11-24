@@ -1,9 +1,10 @@
 // Symbol table and protoc's name lookup (design §5.3, `DescriptorBuilder::LookupSymbol` + `FindSymbol`).
 
 import type { MEnum, MField, MFile, MMessage, MOptionHolder, MService } from "./model.ts"
-import { FeatureDefaults, isEditions } from "./features.ts"
-import { bundledFeatureDefaults } from "./bundle/features.ts"
-import { isPlainObject } from "./values.ts"
+import { BUNDLED_FEATURE_DEFAULTS } from "./features.ts"
+import { isEditions } from "./common/editions.ts"
+import { qualify } from "./common/names.ts"
+import { isPlainObject } from "./common/objects.ts"
 
 export type SymbolKind =
   | "package"
@@ -52,8 +53,6 @@ export interface LookupResult {
   wrongKind?: SymbolEntry
 }
 
-const BUNDLED_DEFAULTS = new FeatureDefaults(bundledFeatureDefaults)
-
 /** The file's `features.default_symbol_visibility` as written (text or ProtoJSON options), if any. */
 const declaredDefaultVisibility = (file: MOptionHolder): string | undefined => {
   for (const raw of file.raw) {
@@ -89,7 +88,7 @@ const identOf = (n: unknown): string =>
 export const defaultVisibility = (file: MFile): string =>
   isEditions(file.syntax)
     ? (declaredDefaultVisibility(file) ??
-      BUNDLED_DEFAULTS.forSyntax(file.syntax).default_symbol_visibility ??
+      BUNDLED_FEATURE_DEFAULTS.forSyntax(file.syntax).default_symbol_visibility ??
       "EXPORT_ALL")
     : "EXPORT_ALL"
 
@@ -177,7 +176,7 @@ export class SymbolTable {
     if (!index) {
       index = new Map()
       const add = (kind: SymbolKind, name: string, file: MFile | undefined) => {
-        if (!index?.has(name)) index?.set(name, { kind, fqn: scope ? `${scope}.${name}` : name, file })
+        if (!index?.has(name)) index?.set(name, { kind, fqn: qualify(scope, name), file })
       }
       const owner = scope ? this.symbols.get(scope) : undefined
       if (owner?.kind === "message") {
@@ -197,7 +196,7 @@ export class SymbolTable {
   }
 
   private addExtension(x: MField, scope: string, file: MFile) {
-    const fqn = scope ? `${scope}.${x.name}` : x.name
+    const fqn = qualify(scope, x.name)
     x.fqn = fqn
     this.add({ kind: "extension", fqn, file, node: x })
     this.extensionByName.set(fqn, { field: x, fqn, file, scope })
@@ -295,17 +294,17 @@ export class SymbolTable {
     const first = dot < 0 ? name : name.slice(0, dot)
     let current = scope
     while (true) {
-      const found = find(current ? `${current}.${first}` : first)
+      const found = find(qualify(current, first))
       if (!found && dot >= 0 && (!result.hidden || result.hidden.kind === "package")) {
         // a hidden first component (e.g. a package declared only by a file that is not imported): name the symbol the
         // whole name would have resolved to in the issue message
-        const whole = this.symbols.get(current ? `${current}.${name}` : name)
+        const whole = this.symbols.get(qualify(current, name))
         if (whole && from && !this.isVisible(whole, from)) result.hidden = whole
       }
       if (found) {
         if (dot >= 0) {
           if (AGGREGATE.has(found.kind)) {
-            result.found = find(current ? `${current}.${name}` : name)
+            result.found = find(qualify(current, name))
             return result
           }
           // not an aggregate: keep searching outward
@@ -343,5 +342,5 @@ export const kindName = (kind: SymbolKind): string =>
 export const unresolvedKey = (name: string, pkg: string): string => {
   if (name.startsWith(".")) return name.slice(1)
   if (name.includes(".")) return name
-  return pkg ? `${pkg}.${name}` : name
+  return qualify(pkg, name)
 }

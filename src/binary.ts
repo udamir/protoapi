@@ -11,8 +11,10 @@ import type { BuildIssue, FileDescriptorSetJson, ProtoScalar } from "./types.ts"
 import type { MEnum, MField, MFile, MMessage } from "./model.ts"
 import { SymbolTable } from "./symbols.ts"
 import { linkAll } from "./resolve.ts"
-import { DESCRIPTOR_SCALAR, defaultJsonName } from "./values.ts"
-import { EDITION_NUMBERS, KNOWN_EDITIONS } from "./features.ts"
+import { DESCRIPTOR_SCALAR } from "./values/scalars.ts"
+import { defaultJsonName } from "./values/json-name.ts"
+import { EDITION_NUMBERS, KNOWN_EDITIONS, editionNameOfNumber, knownEditionName } from "./common/editions.ts"
+import { mapEntryName } from "./common/names.ts"
 import { type VType, decodeWire, scalarType, wireDef } from "./options.ts"
 
 /** The first @bufbuild/protobuf release that supports edition 2024 (the peer dependency minimum). */
@@ -61,12 +63,8 @@ export const loadBufbuild = async (
   return { pb, wkt }
 }
 
-const editionName = (n: number): string => {
-  for (const [name, num] of Object.entries(EDITION_NUMBERS)) if (num === n) return name
-  return String(n)
-}
 const editionLabel = (n: number): string => {
-  const name = editionName(n)
+  const name = editionNameOfNumber(n)
   const known = KNOWN_EDITIONS[name]
   return known ? `edition ${known}` : /^\d+$/.test(name) ? `edition ${name}` : name
 }
@@ -163,7 +161,7 @@ const buildRegistry = (
     for (const dep of proto.dependency ?? []) visit(dep)
     const edition: number = rawEdition.get(proto) ?? proto.edition
     if (proto.syntax === "editions" && edition > maxEdition && edition !== EDITION_NUMBERS.EDITION_UNSTABLE) {
-      const known = KNOWN_EDITIONS[editionName(edition)] !== undefined
+      const known = KNOWN_EDITIONS[editionNameOfNumber(edition)] !== undefined
       fail(
         name,
         proto,
@@ -235,20 +233,6 @@ const SCALAR_TYPE: Record<ProtoScalar, string> = Object.fromEntries(
   Object.entries(DESCRIPTOR_SCALAR).map(([k, v]) => [v, k]),
 ) as Record<ProtoScalar, string>
 
-/** protoc's map entry name: `foo_bar` -> `FooBarEntry` */
-const mapEntryName = (field: string): string => {
-  let out = ""
-  let upper = true
-  for (const c of field) {
-    if (c === "_") upper = true
-    else {
-      out += upper ? c.toUpperCase() : c
-      upper = false
-    }
-  }
-  return `${out}Entry`
-}
-
 const typeJson = (t: MField["type"]): Record<string, unknown> => {
   if (t.kind === "scalar") return { type: SCALAR_TYPE[t.scalar] }
   const r = t.resolved
@@ -261,7 +245,7 @@ const typeJson = (t: MField["type"]): Record<string, unknown> => {
 const syntaxJson = (file: MFile): Record<string, unknown> => {
   if (file.syntax === "proto2") return {}
   if (file.syntax === "proto3") return { syntax: "proto3" }
-  const name = Object.entries(KNOWN_EDITIONS).find(([, v]) => v === file.syntax)?.[0]
+  const name = knownEditionName(file.syntax)
   return { syntax: "editions", edition: name ?? "EDITION_UNKNOWN" }
 }
 

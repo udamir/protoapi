@@ -18,17 +18,17 @@ import type {
 } from "./model.ts"
 import { newHolder } from "./model.ts"
 import { protocGroupText } from "./comments.ts"
-import { isScalar, parseIntText, decodeStringLiteral } from "./values.ts"
+import { isScalar } from "./values/scalars.ts"
+import { parseIntText, decodeStringLiteral } from "./values/literals.ts"
 import { normalizePath, ptr } from "./paths.ts"
-import { editionNumber, EDITION_NUMBERS, isEditions, isKnownSyntax, unsupportedEdition } from "./features.ts"
+import { unsupportedEdition } from "./features.ts"
+import { editionNumber, EDITION_NUMBERS, isEditions, isKnownSyntax } from "./common/editions.ts"
+import { FIELD_NUMBER_MAX, INT32_MAX, MESSAGE_SET_NUMBER_MAX } from "./common/limits.ts"
+import { enumPointer, extensionPointer, filePointer, messagePointer, qualify, syntaxName } from "./common/names.ts"
 import { TRIVIA, addPending, optionNameSegments, tokensText } from "./options.ts"
 import { createLineIndex } from "./parser/index.ts"
 import { parse } from "./parser/proto.ts"
 
-const MESSAGE_MAX = 536870911
-const ENUM_MAX = 2147483647
-/** `max` in a message with `message_set_wire_format = true` (protoc, IN-5b / C-7) */
-const MESSAGE_SET_MAX = 2147483646
 /** buf's tab stop (validation decision D-A) */
 export const DEFAULT_TAB_WIDTH = 4
 
@@ -110,11 +110,6 @@ const typeRefOf = (ctx: Ctx, n: Node): MTypeRef => {
 
 // ---- issues ---------------------------------------------------------------------------------------------------------
 
-const filePointer = (ctx: Ctx) => `#/files/${ptr(ctx.path)}`
-const messagePointer = (fqn: string) => `#/components/messages/${ptr(fqn)}`
-const enumPointer = (fqn: string) => `#/components/enums/${ptr(fqn)}`
-const extensionPointer = (fqn: string) => `#/components/extensions/${ptr(fqn)}`
-
 const report = (
   ctx: Ctx,
   code: BuildIssueCode,
@@ -126,8 +121,6 @@ const report = (
   const location = at && "file" in at ? (at as Location) : span(ctx, at as Node)
   ctx.issues.push({ code, message, file: ctx.path, location, pointer })
 }
-
-const syntaxName = (syntax: ProtoSyntax) => (isEditions(syntax) ? `edition ${syntax}` : syntax)
 
 // ---- options ----------------------------------------------------------------------------------------------------------
 
@@ -373,7 +366,7 @@ const convertGroup = (
   extension = false,
 ): MField => {
   const groupName = src(ctx, n.groupName)
-  const fqn = scopeFqn ? `${scopeFqn}.${groupName}` : groupName
+  const fqn = qualify(scopeFqn, groupName)
   // protoc attaches a group's comments to the generated message, not to the field
   const msg = convertMessageBody(ctx, n, groupName, fqn, n.messageBody)
   nested.push(msg)
@@ -396,7 +389,7 @@ const convertGroup = (
 
 const convertExtend = (ctx: Ctx, n: Node, scopeFqn: string, out: MField[], nested: MMessage[]) => {
   const extendee = identText(ctx, n.messageType)
-  const pointerOf = (name: string) => extensionPointer(scopeFqn ? `${scopeFqn}.${name}` : name)
+  const pointerOf = (name: string) => extensionPointer(qualify(scopeFqn, name))
   for (const st of n.extendBody?.statements ?? []) {
     let field: MField | undefined
     if (st.type === "field") {
@@ -530,7 +523,7 @@ const convertMessageBody = (ctx: Ctx, n: Node, name: string, fqn: string, body: 
       case "extensions": {
         if (ctx.syntax === "proto3")
           report(ctx, "invalid-definition", "extension ranges are not allowed in proto3", st, `${pointer}/extensions`)
-        for (const range of ranges(ctx, st.ranges, MESSAGE_MAX)) {
+        for (const range of ranges(ctx, st.ranges, FIELD_NUMBER_MAX)) {
           const r: MExtensionRange = { ...newHolder(), start: range.start, end: range.end, loc: span(ctx, st) }
           if (range.loc) r.rangeLoc = range.loc
           if (range.toMax) r.toMax = true
@@ -544,7 +537,7 @@ const convertMessageBody = (ctx: Ctx, n: Node, name: string, fqn: string, body: 
         break
       }
       case "reserved":
-        convertReserved(ctx, msg, st, MESSAGE_MAX, pointer, reservedToMax)
+        convertReserved(ctx, msg, st, FIELD_NUMBER_MAX, pointer, reservedToMax)
         break
       case "option":
         pushOption(ctx, msg, st.optionName, st.constant, st)
@@ -556,20 +549,20 @@ const convertMessageBody = (ctx: Ctx, n: Node, name: string, fqn: string, body: 
   }
   // C-7: `reserved N to max` in a message set ends at 2147483646, like its extension ranges (IN-5b)
   if (reservedToMax.length && isMessageSet(ctx, msg))
-    for (const i of reservedToMax) msg.reservedRanges[i][1] = MESSAGE_SET_MAX
+    for (const i of reservedToMax) msg.reservedRanges[i][1] = MESSAGE_SET_NUMBER_MAX
   return msg
 }
 
 const convertMessage = (ctx: Ctx, n: Node, scopeFqn: string): MMessage => {
   const name = src(ctx, n.messageName)
-  return convertMessageBody(ctx, n, name, scopeFqn ? `${scopeFqn}.${name}` : name, n.messageBody)
+  return convertMessageBody(ctx, n, name, qualify(scopeFqn, name), n.messageBody)
 }
 
 // ---- enums -------------------------------------------------------------------------------------------------------------
 
 const convertEnum = (ctx: Ctx, n: Node, scopeFqn: string): MEnum => {
   const name = src(ctx, n.enumName)
-  const fqn = scopeFqn ? `${scopeFqn}.${name}` : name
+  const fqn = qualify(scopeFqn, name)
   const e: MEnum = {
     ...newHolder(),
     name,
@@ -595,7 +588,7 @@ const convertEnum = (ctx: Ctx, n: Node, scopeFqn: string): MEnum => {
       for (const o of fieldOptionList(st.fieldOptions)) pushOption(ctx, v, o.optionName, o.constant, o)
       e.values.push(v)
     } else if (st.type === "option") pushOption(ctx, e, st.optionName, st.constant, st)
-    else if (st.type === "reserved") convertReserved(ctx, e, st, ENUM_MAX, enumPointer(fqn), [])
+    else if (st.type === "reserved") convertReserved(ctx, e, st, INT32_MAX, enumPointer(fqn), [])
   }
   return e
 }
@@ -604,7 +597,7 @@ const convertEnum = (ctx: Ctx, n: Node, scopeFqn: string): MEnum => {
 
 const convertService = (ctx: Ctx, n: Node): MService => {
   const name = src(ctx, n.serviceName)
-  const fqn = ctx.pkg ? `${ctx.pkg}.${name}` : name
+  const fqn = qualify(ctx.pkg, name)
   const s: MService = {
     ...newHolder(),
     name,
@@ -656,7 +649,7 @@ const syntaxValue = (ctx: Ctx, st: Node): string =>
  */
 const readHeader = (ctx: Ctx, statements: Node[], issues: BuildIssue[]) => {
   const { file, path } = ctx
-  const fp = filePointer(ctx)
+  const fp = filePointer(ctx.path)
   let syntaxSeen = false
   let packageSeen = false
   let first = true
@@ -777,7 +770,7 @@ export const textToModel = (
     const detached = statements[0].leadingDetachedComments
     if (detached?.length) file.header = groupsText(detached)?.replace(/\n?$/, "")
   }
-  const fp = filePointer(ctx)
+  const fp = filePointer(ctx.path)
   let optionImportSeen = false
   for (const st of statements) {
     switch (st.type) {

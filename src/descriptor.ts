@@ -14,9 +14,13 @@ import type {
   MTypeRef,
 } from "./model.ts"
 import { newHolder } from "./model.ts"
-import { DESCRIPTOR_SCALAR, DESCRIPTOR_TYPE_BY_NUMBER } from "./values.ts"
+import { DESCRIPTOR_SCALAR, DESCRIPTOR_TYPE_BY_NUMBER } from "./values/scalars.ts"
+import { toSnake } from "./values/json-name.ts"
 import { normalizePath, ptr } from "./paths.ts"
-import { EDITION_NUMBERS, KNOWN_EDITIONS, unsupportedEdition } from "./features.ts"
+import { unsupportedEdition } from "./features.ts"
+import { KNOWN_EDITIONS, editionNameOfNumber } from "./common/editions.ts"
+import { qualify } from "./common/names.ts"
+import { isPlainObject } from "./common/objects.ts"
 
 type Json = Record<string, unknown>
 
@@ -27,13 +31,12 @@ const get = <T = unknown>(o: Json | undefined, camel: string): T | undefined => 
   const v = o[camel]
   if (v !== undefined) return v as T
   let snake = snakeCache.get(camel)
-  if (snake === undefined) snakeCache.set(camel, (snake = camel.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`)))
+  if (snake === undefined) snakeCache.set(camel, (snake = toSnake(camel)))
   return snake === camel ? undefined : (o[snake] as T | undefined)
 }
-const isObj = (v: unknown): v is Json => typeof v === "object" && v !== null && !Array.isArray(v)
 const arr = (o: Json | undefined, camel: string): Json[] => {
   const v = get<unknown>(o, camel)
-  return Array.isArray(v) ? (v.filter(isObj) as Json[]) : []
+  return Array.isArray(v) ? (v.filter(isPlainObject) as Json[]) : []
 }
 const list = <T>(o: Json | undefined, camel: string): T[] => {
   const v = get<unknown>(o, camel)
@@ -57,9 +60,6 @@ const enumStr = (v: unknown, byNumber?: Record<number, string>): string | undefi
   v === undefined ? undefined : typeof v === "number" ? (byNumber?.[v] ?? String(v)) : String(v)
 
 const LABELS: Record<number, string> = { 1: "LABEL_OPTIONAL", 2: "LABEL_REQUIRED", 3: "LABEL_REPEATED" }
-const EDITION_BY_NUMBER: Record<number, string> = Object.fromEntries(
-  Object.entries(EDITION_NUMBERS).map(([name, n]) => [n, name]),
-)
 
 // ---- SourceCodeInfo index -------------------------------------------------------------------------------------------
 
@@ -209,7 +209,7 @@ const FILE_PARTS: Parts = { syntax: 12, package: 2, edition: 14 }
 const optionsOf = (o: Json, src: SourceIndex, optionsPath: number[]) => {
   const h = newHolder()
   const opts = get<unknown>(o, "options")
-  if (isObj(opts) && Object.keys(opts).length)
+  if (isPlainObject(opts) && Object.keys(opts).length)
     h.raw.push({ kind: "json", value: opts, locs: src.childLocs(optionsPath) })
   return h
 }
@@ -419,7 +419,7 @@ export const syntaxOf = (f: Json): { syntax: ProtoSyntax; unsupported?: string }
     raw === undefined || raw === null
       ? undefined
       : typeof raw === "number" || /^\d+$/.test(String(raw))
-        ? (EDITION_BY_NUMBER[Number(raw)] ?? String(Number(raw)))
+        ? editionNameOfNumber(Number(raw))
         : String(raw)
   if (name === undefined || name === "EDITION_UNKNOWN")
     return syntax === "editions"
@@ -474,7 +474,7 @@ export const convertFile = (f: Json, issues: BuildIssue[]): MFile => {
   if (header.length) file.header = header.join("\n\n")
   const ctx: Ctx = { src, file, syntax }
   const pkg = file.package
-  const q = (name: string) => (pkg ? `${pkg}.${name}` : name)
+  const q = (name: string) => qualify(pkg, name)
   const entries = new Map<string, Json>()
   arr(f, "messageType").forEach((m) => {
     const fqn = q(str(m, "name") ?? "")

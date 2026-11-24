@@ -8,25 +8,17 @@
 import type { Location, ProtoScalar, ProtoSyntax } from "./types.ts"
 import type { MEnum, MField, MFile, MMessage, MOptionHolder, MRawOption, OptionTree, PendingIssue } from "./model.ts"
 import { type SymbolTable, kindName } from "./symbols.ts"
+import { canonFloat, canonFloatOf, canonInt, INT_RANGE, fromBase64, toBase64 } from "./values/canonical.ts"
+import { toSnake } from "./values/json-name.ts"
 import {
-  canonFloat,
-  canonFloatOf,
-  canonInt,
-  INT_RANGE,
   decodeStringLiteral,
   decodeStringLiteralBytes,
-  FLOAT_KINDS,
-  fromBase64,
-  INT32_KINDS,
-  INT64_KINDS,
-  isPlainObject,
   parseFloatText,
   parseIntText,
-  toBase64,
-  toSnake,
   utf8Decode,
-  WRAPPERS,
-} from "./values.ts"
+} from "./values/literals.ts"
+import { FLOAT_KINDS, INT32_KINDS, INT64_KINDS, WRAPPERS } from "./values/scalars.ts"
+import { isPlainObject } from "./common/objects.ts"
 
 export type OptionsKind =
   | "file"

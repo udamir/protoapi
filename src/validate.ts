@@ -3,19 +3,29 @@
 // options and edition defaults. Never throws and never changes the document: every finding is a `BuildIssue`.
 // The syntactic rules (labels, groups, statement order, keywords per edition) are checked in text.ts.
 
-import type { BuildIssue, BuildIssueCode, Location, ProtoSyntax } from "./types.ts"
+import type { BuildIssue, BuildIssueCode, Location } from "./types.ts"
 import type { MEnum, MField, MFile, MMessage, MOptionHolder, MService, OptionTree } from "./model.ts"
 import { type SymbolTable, defaultVisibility } from "./symbols.ts"
-import { type Lowering, parentScope } from "./lower.ts"
+import type { Lowering } from "./lower.ts"
 import { OPTIONS_MESSAGE, type OptionsKind, optionNameSegments } from "./options.ts"
-import { EDITION_NUMBERS, type ResolvedFeatures, editionNumber, isEditions, resolveFeatures } from "./features.ts"
-import { defaultJsonName, isPlainObject } from "./values.ts"
+import { type ResolvedFeatures, resolveFeatures } from "./features.ts"
+import { defaultJsonName } from "./values/json-name.ts"
 import { ptr } from "./paths.ts"
-
-const MESSAGE_MAX = 536870911
-const MESSAGE_SET_MAX = 2147483646
-const INT32_MIN = -2147483648
-const INT32_MAX = 2147483647
+import { EDITION_NUMBERS, editionNumber, isEditions } from "./common/editions.ts"
+import { FIELD_NUMBER_MAX, INT32_MAX, INT32_MIN, MESSAGE_SET_NUMBER_MAX } from "./common/limits.ts"
+import {
+  enumPointer,
+  extensionFqn,
+  extensionPointer,
+  filePointer,
+  mapEntryName,
+  messagePointer,
+  parentScope,
+  qualify,
+  servicePointer,
+  syntaxName,
+} from "./common/names.ts"
+import { isPlainObject } from "./common/objects.ts"
 
 const TARGET: Record<OptionsKind, string> = {
   file: "TARGET_TYPE_FILE",
@@ -74,20 +84,6 @@ const enumValueKey = (enumName: string, value: string): string => {
   return out
 }
 
-/** protoc's map entry message name: `foo_bar` -> `FooBarEntry`. */
-const mapEntryName = (field: string): string => {
-  let out = ""
-  let upper = true
-  for (const ch of field) {
-    if (ch === "_") upper = true
-    else {
-      out += upper ? ch.toUpperCase() : ch
-      upper = false
-    }
-  }
-  return `${out}Entry`
-}
-
 interface Range {
   start: number
   end: number
@@ -107,8 +103,6 @@ const overlaps = (ranges: Range[]): [Range, Range][] => {
 }
 
 const fmtRange = (r: Range) => (r.start === r.end ? `${r.start}` : `${r.start} to ${r.end}`)
-
-const syntaxName = (syntax: ProtoSyntax) => (isEditions(syntax) ? `edition ${syntax}` : syntax)
 
 /** `EDITION_2024` -> `edition 2024`, `EDITION_PROTO3` -> `proto3` */
 const editionLabel = (edition: string) =>
@@ -392,7 +386,7 @@ class Validator {
     for (const f of files) {
       const seen = new Set<string>()
       f.imports.forEach((imp, i) => {
-        const pointer = `#/files/${ptr(f.path)}/imports/${i}`
+        const pointer = `${filePointer(f.path)}/imports/${i}`
         if (imp.path === f.path) this.issue("invalid-definition", `${f.path} imports itself`, f, pointer, imp.loc)
         else if (seen.has(imp.path))
           this.issue("invalid-definition", `"${imp.path}" is imported more than once`, f, pointer, imp.loc)
@@ -415,7 +409,7 @@ class Validator {
           if (validated.has(path) && f && !reported.has(key)) {
             reported.add(key)
             const cycle = [...stack.slice(stack.indexOf(imp.path)), imp.path].join(" -> ")
-            this.issue("invalid-definition", `import cycle: ${cycle}`, f, `#/files/${ptr(path)}/imports/${i}`, imp.loc)
+            this.issue("invalid-definition", `import cycle: ${cycle}`, f, `${filePointer(path)}/imports/${i}`, imp.loc)
           }
         } else if (s === undefined && this.symbols.files.has(imp.path)) visit(imp.path)
       })
@@ -426,7 +420,7 @@ class Validator {
   }
 
   private file(f: MFile) {
-    const fp = `#/files/${ptr(f.path)}`
+    const fp = filePointer(f.path)
     const fileOpts = this.L.opts(f, "file", f, f.package)
     this.options(f, "file", f, f.package, fp)
     const features = this.features(f, [fileOpts])
@@ -466,7 +460,7 @@ class Validator {
   // ---- messages ----------------------------------------------------------------------------------------------------
 
   private message(m: MMessage, file: MFile, chain: OptionTree[], strict: boolean, nested: boolean) {
-    const mp = `#/components/messages/${ptr(m.fqn)}`
+    const mp = messagePointer(m.fqn)
     const mo = this.L.opts(m, "message", file, parentScope(m.fqn))
     this.options(m, "message", file, parentScope(m.fqn), mp)
     const inner = [...chain, mo]
@@ -572,7 +566,7 @@ class Validator {
   /** Reserved and extension ranges of a message (buf: "empty reserved range", "overlapping field number ranges",
    *  "field number out of range", "message field name reserved more than once"). */
   private messageNumbers(m: MMessage, file: MFile, mp: string, messageSet: boolean, extRanges: Range[]) {
-    const max = messageSet ? MESSAGE_SET_MAX : MESSAGE_MAX
+    const max = messageSet ? MESSAGE_SET_NUMBER_MAX : FIELD_NUMBER_MAX
     const reserved: Range[] = m.reservedRanges.map((r, i) => ({
       start: r[0],
       end: r[1],
@@ -670,8 +664,7 @@ class Validator {
   // ---- extensions --------------------------------------------------------------------------------------------------
 
   private extension(x: MField, file: MFile, chain: OptionTree[], scope: string) {
-    const fqn = x.fqn ?? (scope ? `${scope}.${x.name}` : x.name)
-    const xp = `#/components/extensions/${ptr(fqn)}`
+    const xp = extensionPointer(extensionFqn(x, scope))
     const xo = this.L.opts(x, "field", file, scope)
     this.options(x, "field", file, scope, xp)
     const features = this.features(file, [...chain, xo])
@@ -698,7 +691,7 @@ class Validator {
         const entry = x.fqn ? this.symbols.extensionByName.get(x.fqn) : undefined
         const file = entry?.file
         const check = !!file && validated.has(file.path)
-        const xp = `#/components/extensions/${ptr(x.fqn ?? x.name)}`
+        const xp = extensionPointer(x.fqn ?? x.name)
         const prev = used.get(x.number)
         if (prev && check && file)
           this.issue(
@@ -713,7 +706,7 @@ class Validator {
           const setMax =
             this.L.opts(target, "message", target.file, parentScope(target.fqn)).message_set_wire_format === true
           const inRange = target.extensionRanges.some((r) => {
-            const end = r.toMax && setMax ? MESSAGE_SET_MAX : r.end
+            const end = r.toMax && setMax ? MESSAGE_SET_NUMBER_MAX : r.end
             return x.number >= r.start && x.number <= end
           })
           if (!inRange)
@@ -732,7 +725,7 @@ class Validator {
   // ---- enums -------------------------------------------------------------------------------------------------------
 
   private enumeration(e: MEnum, file: MFile, chain: OptionTree[], strict: boolean, parent: MMessage | undefined) {
-    const ep = `#/components/enums/${ptr(e.fqn)}`
+    const ep = enumPointer(e.fqn)
     const scope = parentScope(e.fqn)
     const eo = this.L.opts(e, "enum", file, scope)
     this.options(e, "enum", file, scope, ep)
@@ -867,7 +860,7 @@ class Validator {
       )
     else {
       const [lo, hi] = parent.reservedRanges[0] ?? [0, 0]
-      if (lo !== 1 || hi < MESSAGE_MAX)
+      if (lo !== 1 || hi < FIELD_NUMBER_MAX)
         this.issue(
           "invalid-definition",
           `nested enum ${e.fqn} can be exported only from a message that reserves all field numbers (reserved 1 to max)`,
@@ -894,9 +887,9 @@ class Validator {
       for (const o of members.oneofs) local.set(o.name, `oneof ${members.fqn}.${o.name}`)
     }
     for (const e of enums) {
-      const ep = `#/components/enums/${ptr(e.fqn)}`
+      const ep = enumPointer(e.fqn)
       for (const v of e.values) {
-        const fqn = scope ? `${scope}.${v.name}` : v.name
+        const fqn = qualify(scope, v.name)
         const vp = `${ep}/values/${ptr(v.name)}`
         const loc = v.locs.name ?? v.locs[""]
         const other = values.get(v.name)
@@ -913,7 +906,7 @@ class Validator {
   // ---- services ----------------------------------------------------------------------------------------------------
 
   private service(s: MService, file: MFile, chain: OptionTree[]) {
-    const sp = `#/services/${ptr(s.fqn)}`
+    const sp = servicePointer(s.fqn)
     const so = this.L.opts(s, "service", file, s.fqn)
     this.options(s, "service", file, s.fqn, sp)
     const features = this.features(file, [...chain, so])

@@ -16,9 +16,11 @@ import { linkAll } from "./resolve.ts"
 import { Lowering } from "./lower.ts"
 import { DEFAULT_TAB_WIDTH, textToModel } from "./text.ts"
 import { convertFile } from "./descriptor.ts"
-import { normalizePath, ptr } from "./paths.ts"
+import { normalizePath } from "./paths.ts"
 import { type BufbuildModules, decodeWithBufbuild, loadBufbuild } from "./binary.ts"
 import { validateFiles } from "./validate.ts"
+import { filePointer } from "./common/names.ts"
+import { isPlainObjectNotBytes } from "./common/objects.ts"
 
 const DESCRIPTOR_PROTO = "google/protobuf/descriptor.proto"
 
@@ -127,7 +129,7 @@ const missingImport = (file: MFile, index: number, path: string, issues: BuildIs
     message: reason ? `import "${path}" not found: ${reason}` : `import "${path}" not found`,
     file: file.path,
     location: file.imports[index]?.loc,
-    pointer: `#/files/${ptr(file.path)}/imports/${index}`,
+    pointer: `${filePointer(file.path)}/imports/${index}`,
   })
 }
 
@@ -147,16 +149,13 @@ const normalizeSources = (sources: ProtoSources): Map<string, string> => {
 // ---- argument checks (validation decision 15): wrong argument types are programming errors and throw a TypeError;
 // bad input content never throws (it gives issues) -------------------------------------------------------------------
 
-const isObject = (v: unknown): v is Record<string, unknown> =>
-  typeof v === "object" && v !== null && !Array.isArray(v) && !(v instanceof Uint8Array)
-
 const fail = (fn: string, what: string): never => {
   throw new TypeError(`${fn}: ${what} has the wrong type`)
 }
 
 /** An object of strings (sources, `bundle`, `tags` with `false` allowed). */
 const checkStrings = (fn: string, name: string, v: unknown, allowFalse = false) => {
-  if (!isObject(v) || Object.values(v).some((x) => typeof x !== "string" && !(allowFalse && x === false)))
+  if (!isPlainObjectNotBytes(v) || Object.values(v).some((x) => typeof x !== "string" && !(allowFalse && x === false)))
     fail(fn, name)
 }
 
@@ -175,7 +174,7 @@ const OPTION_CHECKS: [string, (v: unknown) => boolean][] = [
 
 const checkOptions = (fn: string, options: unknown) => {
   if (options === undefined) return
-  if (!isObject(options)) fail(fn, "options")
+  if (!isPlainObjectNotBytes(options)) fail(fn, "options")
   const o = options as Record<string, unknown>
   for (const [k, ok] of OPTION_CHECKS) if (o[k] !== undefined && !ok(o[k])) fail(fn, `options.${k}`)
   // decision 15: the deprecated alias may repeat `imports`, never contradict it
@@ -363,7 +362,7 @@ export const createBuilders = (
   }
 
   const buildFromDescriptorSet = (set: FileDescriptorSetJson, options: DescriptorBuildOptions = {}): BuildResult => {
-    if (!isObject(set) || !Array.isArray((set as { file?: unknown }).file))
+    if (!isPlainObjectNotBytes(set) || !Array.isArray((set as { file?: unknown }).file))
       fail("buildFromDescriptorSet", "the FileDescriptorSet (an object with a `file` array)")
     checkOptions("buildFromDescriptorSet", options)
     return buildDescriptorSet(set, options)
@@ -440,7 +439,7 @@ export const createBuilders = (
         issues: [{ code: "unsupported", message: `cannot decode the FileDescriptorSet: ${(e as Error).message}` }],
       }
     }
-    if (!isObject(set) || !Array.isArray((set as { file?: unknown }).file))
+    if (!isPlainObjectNotBytes(set) || !Array.isArray((set as { file?: unknown }).file))
       return {
         document: { protoapi: "0.1" },
         sourceMap: {},

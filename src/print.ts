@@ -27,21 +27,16 @@ import type { MField, MFile, MMessage } from "./model.ts"
 import { SymbolTable } from "./symbols.ts"
 import { linkAll } from "./resolve.ts"
 import { textToModel } from "./text.ts"
-import {
-  FLOAT_KINDS,
-  INT64_KINDS,
-  INT_RANGE,
-  WRAPPERS,
-  canonFloatOf,
-  fromBase64,
-  isPlainObject,
-  isScalar,
-} from "./values.ts"
+import { INT_RANGE, canonFloatOf, fromBase64 } from "./values/canonical.ts"
+import { FLOAT_KINDS, INT64_KINDS, WRAPPERS, isScalar } from "./values/scalars.ts"
 import { OPTIONS_MESSAGE, WKT_VALUE_FORM, fromWktJson } from "./options.ts"
 import { NUMERIC_RULES as NUMERIC, OA, OA_FIELD, OA_SCHEMA, STRING_FORMATS, WKT_FAMILY } from "./annotate.ts"
 import { normalizePath } from "./paths.ts"
-import { featuresOf as treeFeatures, isEditions } from "./features.ts"
-import { parentScope as parentOf } from "./lower.ts"
+import { featuresOf as treeFeatures } from "./features.ts"
+import { isEditions } from "./common/editions.ts"
+import { FIELD_NUMBER_MAX, INT32_MAX, MESSAGE_SET_NUMBER_MAX } from "./common/limits.ts"
+import { lastSegment, parentScope, qualify } from "./common/names.ts"
+import { isPlainObject } from "./common/objects.ts"
 
 const featuresOf = (o: unknown): Obj | undefined => (isPlainObject(o) ? treeFeatures(o) : undefined)
 
@@ -124,8 +119,6 @@ const refFqn = (ref: string) => {
     return s
   }
 }
-
-const lastSegment = (fqn: string) => fqn.slice(fqn.lastIndexOf(".") + 1)
 
 class Oracle {
   readonly symbols: SymbolTable
@@ -1143,7 +1136,7 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
   /** The message a component is nested in (undefined at top level); missing parents become wrapper messages. */
   const parentMessage = (key: string): string | undefined => {
     const pkg = file.package ?? ""
-    const parent = parentOf(key)
+    const parent = parentScope(key)
     if (!parent || parent === pkg || (pkg && !key.startsWith(`${pkg}.`))) return undefined
     return parent
   }
@@ -1177,7 +1170,7 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
     const ref = f.$ref ?? (f.type === "array" && f.items && "$ref" in f.items ? f.items.$ref : undefined)
     if (!ref) return undefined
     const fqn = refFqn(ref)
-    if (parentOf(fqn) !== scope || lastSegment(fqn).toLowerCase() !== name) return undefined
+    if (parentScope(fqn) !== scope || lastSegment(fqn).toLowerCase() !== name) return undefined
     const m = ctx.doc.components?.messages?.[fqn]
     if (!m || ctx.placement.get(fqn) !== path || printedMessages.has(fqn)) return undefined
     return fqn
@@ -1316,7 +1309,7 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
 
   const printReserved = (depth: number, r: unknown, isEnum: boolean) => {
     if (!isPlainObject(r)) return
-    const max = isEnum ? 2147483647 : 536870911
+    const max = isEnum ? INT32_MAX : FIELD_NUMBER_MAX
     const numbers = Array.isArray(r.numbers) ? (r.numbers as [number, number][]) : []
     if (numbers.length)
       emit(
@@ -1337,7 +1330,7 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
     )
     const messageSet = isPlainObject(m.options) && m.options.message_set_wire_format === true
     const printRange = (a: number, b: number, opts: string[]) => {
-      const max = b === 536870911 || (messageSet && b === 2147483646)
+      const max = b === FIELD_NUMBER_MAX || (messageSet && b === MESSAGE_SET_NUMBER_MAX)
       const range = a === b ? `${a}` : max ? `${a} to max` : `${a} to ${b}`
       emit(depth, `extensions ${range}${opts.length ? ` [${opts.join(", ")}]` : ""};`)
     }
@@ -1554,9 +1547,9 @@ const lookupName = (name: string, scope: string, names: Set<string>): string | u
   const first = dot < 0 ? name : name.slice(0, dot)
   let current = scope
   while (true) {
-    const candidate = current ? `${current}.${first}` : first
+    const candidate = qualify(current, first)
     if (names.has(candidate)) {
-      const full = current ? `${current}.${name}` : name
+      const full = qualify(current, name)
       return names.has(full) ? full : undefined
     }
     if (!current) return undefined
@@ -1643,8 +1636,8 @@ const placeWithoutFiles = (
       }
       // the package of a key: its parents that are messages (or look like ones) are not part of it
       let k = key
-      while (parentOf(k) && (msgs[parentOf(k)] || /^[A-Z]/.test(lastSegment(parentOf(k))))) k = parentOf(k)
-      const pkg = parentOf(k)
+      while (parentScope(k) && (msgs[parentScope(k)] || /^[A-Z]/.test(lastSegment(parentScope(k))))) k = parentScope(k)
+      const pkg = parentScope(k)
       byPackage.set(pkg, [...(byPackage.get(pkg) ?? []), key])
     }
   const files: Record<string, ProtoApiFile> = {}
