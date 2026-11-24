@@ -180,9 +180,3 @@ export const resolveFeatures = (
   }
   return out as unknown as ResolvedFeatures
 }
-
-/** Features lifted into keywords (`presence`, `closed`, `delimited`) and removed from the declaring element. */
-export const LIFTED_FEATURES: Record<"field" | "enum", string[]> = {
-  field: ["field_presence", "message_encoding"],
-  enum: ["enum_type"],
-}

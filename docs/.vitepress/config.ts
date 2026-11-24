@@ -1,3 +1,5 @@
+import { cpSync } from "node:fs"
+import { join } from "node:path"
 import { defineConfig } from "vitepress"
 
 import pkg from "../../package.json" with { type: "json" }
@@ -56,6 +58,9 @@ export default defineConfig({
   base: "/protoapi/",
   cleanUrls: true,
   lastUpdated: true,
+  // the JSON Schema of the format is served at its $id, https://udamir.github.io/protoapi/schemas/v0.1/schema.json
+  buildEnd: ({ outDir }) =>
+    cpSync(join(import.meta.dirname, "../../schemas"), join(outDir, "schemas"), { recursive: true }),
   head: [["link", { rel: "icon", type: "image/svg+xml", href: "/protoapi/logo.svg" }]],
   vite: {
     build: {
@@ -77,7 +82,6 @@ export default defineConfig({
           { text: "Changelog", link: "/changelog" },
           { text: "npm", link: "https://www.npmjs.com/package/protoapi" },
           { text: "api-smart-diff", link: "https://github.com/udamir/api-smart-diff" },
-          { text: "GraphAPI", link: "https://udamir.github.io/graphapi/" },
         ],
       },
     ],

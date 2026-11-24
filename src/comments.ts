@@ -82,6 +82,3 @@ const stripColumns = (line: string, n: number): string => {
   }
   return line.slice(i)
 }
-
-/** Split normalised text into lines; used by the annotation layer. */
-export const descriptionLines = (text: string | undefined): string[] => (text ? text.split("\n") : [])

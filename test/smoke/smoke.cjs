@@ -1,4 +1,4 @@
-// Smoke test of the built CommonJS bundles: node test/dist/smoke.cjs (after `pnpm build`).
+// Smoke test of the built CommonJS bundles: node test/smoke/smoke.cjs (after `pnpm build`).
 // Both entries are loaded through the package's own `exports` map (self-reference by name).
 const assert = require("node:assert")
 const { readFileSync } = require("node:fs")

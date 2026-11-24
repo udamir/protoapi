@@ -12,7 +12,6 @@ Derived files (origin in pbkit 0.0.72):
   misc.ts                       core/parser/misc.{js,d.ts}
   proto.ts                      core/parser/proto.{js,d.ts}
   textproto.ts                  core/parser/textproto.{js,d.ts}
-  location.ts                   core/parser/location.d.ts
   ast/*.ts                      core/ast/*.d.ts
 
 New files (not derived from pbkit): index.ts, position.ts, literals.ts.

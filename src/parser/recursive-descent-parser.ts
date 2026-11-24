@@ -5,9 +5,10 @@
  * Modifications:
  * - strict TypeScript port of the compiled `.js` + `.d.ts`.
  * - the event-emitter dependency is removed: comments are collected in `parser.comments` (deduplicated by position,
- *   so re-scanning after backtracking does not record a comment twice) and an optional `onComment` callback.
- * - regular expressions are matched in place with sticky (`y`) patterns (`lastIndex = loc`) instead of
- *   `pattern.exec(input.substr(loc))`; non-sticky patterns still work through the original substring path.
+ *   so re-scanning after backtracking does not record a comment twice).
+ * - the `debug` / `onComment` config, `ColRow` and the `mistakePatterns` of `expect` are removed.
+ * - regular expressions must be sticky (`y`) and are matched in place (`lastIndex = loc`) instead of
+ *   `pattern.exec(input.substr(loc))`.
  * - string patterns are matched with `startsWith(pattern, loc)` (no slice allocation).
  * - the per-`accept` "infinite loop" counter (`cnt > input.length * 5`, which also rejected valid tiny inputs such as
  *   `parseConstant("1")`) is removed; `many` / `flipFlop` / statement loops stop when an iteration does not advance.
@@ -25,22 +26,12 @@ export interface RecursiveDescentParser<TComment extends Token = Token> {
   addComment(comment: TComment): void
   try(pattern: Pattern): Token | undefined
   accept(pattern: Pattern): Token | undefined
-  expect(acceptPattern: Pattern, expectedPatterns?: Pattern[], mistakePatterns?: Pattern[]): Token
-}
-
-export interface RecursiveDescentParserConfig<TComment extends Token = Token> {
-  debug: boolean
-  onComment: (comment: TComment) => void
+  expect(acceptPattern: Pattern, expectedPatterns?: Pattern[]): Token
 }
 
 export interface Span {
   start: number
   end: number
-}
-
-export interface ColRow {
-  col: number
-  row: number
 }
 
 export interface Token extends Span {
@@ -61,10 +52,7 @@ export function namePattern<T extends RegExp>(pattern: T, name: string): T {
 
 export function createRecursiveDescentParser<TComment extends Token = Token>(
   input: string,
-  config?: Partial<RecursiveDescentParserConfig<TComment>>,
 ): RecursiveDescentParser<TComment> {
-  const debug = !!config?.debug
-  const onComment = config?.onComment
   const comments: TComment[] = []
   let commentsEnd = 0
   const parser: RecursiveDescentParser<TComment> = {
@@ -75,7 +63,6 @@ export function createRecursiveDescentParser<TComment extends Token = Token>(
       if (comment.start < commentsEnd) return
       commentsEnd = comment.end
       comments.push(comment)
-      onComment?.(comment)
     },
     try(pattern) {
       const loc = parser.loc
@@ -90,11 +77,10 @@ export function createRecursiveDescentParser<TComment extends Token = Token>(
       if (pattern === eof) return acceptEof()
       return acceptRegex(pattern)
     },
-    expect(acceptPattern, expectedPatterns, mistakePatterns) {
+    expect(acceptPattern, expectedPatterns) {
       const result = parser.accept(acceptPattern)
       if (result == null) {
-        const _expectedPatterns: Pattern[] = expectedPatterns ? [acceptPattern, ...expectedPatterns] : [acceptPattern]
-        throw new ParserSyntaxError(parser, _expectedPatterns, mistakePatterns)
+        throw new ParserSyntaxError(parser, expectedPatterns ? [acceptPattern, ...expectedPatterns] : [acceptPattern])
       }
       return result
     },
@@ -108,29 +94,17 @@ export function createRecursiveDescentParser<TComment extends Token = Token>(
     if (!input.startsWith(pattern, start)) return
     const end = start + pattern.length
     parser.loc = end
-    debug && console.log(pattern)
     return { start, end, text: pattern }
   }
+  /** `pattern` must be sticky: it is matched at `parser.loc` only. */
   function acceptRegex(pattern: RegExp): Token | undefined {
-    let text: string
-    let start: number
-    if (pattern.sticky) {
-      pattern.lastIndex = parser.loc
-      const execArray = pattern.exec(input)
-      if (execArray == null) return
-      text = execArray[0]
-      start = parser.loc
-    } else {
-      // pbkit's original path, kept for externally supplied `^`-anchored patterns
-      pattern.lastIndex = 0
-      const execArray = pattern.exec(input.substring(parser.loc))
-      if (execArray == null) return
-      text = execArray[0]
-      start = parser.loc + execArray.index
-    }
+    const start = parser.loc
+    pattern.lastIndex = start
+    const execArray = pattern.exec(input)
+    if (execArray == null) return
+    const text = execArray[0]
     const end = start + text.length
     parser.loc = end
-    debug && console.log(text)
     return { start, end, text }
   }
   return parser
@@ -141,17 +115,13 @@ export class ParserSyntaxError extends Error {
   readonly offset: number
   /** Unexpected text at `offset` (a token or a single character), or `eof` at the end of the input. */
   readonly got: string | typeof eof
-  /** Human-readable descriptions of `expectedPatterns`. */
+  /** Human-readable descriptions of the expected patterns. */
   readonly expected: string[]
-  readonly expectedPatterns: Pattern[]
-  readonly mistakePatterns: Pattern[]
-  constructor(parser: RecursiveDescentParser<Token>, expectedPatterns: Pattern[], mistakePatterns: Pattern[] = []) {
+  constructor(parser: RecursiveDescentParser<Token>, expectedPatterns: Pattern[]) {
     super()
-    this.expectedPatterns = expectedPatterns
-    this.mistakePatterns = mistakePatterns
     this.name = "ParserSyntaxError"
     this.offset = parser.loc
-    this.got = getGot(parser, mistakePatterns)
+    this.got = getGot(parser)
     this.expected = expectedPatterns.map(patternToString)
     this.message = `expected ${this.expected.join(" or ")}, got ${patternToString(this.got)}`
   }
@@ -171,11 +141,7 @@ export class TokenSyntaxError extends ParserSyntaxError {
 
 const gotTokenPattern = /[A-Za-z_][A-Za-z0-9_]*|[0-9][A-Za-z0-9_.]*|"(?:[^"\\\n]|\\.)*"?|'(?:[^'\\\n]|\\.)*'?/y
 
-function getGot(parser: RecursiveDescentParser<Token>, mistakePatterns: Pattern[]): string | typeof eof {
-  for (const mistakePattern of mistakePatterns) {
-    const token = parser.try(mistakePattern)
-    if (token) return token.text
-  }
+function getGot(parser: RecursiveDescentParser<Token>): string | typeof eof {
   const { input, loc } = parser
   if (loc >= input.length) return eof
   gotTokenPattern.lastIndex = loc

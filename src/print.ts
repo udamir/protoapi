@@ -29,7 +29,6 @@ import { linkAll } from "./resolve.ts"
 import { textToModel } from "./text.ts"
 import {
   FLOAT_KINDS,
-  INT32_KINDS,
   INT64_KINDS,
   INT_RANGE,
   WRAPPERS,
@@ -1164,18 +1163,13 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
         }
         return
       }
-      if (!msgs[parent] || ctx.placement.get(parent) !== path) {
-        wrappers.add(parent)
-        add(parent)
-      }
+      if (!msgs[parent] || ctx.placement.get(parent) !== path) add(parent)
     }
     for (const k of ["messages", "enums", "extensions"] as const)
       for (const key of Object.keys(ctx.doc.components?.[k] ?? {}))
         if (ctx.placement.get(key) === path && (k === "messages" || parentMessage(key) !== undefined)) add(key)
     return out
   }
-
-  const wrappers = new Set<string>()
 
   /** The proto2 group message a field or extension declares, if it prints as a group (P-1). */
   const groupOf = (name: string, f: ProtoApiField, scope: string): string | undefined => {
@@ -1263,13 +1257,12 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
   }
 
   /** Message options with the annotation keywords that have a message-level option (openapiv2_schema). */
-  const messageOptions = (fqn: string, m: ProtoApiMessage, comments: boolean): { options: Obj; tags: string[] } => {
+  const messageOptions = (fqn: string, m: ProtoApiMessage): { options: Obj; tags: string[] } => {
     const o = structuredClone(withDeprecated(m))
     const tags: string[] = []
-    const root = `${OA}Schema`
     if (typeof m.title === "string" && m.title !== lastSegment(fqn)) {
       const ok = trySet(o, OA_SCHEMA, ["json_schema", "title"], m.title)
-      if (!ok && comments) {
+      if (!ok) {
         const t = tagLine("title", m.title)
         if (t) tags.push(t)
       }
@@ -1278,7 +1271,7 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
   }
 
   const messageBodyInner = (depth: number, fqn: string, m: ProtoApiMessage) => {
-    const { options } = messageOptions(fqn, m, true)
+    const { options } = messageOptions(fqn, m)
     for (const line of optionAssignments(options, "message")) emit(depth, `option ${line};`)
     printJsonFormat(depth, m.jsonFormat, true)
     const properties: Record<string, ProtoApiField> = isPlainObject(m.properties) ? m.properties : {}
@@ -1387,7 +1380,7 @@ const createFilePrinter = (ctx: PrintContext, path: string, file: ProtoApiFile) 
 
   /** Comment of a message: `@Title` only when openapiv2_schema cannot carry the title. */
   const messageComment = (fqn: string, m: ProtoApiMessage): string[] => {
-    const { tags } = messageOptions(fqn, m, true)
+    const { tags } = messageOptions(fqn, m)
     return elementComment({ ...m, title: undefined }, undefined, tags)
   }
 

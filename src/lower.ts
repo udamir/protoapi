@@ -15,7 +15,6 @@ import type {
   ProtoApiMethod,
   ProtoApiService,
   ProtoApiTypeRef,
-  ProtoOptions,
   SourceMap,
 } from "./types.ts"
 import type {
@@ -187,10 +186,6 @@ const withoutFeatureKeys = (options: OptionTree, lifted: string[] = []): OptionT
   }
   return out
 }
-
-const nonEmpty = <T extends object>(o: T | undefined): T | undefined => (o && Object.keys(o).length ? o : undefined)
-
-const lastSegment = (fqn: string) => fqn.slice(fqn.lastIndexOf(".") + 1)
 
 /**
  * The scope enclosing `fqn` (`a.b.M` -> `a.b`). Option names are looked up from the scope buf uses for each element:
@@ -676,7 +671,6 @@ export class Lowering {
     extension: boolean,
     schema?: MOptionHolder,
   ): ProtoApiField {
-    const symbols = this.input.symbols
     const options = { ...this.opts(f, "field", file, scope) }
     const oneofOpts = oneof ? this.opts(oneof, "oneof", file, parentScope(scope)) : undefined
     const features: ResolvedFeatures = resolveFeatures(this.defaults(file.syntax), file.syntax, [
@@ -1220,6 +1214,3 @@ export const normalizeHttp = (rule: Record<string, unknown>): ProtoApiHttpRule =
       .map((r) => normalizeHttp(r as Record<string, unknown>))
   return out as unknown as ProtoApiHttpRule
 }
-
-export type { ProtoOptions }
-export const _internal = { nonEmpty, lastSegment }

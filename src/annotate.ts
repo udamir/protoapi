@@ -807,10 +807,12 @@ export const annotate = (input: AnnotationInput): AnnotationResult => {
   for (const e of input.extra ?? []) candidates.push({ target: "", ...e })
 
   // --- comments
-  const leadLines = (normalizeComment(input.leading) ?? "").split("\n").filter((_, i, a) => a.length > 1 || a[0] !== "")
+  const leadLines = (normalizeComment(input.leading) ?? "")
+    .split("\n")
+    .filter((_, _i, a) => a.length > 1 || a[0] !== "")
   const trailLines = (normalizeComment(input.trailing) ?? "")
     .split("\n")
-    .filter((_, i, a) => a.length > 1 || a[0] !== "")
+    .filter((_, _i, a) => a.length > 1 || a[0] !== "")
   let reason: string | undefined
   if (useComments) {
     const table = tagTable(input.tags).names

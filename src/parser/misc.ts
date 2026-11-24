@@ -7,6 +7,7 @@
  * - `many` / `flipFlop` stop when an accepted node did not advance the parser (replaces pbkit's global
  *   per-accept loop counter).
  * - the default identifier pattern is sticky (see recursive-descent-parser.ts).
+ * - `expectSpecialToken` (unused) is removed.
  */
 import type { Pattern, RecursiveDescentParser, Span, Token } from "./recursive-descent-parser.ts"
 
@@ -114,15 +115,6 @@ export function skipTrivia(parser: AnyParser, hash?: boolean): boolean {
     newline ||= comment.type === "singleline-comment"
   }
   return newline
-}
-
-export function expectSpecialToken<TType extends string>(
-  parser: AnyParser,
-  type: TType,
-  pattern: Pattern = identPattern,
-): Token & { type: TType } {
-  const token = parser.expect(pattern)
-  return { type, ...token }
 }
 
 export function acceptPatternAndThen<T>(pattern: Pattern, then: (token: Token) => T): AcceptFn<T> {

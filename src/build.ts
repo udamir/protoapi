@@ -10,7 +10,7 @@ import type {
   ProtoSources,
   TextBuildOptions,
 } from "./types.ts"
-import type { MEnum, MField, MFile, MMessage, MOptionHolder, MTypeRef } from "./model.ts"
+import type { MField, MFile, MOptionHolder } from "./model.ts"
 import { SymbolTable } from "./symbols.ts"
 import { linkAll } from "./resolve.ts"
 import { Lowering } from "./lower.ts"
@@ -23,7 +23,7 @@ import { validateFiles } from "./validate.ts"
 const DESCRIPTOR_PROTO = "google/protobuf/descriptor.proto"
 
 /** Parsed bundled files, shared between builds (bundled files only reference bundled files). */
-const bundleCache = new Map<string, { text: string; file: MFile; issues: BuildIssue[]; tabWidth: number }>()
+const bundleCache = new Map<string, { text: string; file: MFile; tabWidth: number }>()
 
 /** The model children a cached file is reset through (holders all of them). */
 const CHILDREN = [
@@ -57,9 +57,9 @@ const bundledFile = (path: string, text: string, tabWidth = DEFAULT_TAB_WIDTH): 
     resetFile(cached.file)
     return cached.file
   }
-  const issues: BuildIssue[] = []
-  const file = textToModel(path, text, issues, true, { tabWidth })
-  bundleCache.set(path, { text, file, issues, tabWidth })
+  // the parse issues of a bundled file are not reported
+  const file = textToModel(path, text, [], true, { tabWidth })
+  bundleCache.set(path, { text, file, tabWidth })
   return file
 }
 
@@ -402,7 +402,6 @@ export const createBuilders = (
       loaded.sources.set(f.path, text)
       queue.push(...f.imports.map((i) => i.path))
     }
-    for (const f of loaded.files) if (f.bundled) loaded.sources.set(f.path, bundleText(f.path, options.bundle) ?? "")
     const entry = (options.entry ?? loaded.files.filter((f) => !f.isImport && !f.bundled).map((f) => f.path)).map(
       normalizePath,
     )

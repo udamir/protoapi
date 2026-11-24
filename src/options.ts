@@ -25,7 +25,6 @@ import {
   toBase64,
   toSnake,
   utf8Decode,
-  utf8Encode,
   WRAPPERS,
 } from "./values.ts"
 
@@ -170,9 +169,6 @@ const isAbsentValue = (v: unknown, f: MField, def: MMessage, symbols: SymbolTabl
   if (f.repeated || f.map) return Array.isArray(v) ? v.length === 0 : isPlainObject(v) && Object.keys(v).length === 0
   return implicitPresence(f, def) && isZeroValue(v, f, symbols)
 }
-
-/** Key of a field inside an option tree: regular fields by name, extensions by fqn. */
-const extensionFqn = (_symbols: SymbolTable, field: MField): string | undefined => field.fqn
 
 // ---- canonical scalar conversion ----------------------------------------------------------------------------------
 
@@ -342,12 +338,7 @@ export class OptionInterpreter {
     return { file: this.ctx.file, options: true }
   }
 
-  private textprotoValue(
-    node: Spanned & { statements?: Spanned[] },
-    field: MField,
-    t: VType,
-    loc?: Location,
-  ): Converted {
+  private textprotoValue(node: Spanned & { statements?: Spanned[] }, t: VType, loc?: Location): Converted {
     if (node.type === "textproto-message-value") {
       if (t.kind !== "message" || !t.def) return invalid("a message value is not allowed for this field")
       return this.textprotoMessage(node.statements ?? [], t.def, loc)
@@ -414,7 +405,7 @@ export class OptionInterpreter {
           m[entry.key] = entry.value
           continue
         }
-        converted = this.textprotoValue(v, field, t as VType, loc)
+        converted = this.textprotoValue(v, t as VType, loc)
         if (converted === INVALID) {
           this.issue("invalid-option", `invalid value for ${def.fqn}.${field.name}: ${lastInvalidReason()}`, loc)
           continue
@@ -475,7 +466,7 @@ export class OptionInterpreter {
       if (n === "key") k = this.textprotoScalar(tf.value, { kind: "scalar", scalar: field.map?.key ?? "string" })
       else if (n === "value") {
         const vt = mapValueType(field, this.ctx.symbols)
-        val = this.textprotoValue(tf.value, field, vt, loc)
+        val = this.textprotoValue(tf.value, vt, loc)
       }
     }
     if (k === INVALID || val === INVALID || k === undefined) return INVALID
@@ -866,7 +857,7 @@ export const tokensText = (n: unknown, src: (n: Spanned) => string): string => {
 const keyByNumber = (symbols: SymbolTable, def: MMessage, num: number): string | undefined => {
   const f = def.fields.find((x) => x.number === num)
   if (f) return f.name
-  for (const x of symbols.extensionsByExtendee.get(def.fqn) ?? []) if (x.number === num) return extensionFqn(symbols, x)
+  for (const x of symbols.extensionsByExtendee.get(def.fqn) ?? []) if (x.number === num) return x.fqn
   return undefined
 }
 
@@ -1158,7 +1149,7 @@ export const orderTree = (
   if ("@type" in tree && def.fqn === "google.protobuf.Any") out["@type"] = tree["@type"]
   for (const f of def.fields) if (f.name in tree) out[f.name] = orderValue(tree[f.name], f)
   const exts = (symbols.extensionsByExtendee.get(def.fqn) ?? [])
-    .map((f) => ({ f, fqn: extensionFqn(symbols, f) }))
+    .map((f) => ({ f, fqn: f.fqn }))
     .filter((e): e is { f: MField; fqn: string } => !!e.fqn && e.fqn in tree)
     .sort((a, b) => a.f.number - b.f.number || a.fqn.localeCompare(b.fqn))
   for (const { f, fqn } of exts) out[fqn] = orderValue(tree[fqn], f)
@@ -1207,6 +1198,3 @@ export const dropDefaults = (kind: OptionsKind, tree: OptionTree, syntax: ProtoS
   }
   return out
 }
-
-/** utf8 helper re-export for producers */
-export const encodeUtf8 = utf8Encode

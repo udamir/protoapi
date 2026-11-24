@@ -15,5 +15,3 @@ export const ptr = (segment: string | number): string => {
   const s = String(segment)
   return s.includes("~") || s.includes("/") ? s.replace(/~/g, "~0").replace(/\//g, "~1") : s
 }
-
-export const join = (...segments: (string | number)[]): string => segments.map(ptr).join("/")
