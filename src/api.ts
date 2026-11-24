@@ -4,7 +4,7 @@
 
 import type { PrintOptions, ProtoApiDocument } from "./types.ts"
 import { type Builders, createBuilders } from "./build.ts"
-import { createPrinter } from "./print.ts"
+import { createPrinter } from "./print/index.ts"
 
 export interface ProtoApi extends Builders {
   /** Print a document back to `.proto` files (path -> text). */
