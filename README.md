@@ -1,6 +1,6 @@
 # protoapi
 
-ProtoApi is a JSON document format for Protocol Buffers APIs, plus the tools that convert to and from it: `.proto` text → ProtoApi, `FileDescriptorSet` → ProtoApi, ProtoApi → `.proto` text, and a source map that locates every document node in the original files. It is the protobuf counterpart of [gqlapi](https://github.com/udamir/graphapi) and the input format of [api-smart-diff](https://github.com/udamir/api-smart-diff) for protobuf and gRPC diffs.
+ProtoApi is a JSON document format for Protocol Buffers APIs, plus the tools that convert to and from it: `.proto` text → ProtoApi, `FileDescriptorSet` → ProtoApi, ProtoApi → `.proto` text, and a source map that locates every document node in the original files. It is the input format of [api-smart-diff](https://github.com/udamir/api-smart-diff) for protobuf and gRPC diffs.
 
 **Documentation: [udamir.github.io/protoapi](https://udamir.github.io/protoapi/)** — guide, specification, conversion examples and an online demo.
 
@@ -9,6 +9,10 @@ ProtoApi is a JSON document format for Protocol Buffers APIs, plus the tools tha
 - annotation layer: comment tags (`@Minimum 1`, `@Format email`, …), AIP prefixes (`Required.`, `Output only.`, …), `google.api.field_behavior` / `field_info`, protovalidate, protoc-gen-validate and grpc-gateway rules lifted into JSON Schema keywords
 - bundled definitions (protobuf v36.2, see `bundle/VERSIONS.md`): well-known types, `cpp_features`, `java_features`, `go_features` (protobuf-go), `google/api`, `google/rpc`, `google/type`, `buf/validate`, `validate`, `protoc-gen-openapiv2`
 - no runtime dependencies
+
+## Motivation
+
+ProtoApi was created for a unified approach to API diffs: [api-smart-diff](https://github.com/udamir/api-smart-diff) compares JSON API documents of a common shape (OpenAPI, AsyncAPI, JSON Schema) with one engine that classifies every change as breaking, non-breaking, deprecated or annotation. A `.proto` file or a `FileDescriptorSet` does not have that shape; a ProtoApi document does, so protobuf and gRPC APIs can be diffed with the same engine, rules and reports as the other formats. That goal drives the design: equal APIs give byte-identical documents whatever the source, the source map places every change at its `.proto` line, and validation annotations become JSON Schema keywords. See [Motivation](https://udamir.github.io/protoapi/guide/#motivation).
 
 ## Install
 
@@ -116,6 +120,8 @@ Lifted keywords print back as the convention option they come from when the file
 | `parseProto(text, path?)`                       | low-level parser: `{ ast, comments, issues }`; on a syntax error the AST holds the complete statements before it and `issues` the `syntax` issue (located like the builders do)                                                                                                                              |
 | `bundledFiles`                                  | the bundled `.proto` sources (`descriptor.proto` and the feature files in `protoapi/core`)                                                                                                                                                                                                                   |
 | `createProtoApi(bundle)`                        | all builders and `printProto` over a bundle of your own (import path → text)                                                                                                                                                                                                                                 |
+| `defaultJsonName(name)`                         | the JSON name protoc gives a field by default (`foo_bar` → `fooBar`); a document writes `jsonName` only when it differs, so `field.jsonName ?? defaultJsonName(key)` is any field's JSON name                                                                                                                |
+| `normalizeComment(text)`                        | normalizes comment text (without its markers) the way descriptions are normalized                                                                                                                                                                                                                            |
 
 Every builder returns `{ document, sourceMap, issues }` and never throws on input problems; issues carry `code`, `message`, `file`, `location` and the document `pointer`. Wrong argument types (sources that are not an object of strings, a set without a `file` array, bytes that are not a `Uint8Array`, options of the wrong type) are programming errors and throw a `TypeError`, synchronously also for the async builders; so do `printProto`, `parseProto`, `locatePointer` and `locateDiff`. `printProto` prints documents with missing optional parts. Build options:
 
@@ -142,9 +148,10 @@ Issue codes: `syntax`, `missing-import`, `unresolved-type` (also a name of the w
 - `files[path].bundled: true` marks a file resolved from the bundle that is not an entry file; it has no header `description` and is not printed by `printProto`.
 - `required: true` on a field is annotation-level requiredness (`@Required`, the `Required.` prefix, `field_behavior = REQUIRED`, protovalidate / PGV `required`, the fields named by `openapiv2_schema.json_schema.required`); wire-level requiredness (a `required` label, `LEGACY_REQUIRED`) is `presence: required` and never sets the keyword. Messages carry no `required` array: a strict JSON Schema projection rebuilds it from the fields that carry the keyword.
 - Descriptions come from an element's leading and trailing comments, attached as buf 1.75 attaches them (`SourceCodeInfo`), so both producers agree for a buf-built set; the detached comments above the first statement are the file's header `description`.
-- Source map: one entry per element and sub-element (design §9), one per `reserved` / `extensions` interval and reserved name (the written range), per `extensionOptions` range, and keyword entries: a keyword lifted from an option points at the option statement, one from a comment tag or AIP prefix at the tag line (leading `//` comments), resolved keywords at the feature option that sets them, a field's `required` named by `openapiv2_schema.json_schema.required` at the message's option statement. Both producers give the same pointers and spans.
+- Source map: one entry per element and sub-element (spec §5), one per `reserved` / `extensions` interval and reserved name (the written range), per `extensionOptions` range, and keyword entries: a keyword lifted from an option points at the option statement, one from a comment tag or AIP prefix at the tag line (leading `//` comments), resolved keywords at the feature option that sets them, a field's `required` named by `openapiv2_schema.json_schema.required` at the message's option statement. Both producers give the same pointers and spans.
+- JSON Schema: [`schemas/v0.1/schema.json`](schemas/v0.1/schema.json) (draft 2020-12) validates the structure of a document; it ships in the package as `protoapi/schemas/v0.1/schema.json` and is served at https://udamir.github.io/protoapi/schemas/v0.1/schema.json.
 
-The full specification, with about 85 proto → ProtoApi examples, is the design document `PROTOAPI_PACKAGE_DESIGN.md` in the api-smart-diff repository (`docs/`).
+The full specification is [`docs/spec/v0.1.md`](docs/spec/v0.1.md); the documentation site (`docs/`) adds the guide and proto → ProtoApi conversion examples.
 
 ## Development
 
@@ -152,7 +159,7 @@ The project uses [pnpm](https://pnpm.io), [Vite+](https://viteplus.dev) (`vp`: V
 
 ```sh
 pnpm install
-pnpm test                   # all tests (PB-1 … PB-9), one file at a time (vp test run)
+pnpm test                   # all tests, one file at a time (vp test run)
 pnpm typecheck              # tsc --noEmit (TypeScript 7)
 pnpm check                  # format check, lint and type-aware checks (vp check; vp check --fix to fix)
 pnpm build                  # dist/ + browser/ (vp pack)
@@ -160,11 +167,11 @@ pnpm test:dist              # smoke tests of both entries (CommonJS and ESM) aft
 pnpm docs:dev               # documentation site (VitePress, docs/); docs:build builds it, with the buf CLI for the examples
 pnpm images                 # regenerate buf images for the conformance fixtures and the bundle (needs the buf devDependency)
 node scripts/case-images.ts # record buf's verdict on the inline test cases (test/cases/*.ts)
-node scripts/print-check.ts # record that the printed text of every round-trip input passes buf build (PB-7.12)
+node scripts/print-check.ts # record that the printed text of every round-trip input passes buf build
 node scripts/comment-fuzz.ts check 2000  # differential comment fuzz against buf (random layouts); without `check` it rewrites the named/comments-fuzz fixture
 node scripts/fetch-corpus.ts && node scripts/fetch-breaking.ts  # googleapis samples, buf's breaking test corpus
 pnpm bundle:fetch && pnpm bundle:gen                            # update the bundled definitions
-node bench/budgets.ts [--write]                                 # performance budgets (PB-9) on Node: min / median / max per row, bench/results/node.md
+node bench/budgets.ts [--write]                                 # performance budgets on Node: min / median / max per row, bench/results/node.md
 node bench/bench.ts --descriptor                                # timings per corpus size
 ```
 

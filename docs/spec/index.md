@@ -96,6 +96,10 @@ components:
 
 :::
 
+## Motivation
+
+ProtoApi exists so that protobuf and gRPC APIs can be compared with the same approach as other API formats: [api-smart-diff](https://github.com/udamir/api-smart-diff) compares any two JSON API documents of a common shape with one engine and one set of change classes (breaking, non-breaking, deprecated, annotation), and ProtoApi gives protobuf that shape. The design principles below serve that goal; the [guide](/guide/#motivation) explains it in more detail.
+
 ## Design principles
 
 - **API-shaped, not file-shaped.** Services and methods come first; messages, enums and extensions are components keyed by fully qualified name, whatever file declares them. Files are listed separately, with what belongs to the file itself (syntax, package, imports, file options), and every service and component names its declaring `file`.
@@ -108,4 +112,4 @@ components:
 
 - [ProtoApi 0.1](/spec/v0.1) — the normative definition of the document.
 - [Conversion examples](/examples/) — one `.proto` example per feature, with its document, buf's descriptor set, the source map and the printed text.
-- [GraphAPI](https://udamir.github.io/graphapi/) — the same idea for GraphQL schemas; both formats are inputs of [api-smart-diff](https://github.com/udamir/api-smart-diff).
+- [api-smart-diff](https://github.com/udamir/api-smart-diff) — takes ProtoApi documents as its input format for protobuf and gRPC diffs.
