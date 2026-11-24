@@ -6,7 +6,7 @@
  * - reconstructed as TypeScript source from the published `.d.ts`; type-only imports.
  * - (parser side) `TextprotoSignedHexLit` values are now produced; pbkit declared the type but never parsed hex.
  */
-import type { Span, Token } from "../recursive-descent-parser.ts"
+import type { Span, Token } from "../scanner.ts"
 
 export interface Textproto {
   statements: TextprotoMessageStatement[]

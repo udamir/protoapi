@@ -38,8 +38,7 @@ import { decodeStringLiteral } from "../../values/literals.ts"
 import { normalizePath, ptr } from "../../paths.ts"
 import { FIELD_NUMBER_MAX, INT32_MAX, MESSAGE_SET_NUMBER_MAX } from "../../common/limits.ts"
 import { enumPointer, extensionPointer, filePointer, messagePointer, qualify } from "../../common/names.ts"
-import { createLineIndex } from "../../parser/index.ts"
-import { parse } from "../../parser/proto.ts"
+import { createLineIndex, parseProtoSource } from "../../parser/index.ts"
 import { type Ctx, identText, intOf, locsOf, span, src, syntaxIssue, typeRefOf } from "./context.ts"
 import { commentsOf, groupsText, tokenRange } from "./nodes.ts"
 import { applyFieldOptions, isMessageSet, pushFieldOptions, pushOption } from "./options.ts"
@@ -380,7 +379,8 @@ export const textToModel = (
   options: TextModelOptions = {},
 ): MFile => {
   const path = normalizePath(rawPath)
-  const lines = createLineIndex(text, { tabWidth: options.tabWidth ?? DEFAULT_TAB_WIDTH })
+  const tabWidth = options.tabWidth ?? DEFAULT_TAB_WIDTH
+  const lines = createLineIndex(text, { tabWidth })
   const loc = (start: number, end: number): Location => ({
     file: path,
     start: lines.toPosition(start),
@@ -388,18 +388,13 @@ export const textToModel = (
   })
   const file = newFile(newHolder(), path, "proto2", "", [], {}, { bundled })
   const ctx: Ctx = { path, text, loc, syntax: "proto2", pkg: "", file, issues, check: !bundled }
-  const result = parse(text)
+  const result = parseProtoSource(text, path, { tabWidth })
   if (result.error) {
     file.parsed = false
-    issues.push({
-      code: "syntax",
-      message: result.error.message,
-      file: path,
-      location: loc(result.error.offset, result.error.offset),
-    })
+    issues.push(...result.issues)
     // text#14: keep the syntax and package statements parsed before the error. A file whose first complete statement
     // is not a syntax / edition statement is proto2; with no complete statement the syntax is not known.
-    const partial: TopLevelStatement[] = (result.partial ?? []).filter((st) => st.type !== "empty")
+    const partial: TopLevelStatement[] = result.ast.statements.filter((st) => st.type !== "empty")
     if (partial.length) readHeader({ ...ctx, check: false }, partial)
     else file.syntaxUnknown = true
     return file

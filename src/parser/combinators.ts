@@ -2,17 +2,20 @@
  * Origin: pbkit 0.0.72, `core/parser/misc.{js,d.ts}` (https://github.com/pbkit/pbkit),
  * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0 (see ./LICENSE-MIT, ./LICENSE-APACHE).
  *
+ * Parser combinators shared by the `.proto` and text-format grammars.
+ *
  * Modifications:
  * - strict TypeScript port; parser type is generic over the comment type.
  * - `many` / `flipFlop` stop when an accepted node did not advance the parser (replaces pbkit's global
  *   per-accept loop counter).
- * - the default identifier pattern is sticky (see recursive-descent-parser.ts).
  * - `expectSpecialToken` (unused) is removed.
+ * - renamed from `misc.ts`; the token helpers (`acceptSpecialToken`, the identifier and comment patterns, `skipTrivia`) moved to lexer.ts.
+ * - `signed` (from textproto.ts, where it accepted `-` only) takes the sign characters, so proto.ts's signed literals use it too.
  */
-import type { Pattern, RecursiveDescentParser, Span, Token } from "./recursive-descent-parser.ts"
+import type { Pattern, RecursiveDescentParser, Span, Token } from "./scanner.ts"
 
 /** Any parser: `addComment` is a method, so a parser of a narrower comment type is assignable to this. */
-type AnyParser = RecursiveDescentParser<Token>
+export type AnyParser = RecursiveDescentParser<Token>
 
 export type AcceptFn<T, P extends AnyParser = AnyParser> = (parser: P) => T | undefined
 
@@ -76,51 +79,29 @@ export function mergeSpans(spans: (undefined | Span | (undefined | Span)[])[]): 
   return { start, end }
 }
 
-const identPattern = /[A-Za-z_][A-Za-z0-9_]*/y
-
-export function acceptSpecialToken<TType extends string>(
-  parser: AnyParser,
-  type: TType,
-  pattern: Pattern = identPattern,
-): (Token & { type: TType }) | undefined {
-  const token = parser.accept(pattern)
-  if (!token) return
-  return { type, ...token }
-}
-
-export const multilineCommentPattern = /\/\*[\s\S]*?\*\//y
-export const singlelineCommentPattern = /\/\/[^\n]*(?:\n|$)/y
-const whitespacePattern = /\s+/y
-const textprotoCommentPattern = /#[^\n]*(?:\n|$)/y
-
-/** Skips whitespace and comments, recording the comments; `#` comments too with `hash` (text format). Returns whether a newline or a `//` comment was skipped. */
-export function skipTrivia(parser: AnyParser, hash?: boolean): boolean {
-  const input = parser.input
-  let newline = false
-  while (true) {
-    const c = input.charCodeAt(parser.loc)
-    // fast path: neither whitespace nor a comment start
-    if (c !== 47 /* / */ && !(hash && c === 35) /* # */ && !(c <= 32 || c >= 0x80)) break
-    const whitespace = parser.accept(whitespacePattern)
-    if (whitespace) {
-      newline ||= whitespace.text.includes("\n")
-      continue
-    }
-    const comment =
-      acceptSpecialToken(parser, "multiline-comment", multilineCommentPattern) ??
-      acceptSpecialToken(parser, "singleline-comment", singlelineCommentPattern) ??
-      (hash ? acceptSpecialToken(parser, "textproto-comment", textprotoCommentPattern) : undefined)
-    if (!comment) break
-    parser.addComment(comment)
-    newline ||= comment.type === "singleline-comment"
-  }
-  return newline
-}
-
 export function acceptPatternAndThen<T>(pattern: Pattern, then: (token: Token) => T): AcceptFn<T> {
   return function accept(parser: AnyParser): T | undefined {
     const token = parser.accept(pattern)
     if (!token) return
     return then(token)
+  }
+}
+
+/** A node of type `type`: an optional sign token (the first of `signs` that matches) followed by a `value` node. */
+export function signed<TValue extends Token, TType extends string, P extends AnyParser = AnyParser>(
+  acceptFn: AcceptFn<TValue, P>,
+  type: TType,
+  signs: readonly string[],
+): AcceptFn<{ start: number; end: number; type: TType; sign?: Token; value: TValue }, P> {
+  return function accept(parser) {
+    const loc = parser.loc
+    let sign: Token | undefined
+    for (let i = 0; i < signs.length && !sign; i++) sign = parser.accept(signs[i])
+    const value = acceptFn(parser)
+    if (!value) {
+      parser.loc = loc
+      return
+    }
+    return { ...mergeSpans([sign, value]), type, sign, value }
   }
 }

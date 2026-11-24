@@ -4,6 +4,7 @@
  *
  * Modifications:
  * - strict TypeScript port of the compiled `.js` + `.d.ts`.
+ * - renamed from `recursive-descent-parser.ts` (the scanner every grammar file builds on); its contents are unchanged by the rename.
  * - the event-emitter dependency is removed: comments are collected in `parser.comments` (deduplicated by position,
  *   so re-scanning after backtracking does not record a comment twice).
  * - the `debug` / `onComment` config, `ColRow` and the `mistakePatterns` of `expect` are removed.

@@ -8,8 +8,10 @@ at your option. The derived files are used under the MIT licence; both licence
 texts are reproduced in this directory as published with pbkit 0.0.72.
 
 Derived files (origin in pbkit 0.0.72):
-  recursive-descent-parser.ts   core/parser/recursive-descent-parser.{js,d.ts}
-  misc.ts                       core/parser/misc.{js,d.ts}
+  scanner.ts                    core/parser/recursive-descent-parser.{js,d.ts}
+  combinators.ts                core/parser/misc.{js,d.ts}
+  lexer.ts                      core/parser/misc.{js,d.ts}, core/parser/proto.{js,d.ts}, core/parser/textproto.{js,d.ts}
+  comments.ts                   core/parser/proto.{js,d.ts}
   proto.ts                      core/parser/proto.{js,d.ts}
   textproto.ts                  core/parser/textproto.{js,d.ts}
   ast/*.ts                      core/ast/*.d.ts
@@ -17,9 +19,8 @@ Derived files (origin in pbkit 0.0.72):
 New files (not derived from pbkit): index.ts, position.ts, literals.ts.
 
 Summary of modifications (each derived file lists its own in its header):
-- Reconstructed as strict TypeScript from the compiled JavaScript and type
-  declarations of 0.0.72 (no TypeScript source of that version is published);
-  function names, file split and AST node shapes are kept.
+- Reconstructed as strict TypeScript from the compiled JavaScript and type declarations of 0.0.72 (no TypeScript source of that version is published); the AST node shapes and the ast/*.ts file split are kept, and so are most function names.
+- Files reorganised: recursive-descent-parser.ts is renamed scanner.ts; misc.ts is split into combinators.ts (many, flipFlop, choice, mergeSpans, acceptPatternAndThen, signed) and lexer.ts (the token patterns shared by both grammars, keywords, string literals, whitespace and comments); the comment attachment of proto.ts is in comments.ts; repeated grammar functions of proto.ts are merged (one expectBlock for the six block bodies, shared helpers for syntax / edition, group / oneof group and signed literals).
 - The event-emitter dependency (core/runtime/async/event-emitter) is removed;
   comments are collected in an array on the parser, each comment once.
 - Tokens are matched with sticky regular expressions compiled once instead of

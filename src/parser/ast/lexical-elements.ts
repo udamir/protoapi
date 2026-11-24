@@ -5,7 +5,7 @@
  * Modifications:
  * - reconstructed as TypeScript source from the published `.d.ts`; type-only imports.
  */
-import type { Span, Token } from "../recursive-descent-parser.ts"
+import type { Span, Token } from "../scanner.ts"
 import type { StatementBase } from "./index.ts"
 import type { TextprotoMessageStatement } from "./textproto.ts"
 

@@ -7,7 +7,7 @@
  * - `Import.weakOrPublic` documented to also hold `option` (edition 2024 `import option "x.proto";`).
  * - comment semantics of `StatementBase` follow buf 1.75 (see KNOWN_DEVIATIONS in ../proto.ts).
  */
-import type { Span, Token } from "../recursive-descent-parser.ts"
+import type { Span, Token } from "../scanner.ts"
 import type * as extensionsAndReserved from "./extensions-and-reserved.ts"
 import type * as fields from "./fields.ts"
 import type * as lexicalElements from "./lexical-elements.ts"

@@ -11,7 +11,7 @@ export type * from "./ast/index.ts"
 export type { Comment as ProtoComment, ParseError, ParseResult, ProtoParser } from "./proto.ts"
 export type { TextprotoParseResult } from "./textproto.ts"
 export type { LineIndex, Position } from "./position.ts"
-export type { Span, Token } from "./recursive-descent-parser.ts"
+export type { Span, Token } from "./scanner.ts"
 export { createLineIndex } from "./position.ts"
 export { decodeBytesLit, decodeStrLit, decodeUtf8, parseFloatLit, parseIntLit } from "./literals.ts"
 export { parseConstant, parseTextprotoMessage }
@@ -40,12 +40,22 @@ export interface ParseProtoResult {
  */
 export function parseProto(text: string, path = "input.proto"): ParseProtoResult {
   if (typeof text !== "string" || typeof path !== "string") throw new TypeError("parseProto: text and path are strings")
+  return parseProtoSource(text, path, { tabWidth: 4 })
+}
+
+export interface ParseProtoSourceOptions {
+  /** Tab stop of the syntax issue's columns (the builders' `tabWidth`). */
+  tabWidth: number
+}
+
+/** `parseProto` without the argument checks and with the columns of the syntax issue counted with `options.tabWidth`: the text front end's entry point. */
+export function parseProtoSource(text: string, path: string, options: ParseProtoSourceOptions): ParseProtoResult {
   const { ast, comments, error, partial } = parse(text)
   const result: ParseProtoResult = { ast, comments: comments as Comment[], issues: [] }
   if (error) {
     result.ast = { statements: partial ?? [] }
     result.error = error
-    const lines = createLineIndex(text, { tabWidth: 4 })
+    const lines = createLineIndex(text, { tabWidth: options.tabWidth })
     const at = lines.toPosition(error.offset)
     result.issues.push({
       code: "syntax",
