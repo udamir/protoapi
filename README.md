@@ -1,18 +1,18 @@
 # protoapi
 
-ProtoApi is a JSON document format for Protocol Buffers APIs, plus the tools that convert to and from it: `.proto` text → ProtoApi, `FileDescriptorSet` → ProtoApi, ProtoApi → `.proto` text, and a source map that locates every document node in the original files. It is the input format of [api-smart-diff](https://github.com/udamir/api-smart-diff) for protobuf and gRPC diffs.
+ProtoApi is a JSON document format for Protocol Buffers APIs, plus the tools that convert to and from it: `.proto` text → ProtoApi, `FileDescriptorSet` → ProtoApi, ProtoApi → `.proto` text, and a source map that locates every document node in the original files.
 
-**Documentation: [udamir.github.io/protoapi](https://udamir.github.io/protoapi/)** — guide, specification, conversion examples and an online demo.
+**Documentation: [udamir.github.io/protoapi](https://udamir.github.io/protoapi/)** — [guide](https://udamir.github.io/protoapi/guide/), [specification](https://udamir.github.io/protoapi/spec/), [conversion examples](https://udamir.github.io/protoapi/examples/) and an [online demo](https://udamir.github.io/protoapi/demo).
 
-- proto2, proto3, editions 2023, 2024 and 2026; edition feature defaults are read from `descriptor.proto` (`FeatureSetDefaults`), and a `descriptor.proto` of your own wins over the bundled one. An edition this version does not know (`UNSTABLE`, a future edition) is written verbatim in `syntax` with an `unsupported` issue and resolved with the edition 2026 defaults.
-- two producers with byte-identical output: pure TypeScript `.proto` parser (browser-capable) and `FileDescriptorSet` (ProtoJSON from `buf build -o image.json`, or binary through `@bufbuild/protobuf`)
-- annotation layer: comment tags (`@Minimum 1`, `@Format email`, …), AIP prefixes (`Required.`, `Output only.`, …), `google.api.field_behavior` / `field_info`, protovalidate, protoc-gen-validate and grpc-gateway rules lifted into JSON Schema keywords
-- bundled definitions (protobuf v36.2, see `bundle/VERSIONS.md`): well-known types, `cpp_features`, `java_features`, `go_features` (protobuf-go), `google/api`, `google/rpc`, `google/type`, `buf/validate`, `validate`, `protoc-gen-openapiv2`
-- no runtime dependencies
+- proto2, proto3 and editions 2023, 2024 and 2026
+- two producers with byte-identical output: a pure TypeScript `.proto` parser (runs in the browser) and `FileDescriptorSet` input (ProtoJSON from `buf build -o image.json`, or binary)
+- validation and documentation conventions — comment tags, AIP prefixes, `google.api.field_behavior`, protovalidate, protoc-gen-validate, grpc-gateway — lifted into JSON Schema keywords
+- bundled definitions of the well-known types, googleapis, protovalidate, protoc-gen-validate and grpc-gateway, so most imports resolve without setup
+- a printer back to `.proto` text, a source map, and no runtime dependencies
 
 ## Motivation
 
-ProtoApi was created for a unified approach to API diffs: [api-smart-diff](https://github.com/udamir/api-smart-diff) compares JSON API documents of a common shape (OpenAPI, AsyncAPI, JSON Schema) with one engine that classifies every change as breaking, non-breaking, deprecated or annotation. A `.proto` file or a `FileDescriptorSet` does not have that shape; a ProtoApi document does, so protobuf and gRPC APIs can be diffed with the same engine, rules and reports as the other formats. That goal drives the design: equal APIs give byte-identical documents whatever the source, the source map places every change at its `.proto` line, and validation annotations become JSON Schema keywords. See [Motivation](https://udamir.github.io/protoapi/guide/#motivation).
+ProtoApi was created for a unified approach to API diffs: [api-smart-diff](https://github.com/udamir/api-smart-diff) compares JSON API documents of a common shape (OpenAPI, AsyncAPI, JSON Schema) with one engine that classifies every change as breaking, non-breaking, deprecated or annotation. A ProtoApi document gives protobuf and gRPC APIs that shape, so they can be diffed with the same engine, rules and reports. See [Motivation](https://udamir.github.io/protoapi/guide/#motivation).
 
 ## Install
 
@@ -20,40 +20,34 @@ ProtoApi was created for a unified approach to API diffs: [api-smart-diff](https
 npm install protoapi
 ```
 
-| Entry           |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `protoapi`      | the API with the bundled definitions (`browser/protoapi.min.js` about 158 KB gzip, of which the bundled `.proto` sources are about 97 KB)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `protoapi/core` | the same API without the convention sources: about 60 KB gzip of code (minified, without any bundled `.proto` text), about 78 KB gzip for `browser/protoapi-core.min.js` with the core sources below. It keeps `google/protobuf/descriptor.proto` and `cpp_features` / `java_features` / `go_features.proto`, so built-in options and `features.*` are typed without anything supplied. Imports of the well-known types, googleapis, protovalidate, PGV and grpc-gateway must come from `sources`, a loader, the `bundle` option or the descriptor set. `createProtoApi(bundle)` creates the API over a bundle you load yourself (for example `bundledFiles` of `protoapi`, imported lazily). |
-
-ESM and CommonJS builds are in `dist/`; the `browser` field points at the ESM build. `browser/protoapi.min.js` (global `protoapi`, also the `unpkg` / `jsdelivr` file) and `browser/protoapi-core.min.js` (global `protoapiCore`) are minified IIFEs for `<script>` tags.
+`protoapi` includes the bundled definitions; `protoapi/core` is the same API without them. Binary descriptor sets need the optional peer dependency `@bufbuild/protobuf`. Requires Node.js 18 or later; ESM, CommonJS and browser builds are included.
 
 ## Usage
 
 ```ts
-import { buildFromProto, buildFromDescriptorSet, printProto, locateDiff } from "protoapi"
+import { buildFromProto, printProto } from "protoapi"
 
 const { document, sourceMap, issues } = buildFromProto({
   "shop/v1/pet.proto": `
     syntax = "proto3";
     package shop.v1;
-    import "google/protobuf/timestamp.proto";
     // A pet.
     message Pet {
       // Required. Unique id.
       int64 id = 1;
       optional string nickname = 2;
-      google.protobuf.Timestamp created_at = 3;
     }
     service PetService { rpc GetPet(Pet) returns (stream Pet); }
   `,
 })
+
+const files = printProto(document) // back to .proto text
 ```
 
 ```yaml
 protoapi: "0.1"
-files: # dependencies first
-  google/protobuf/timestamp.proto: { syntax: proto3, package: google.protobuf, options: { … }, bundled: true }
-  shop/v1/pet.proto: { syntax: proto3, package: shop.v1, imports: [google/protobuf/timestamp.proto] }
+files:
+  shop/v1/pet.proto: { syntax: proto3, package: shop.v1 }
 services:
   shop.v1.PetService:
     title: PetService
@@ -72,109 +66,23 @@ components:
       properties:
         id: { description: Unique id., number: 1, type: int64, required: true }
         nickname: { number: 2, type: string, presence: explicit }
-        created_at: { number: 3, $ref: "#/components/messages/google.protobuf.Timestamp" }
-    google.protobuf.Timestamp: { … }
 ```
 
-Imports are emitted by `imports` (default `"user"`): the entry files and every file you supply (in `sources` or through the loader) that they reach through imports of any kind (plain, `public`, `weak`, edition 2024 `import option`) are emitted in full; a file resolved from the bundle (the built-in one or the `bundle` option) contributes only the declarations referenced from emitted ones (field, map value and method types; extendees are not followed) and is marked `bundled: true` in `files` unless it is an entry file. A file you supply is a user file even under a bundled path such as `google/protobuf/…`. Bundled files carry no header `description` (their licence comment), in every mode; user files and entry files keep theirs. The descriptor producer treats a set file as bundled when its path is a key of the bundle in effect (`protoapi`: the whole bundle, `protoapi/core`: `descriptor.proto` and the feature files, plus the `bundle` option). `"referenced"` emits the entry files in full and only referenced declarations of every imported file (what `includeImports: false` did), `"all"` every file of the build. api-smart-diff compares documents built with the default `"user"`: build both documents of a comparison with it.
+Builders never throw on invalid input: they return the most complete document the input allows, with `issues`. See [Getting started](https://udamir.github.io/protoapi/guide/getting-started), [Usage](https://udamir.github.io/protoapi/guide/usage) (build options, descriptor sets, printing) and the [API reference](https://udamir.github.io/protoapi/guide/api).
 
-From a buf image:
-
-```ts
-import { readFileSync } from "node:fs"
-const image = JSON.parse(readFileSync("image.json", "utf8")) // buf build -o image.json
-const result = buildFromDescriptorSet(image)
-```
-
-Binary descriptor sets need the optional peer dependency `@bufbuild/protobuf` >= 2.8.0 (edition 2024; >= 2.16.0 for edition 2026), or your own decoder. Those `@bufbuild/protobuf` releases need Node 20+, while protoapi itself (text and ProtoJSON input) supports Node 18.
-
-```ts
-const result = await buildFromDescriptorSetBinary(bytes) // or { decoder: (bytes) => fileDescriptorSetJson }
-```
-
-Custom options are decoded with a registry built per file from the set plus the bundled definitions, so thin sets (`protoc` without `--include_imports`, `buf build --exclude-imports`) keep `google.api.http`, `field_behavior` and protovalidate rules. A file the decoder cannot load (an edition newer than the installed `@bufbuild/protobuf`, a missing import) is an `unsupported` issue, and an option without a definition anywhere is an `unknown-option` issue; the other files are not affected. buf's `bufExtension.isImport` is read from binary images too. A missing or 1.x `@bufbuild/protobuf` is an `unsupported` issue with a version hint.
-
-Back to `.proto` text (one text per file; `build(print(build(x)))` equals `build(x)` except for `x-annotation-conflicts`):
-
-```ts
-const files: Record<string, string> = printProto(document)
-// files marked bundled are not printed (they resolve from the bundle when rebuilt); a document built with
-// imports: "referenced" holds only the referenced types of imported files: pass the sources so that option values
-// defined there print with their types
-const same = printProto(result.document, { sources })
-```
-
-Lifted keywords print back as the convention option they come from when the file's imports (or their public re-exports) make it available, in the precedence order of the annotation layer (`google.api` → protovalidate → PGV → openapiv2); otherwise as comment tags (`@Minimum 1`, `@Enum RED, BLUE`) or AIP prefixes (`Immutable.`). Pass `tags: false` for documents built with `annotations: "options"` or `"none"`, and the build's `tags` map for renamed tags. Resolved features (`packed`, `utf8Validation`, `jsonFormat`) and inherited editions features print in the spelling of the file's syntax, groups as groups (also in `extend` blocks), `Any` values in the expanded `[type.googleapis.com/T] { … }` form, unknown editions verbatim. Documents without `files` print into `fileName` with the syntax inferred from the content and the longest common package prefix of the keys; types the bundle declares are imported.
-
-## API
-
-| Function                                        |                                                                                                                                                                                                                                                                                                              |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `buildFromProto(sources, options?)`             | `sources`: import path → text. Imports resolve from `sources`, then `options.bundle`, then the built-in bundle, then `options.loader`.                                                                                                                                                                       |
-| `buildFromProtoAsync(sources, options?)`        | same, with an async `loader`                                                                                                                                                                                                                                                                                 |
-| `buildFromDescriptorSet(set, options?)`         | ProtoJSON `FileDescriptorSet` / buf image; camelCase or snake_case keys                                                                                                                                                                                                                                      |
-| `buildFromDescriptorSetBinary(bytes, options?)` | async; `options.decoder` or `@bufbuild/protobuf`                                                                                                                                                                                                                                                             |
-| `printProto(document, options?)`                | `{ indent?, tags?, fileName?, sources? }` → `Record<path, text>`; `tags`: `true` (default), `false`, or the build's rename map; `sources`: definitions the document does not hold                                                                                                                            |
-| `locatePointer(pointer, sourceMap)`             | location of a node or its nearest ancestor                                                                                                                                                                                                                                                                   |
-| `locateDiff(diff, beforeMap, afterMap)`         | location of an api-smart-diff 2.0 diff (`{ action, path, before?, after?, origin? }`): `remove` in the before map, `add` / `replace` / `rename` in the after map (a rename's `path` is the container, `after` the new key); `reserved` / `extensions` indices the written range, `$ref` leaves the type name |
-| `parseProto(text, path?)`                       | low-level parser: `{ ast, comments, issues }`; on a syntax error the AST holds the complete statements before it and `issues` the `syntax` issue (located like the builders do)                                                                                                                              |
-| `bundledFiles`                                  | the bundled `.proto` sources (`descriptor.proto` and the feature files in `protoapi/core`)                                                                                                                                                                                                                   |
-| `createProtoApi(bundle)`                        | all builders and `printProto` over a bundle of your own (import path → text)                                                                                                                                                                                                                                 |
-| `defaultJsonName(name)`                         | the JSON name protoc gives a field by default (`foo_bar` → `fooBar`); a document writes `jsonName` only when it differs, so `field.jsonName ?? defaultJsonName(key)` is any field's JSON name                                                                                                                |
-| `normalizeComment(text)`                        | normalizes comment text (without its markers) the way descriptions are normalized                                                                                                                                                                                                                            |
-
-Every builder returns `{ document, sourceMap, issues }` and never throws on input problems; issues carry `code`, `message`, `file`, `location` and the document `pointer`. Wrong argument types (sources that are not an object of strings, a set without a `file` array, bytes that are not a `Uint8Array`, options of the wrong type) are programming errors and throw a `TypeError`, synchronously also for the async builders; so do `printProto`, `parseProto`, `locatePointer` and `locateDiff`. `printProto` prints documents with missing optional parts. Build options:
-
-| Option           | Default                                          |                                                                                                                                                                                                                                                          |
-| ---------------- | ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `entry`          | all `sources` keys / non-import descriptor files | files whose declarations are always emitted in full                                                                                                                                                                                                      |
-| `imports`        | `"user"`                                         | `"user"`: entry files and every non-bundled file they import (any kind, transitively) in full, bundled files referenced declarations only; `"referenced"`: entry files in full, imported files referenced declarations only; `"all"`: every file in full |
-| `includeImports` | —                                                | deprecated alias: `true` is `imports: "all"`, `false` is `imports: "referenced"`; contradicting `imports` is a `TypeError`                                                                                                                               |
-| `annotations`    | `"all"`                                          | `"all"` tags + prefixes + options, `"options"` options only, `"none"` convention options stay raw                                                                                                                                                        |
-| `tags`           | —                                                | rename (`{ default: "DefaultValue" }`) or disable (`{ example: false }`) comment tags                                                                                                                                                                    |
-| `sourceMap`      | `true`                                           |                                                                                                                                                                                                                                                          |
-| `files`          | `true`                                           | emit the `files` section and `file` keys                                                                                                                                                                                                                 |
-| `bundle`         | —                                                | add or override bundled files (a `descriptor.proto` in `sources` wins over the bundle, also when not imported)                                                                                                                                           |
-| `tabWidth`       | `4`                                              | text producer only: a tab advances source-map and issue columns to the next multiple (buf's tab stop; protoc uses 8). `\r`, `\f`, `\v` and a byte order mark have no width, as in buf                                                                    |
-
-Issue codes: `syntax`, `missing-import`, `unresolved-type` (also a name of the wrong kind: an enum as an rpc type, a message as a map key, an option name that is not an extension), `unresolved-extendee`, `unknown-option`, `invalid-option` (values out of range, unknown enum values, non-canonical literals, options on the wrong target, …), `invalid-number`, `duplicate-number`, `duplicate-name` (also JSON-name and C++ scoping clashes), `reserved-conflict`, `annotation-conflict`, `invalid-tag`, `unsupported`, `no-source-info` and `invalid-definition`: a syntax or edition rule is broken (proto3 `required` or groups, editions labels, options or keywords not available in the file's edition, naming style in edition 2024+, import cycles, statement order). The text producer checks the definitions of every file it builds that is not bundled, as buf does; the document stays as complete as the input allows.
-
-## Format in short
-
-- Services and methods on top; messages, enums and extensions under `components`, keyed by fully qualified name (`pkg.Outer.Inner`).
-- Fields are keyed by name and carry `number`; scalars are `{ type: <protobuf scalar> }` (`int64`, `bytes`, …); message and enum fields are nominal `$ref`s (siblings of `$ref` are field attributes, never schema overrides); `repeated` → `type: array, items`; `map<K, V>` → `type: object, propertyNames, additionalProperties`.
-- protobuf keywords: `presence: explicit | required`, `oneof` + `oneofs`, `jsonName` (only when different from the default), `default` (proto2 / editions), `delimited` (groups / `DELIMITED`), `reserved`, `extensions`, `extendee`, `closed` (closed enums), `options` (everything not lifted, typed, snake_case keys).
-- Canonical values: 64-bit integers as decimal strings, `"Infinity"` / `"-Infinity"` / `"NaN"`, bytes as base64, enums as names; options equal to their default are not written.
-- `files[path].bundled: true` marks a file resolved from the bundle that is not an entry file; it has no header `description` and is not printed by `printProto`.
-- `required: true` on a field is annotation-level requiredness (`@Required`, the `Required.` prefix, `field_behavior = REQUIRED`, protovalidate / PGV `required`, the fields named by `openapiv2_schema.json_schema.required`); wire-level requiredness (a `required` label, `LEGACY_REQUIRED`) is `presence: required` and never sets the keyword. Messages carry no `required` array: a strict JSON Schema projection rebuilds it from the fields that carry the keyword.
-- Descriptions come from an element's leading and trailing comments, attached as buf 1.75 attaches them (`SourceCodeInfo`), so both producers agree for a buf-built set; the detached comments above the first statement are the file's header `description`.
-- Source map: one entry per element and sub-element (spec §5), one per `reserved` / `extensions` interval and reserved name (the written range), per `extensionOptions` range, and keyword entries: a keyword lifted from an option points at the option statement, one from a comment tag or AIP prefix at the tag line (leading `//` comments), resolved keywords at the feature option that sets them, a field's `required` named by `openapiv2_schema.json_schema.required` at the message's option statement. Both producers give the same pointers and spans.
-- JSON Schema: [`schemas/v0.1/schema.json`](schemas/v0.1/schema.json) (draft 2020-12) validates the structure of a document; it ships in the package as `protoapi/schemas/v0.1/schema.json` and is served at https://udamir.github.io/protoapi/schemas/v0.1/schema.json.
-
-The full specification is [`docs/spec/v0.1.md`](docs/spec/v0.1.md); the documentation site (`docs/`) adds the guide and proto → ProtoApi conversion examples.
+A JSON Schema of the format ships as `protoapi/schemas/v0.1/schema.json`.
 
 ## Development
 
-The project uses [pnpm](https://pnpm.io), [Vite+](https://viteplus.dev) (`vp`: Vitest, Oxlint, Oxfmt and tsdown in one toolchain) and TypeScript 7. Node.js 22.18 or later is required for development: the scripts in `scripts/` and `bench/` are TypeScript run by Node directly (type stripping).
-
 ```sh
 pnpm install
-pnpm test                   # all tests, one file at a time (vp test run)
-pnpm typecheck              # tsc --noEmit (TypeScript 7)
-pnpm check                  # format check, lint and type-aware checks (vp check; vp check --fix to fix)
-pnpm build                  # dist/ + browser/ (vp pack)
-pnpm test:dist              # smoke tests of both entries (CommonJS and ESM) after the build
-pnpm docs:dev               # documentation site (VitePress, docs/); docs:build builds it, with the buf CLI for the examples
-pnpm images                 # regenerate buf images for the conformance fixtures and the bundle (needs the buf devDependency)
-node scripts/case-images.ts # record buf's verdict on the inline test cases (test/cases/*.ts)
-node scripts/print-check.ts # record that the printed text of every round-trip input passes buf build
-node scripts/comment-fuzz.ts check 2000  # differential comment fuzz against buf (random layouts); without `check` it rewrites the named/comments-fuzz fixture
-node scripts/fetch-corpus.ts && node scripts/fetch-breaking.ts  # googleapis samples, buf's breaking test corpus
-pnpm bundle:fetch && pnpm bundle:gen                            # update the bundled definitions
-node bench/budgets.ts [--write]                                 # performance budgets on Node: min / median / max per row, bench/results/node.md
-node bench/bench.ts --descriptor                                # timings per corpus size
+pnpm test        # all tests
+pnpm check       # format, lint and type-aware checks
+pnpm build       # dist/ and browser/
 ```
+
+See [Contributing](https://udamir.github.io/protoapi/guide/contributing) for the project layout, the conformance scripts against buf and the performance budgets.
 
 ## Licence
 
-MIT. The parser is derived from [pbkit](https://github.com/riiid/pbkit) 0.0.72 (MIT OR Apache-2.0), see `src/parser/NOTICE`. Bundled `.proto` definitions keep their licences (BSD-3-Clause: protobuf, protobuf-go, grpc-gateway; Apache-2.0: googleapis, protovalidate, protoc-gen-validate), see `NOTICE` and `bundle/LICENSES/`.
+MIT. The parser is derived from [pbkit](https://github.com/riiid/pbkit) 0.0.72 (MIT OR Apache-2.0, used under MIT), see `src/parser/NOTICE`. Bundled `.proto` definitions keep their licences, see `NOTICE` and `bundle/LICENSES/`.
