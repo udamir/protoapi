@@ -1,15 +1,15 @@
 // Records whether the printer's output passes `buf build` (validation phase D: "printed text must pass buf build wherever the input did"). For every round-trip input that buf accepts (test/roundtrip-sets.ts) and each emission mode (`imports`), the printed files the second build reads are built with buf 1.75 (the original sources the printer did not replace are added); the result is written to test/images/printed.json keyed by the printed text's hash, which test/roundtrip.test.ts checks against the current printer output. Dev only (needs the buf CLI).
 //
-//   bun scripts/print-check.ts [filter]
+//   node scripts/print-check.ts [filter]
 
 import { spawnSync } from "node:child_process"
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { dirname, join } from "node:path"
-import { normalizePath } from "../src/paths"
-import { IMPORT_MODES, inMode, roundTrip } from "../test/helpers"
-import { PRINT_CHECK, type PrintCheck, printedHash, roundTripSets } from "../test/roundtrip-sets"
+import { normalizePath } from "../src/paths.ts"
+import { IMPORT_MODES, inMode, roundTrip } from "../test/helpers.ts"
+import { PRINT_CHECK, type PrintCheck, printedHash, roundTripSets } from "../test/roundtrip-sets.ts"
 
-const ROOT = join(import.meta.dir, "..")
+const ROOT = join(import.meta.dirname, "..")
 const BUF = join(ROOT, "node_modules", ".bin", "buf")
 const filter = process.argv[2]
 

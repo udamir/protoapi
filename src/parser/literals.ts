@@ -1,12 +1,11 @@
 /**
  * Literal decoders for protobuf text (not from pbkit).
  *
- * String and bytes literals follow protoc's tokenizer (`Tokenizer::ParseStringAppend`): a literal is a byte string;
- * `\NNN` (octal, 1-3 digits, truncated to a byte) and `\xH` / `\xHH` (hex) produce raw bytes, `\uXXXX` and
- * `\UXXXXXXXX` produce the UTF-8 encoding of the code point (a `\u` high surrogate followed by a `\u` low surrogate
- * is combined), and every other character is UTF-8 encoded. Adjacent literals (`"a" 'b'`) are concatenated.
+ * String and bytes literals follow protoc's tokenizer (`Tokenizer::ParseStringAppend`): a literal is a byte string; `\NNN` (octal, 1-3 digits, truncated to a byte) and `\xH` / `\xHH` (hex) produce raw bytes, `\uXXXX` and `\UXXXXXXXX` produce the UTF-8 encoding of the code point, and every other character is UTF-8 encoded. Adjacent literals (`"a" 'b'`) are concatenated.
+ *
+ * Unlike protoc, which combines a `\u` high surrogate followed by a `\u` low surrogate, the scanner rejects every surrogate or out-of-range `\u` / `\U` escape (buf); a token not produced by the parser that has one decodes it to U+FFFD.
  */
-import type { StrLit } from "./ast/lexical-elements"
+import type { StrLit } from "./ast/lexical-elements.ts"
 
 const simpleEscapes: Record<string, number> = {
   a: 0x07,
@@ -84,16 +83,9 @@ function appendTokenBytes(out: number[], token: string): void {
       i += 2 + n
     } else if (e === "u" || e === "U") {
       const digits = e === "u" ? 4 : 8
-      let cp = readHex(token, i + 2, digits)
+      const cp = readHex(token, i + 2, digits)
       i += 2 + digits
-      if (e === "u" && cp >= 0xd800 && cp <= 0xdbff && token[i] === "\\" && token[i + 1] === "u") {
-        const low = readHex(token, i + 2, 4)
-        if (low >= 0xdc00 && low <= 0xdfff) {
-          cp = 0x10000 + ((cp - 0xd800) << 10) + (low - 0xdc00)
-          i += 6
-        }
-      }
-      pushUtf8(out, cp < 0 || cp > 0x10ffff ? 0xfffd : cp)
+      pushUtf8(out, cp < 0 || cp > 0x10ffff || (cp >= 0xd800 && cp <= 0xdfff) ? 0xfffd : cp)
     } else if (e !== undefined && e in simpleEscapes) {
       out.push(simpleEscapes[e])
       i += 2

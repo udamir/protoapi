@@ -9,6 +9,6 @@ expect:
         global: { number: 2, $ref: "#/components/messages/google.protobuf.Timestamp" }
         same:   { number: 3, $ref: "#/components/messages/shop.v1.Timestamp" }
   - pointer: "#/components/messages/shop.v1.Timestamp"
-    value: { type: object, properties: { iso: { number: 1, type: string, protoType: string } } }
+    value: { type: object, properties: { iso: { number: 1, type: string } } }
   - pointer: "#/components/messages/google.protobuf.Timestamp"
     value: { … }

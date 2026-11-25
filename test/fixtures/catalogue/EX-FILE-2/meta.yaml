@@ -5,4 +5,4 @@ expect:
     value: { shop.proto: { syntax: proto3 } }
   - pointer: "#/components/messages"
     value:
-      Pet: { title: Pet, file: shop.proto, type: object, properties: { name: { number: 1, type: string, protoType: string } } }
+      Pet: { title: Pet, file: shop.proto, type: object, properties: { name: { number: 1, type: string } } }

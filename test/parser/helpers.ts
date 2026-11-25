@@ -1,12 +1,12 @@
-import { expect } from "bun:test"
+import { expect } from "vite-plus/test"
 import { readdirSync, statSync } from "node:fs"
 import { join } from "node:path"
-import { type ParseProtoResult, parseProto } from "../../src/parser"
-import type * as ast from "../../src/parser"
+import { type ParseProtoResult, parseProto } from "../../src/parser/index.ts"
+import type * as ast from "../../src/parser/index.ts"
 
-export const packageRoot = join(import.meta.dir, "..", "..")
+export const packageRoot = join(import.meta.dirname, "..", "..")
 export const bundleDir = join(packageRoot, "bundle", "proto")
-export const fixturesDir = join(import.meta.dir, "fixtures")
+export const fixturesDir = join(import.meta.dirname, "fixtures")
 
 /** A backslash, so that escapes reach the proto source verbatim. */
 export const bs = "\\"

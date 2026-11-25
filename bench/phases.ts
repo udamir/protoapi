@@ -1,17 +1,17 @@
-// Phase timings for one corpus size: bun bench/phases.ts [messages]
+// Phase timings for one corpus size: node bench/phases.ts [messages]
 
 import { readFileSync, mkdirSync, writeFileSync, existsSync } from "node:fs"
 import { join } from "node:path"
 import { spawnSync } from "node:child_process"
-import { generate } from "./bench"
-import { textToModel } from "../src/text"
-import { convertFile } from "../src/descriptor"
-import { SymbolTable } from "../src/symbols"
-import { linkAll } from "../src/resolve"
-import { Lowering } from "../src/lower"
-import { bundledSources } from "../src/bundle/sources"
-import { parseProto } from "../src/parser"
-import type { MFile } from "../src/model"
+import { generate } from "./bench.ts"
+import { textToModel } from "../src/frontend/text/convert.ts"
+import { convertFile } from "../src/frontend/descriptor/convert.ts"
+import { SymbolTable } from "../src/symbols.ts"
+import { linkAll } from "../src/resolve.ts"
+import { Lowering } from "../src/lower/index.ts"
+import { bundledSources } from "../src/bundle/sources.ts"
+import { parseProto } from "../src/parser/index.ts"
+import type { MFile } from "../src/model/index.ts"
 
 const messages = Number(process.argv[2] ?? 1700)
 const src = generate(messages, "bench.p")
@@ -50,7 +50,7 @@ t("lower", () =>
 )
 
 // descriptor
-const work = join(import.meta.dir, "..", ".tmp", "phases")
+const work = join(import.meta.dirname, "..", ".tmp", "phases")
 mkdirSync(join(work, "src", "google", "protobuf"), { recursive: true })
 writeFileSync(join(work, "src", "x.proto"), src)
 writeFileSync(
@@ -60,7 +60,7 @@ writeFileSync(
 writeFileSync(join(work, "buf.yaml"), "version: v2\nmodules:\n  - path: src\n")
 const image = join(work, `image-${messages}.json`)
 if (!existsSync(image))
-  spawnSync(join(import.meta.dir, "..", "node_modules", ".bin", "buf"), ["build", "-o", image], { cwd: work })
+  spawnSync(join(import.meta.dirname, "..", "node_modules", ".bin", "buf"), ["build", "-o", image], { cwd: work })
 const set = t("JSON.parse", () => JSON.parse(readFileSync(image, "utf8"))) as { file: Record<string, unknown>[] }
 const dfiles = t("convertFile", () => set.file.map((f) => convertFile(f, []))) as MFile[]
 const dsym = t("symbols", () => new SymbolTable(dfiles)) as SymbolTable

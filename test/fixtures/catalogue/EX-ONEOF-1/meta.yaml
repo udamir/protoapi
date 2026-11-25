@@ -6,9 +6,9 @@ expect:
     value:
       type: object
       properties:
-        card_token: { number: 1, type: string, protoType: string, oneof: method }
+        card_token: { number: 1, type: string, oneof: method }
         bank:       { number: 2, $ref: "#/components/messages/shop.v1.BankAccount", oneof: method }
         status:     { number: 3, $ref: "#/components/enums/shop.v1.Status", oneof: method }
-        note:       { number: 4, type: string, protoType: string, presence: explicit }
+        note:       { number: 4, type: string, presence: explicit }
       oneofs:
         method: { description: How the payment is made., options: { acme.opts.group: billing } }

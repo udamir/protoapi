@@ -1,14 +1,14 @@
 // Dev helper: conformance of both producers on every bundled file (a real-world corpus).
-//   bun scripts/conform-bundle.ts [--map]   (the image is written by `bun run images bundle`)
+//   node scripts/conform-bundle.ts [--map]   (the image is written by `pnpm images bundle`)
 
 import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
-import { buildFromDescriptorSet, buildFromProto, bundledFiles } from "../src"
-import { jsonDiff } from "../test/helpers"
+import { buildFromDescriptorSet, buildFromProto, bundledFiles } from "../src/index.ts"
+import { jsonDiff } from "../test/helpers.ts"
 
-const ROOT = join(import.meta.dir, "..")
+const ROOT = join(import.meta.dirname, "..")
 const image = join(ROOT, "test", "images", "bundle.json")
-if (!existsSync(image)) throw new Error("test/images/bundle.json is missing: run `bun run images bundle`")
+if (!existsSync(image)) throw new Error("test/images/bundle.json is missing: run `pnpm images bundle`")
 const set = JSON.parse(readFileSync(image, "utf8"))
 const sources = { ...bundledFiles }
 const opts = { includeImports: true }

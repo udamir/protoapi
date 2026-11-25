@@ -1,0 +1,422 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://udamir.github.io/protoapi/schemas/v0.1/schema.json",
+  "title": "ProtoApi 0.1 document",
+  "description": "A ProtoApi 0.1 document: a set of .proto files as one JSON value. See https://udamir.github.io/protoapi/spec/v0.1",
+  "type": "object",
+  "required": ["protoapi"],
+  "properties": {
+    "protoapi": { "const": "0.1" },
+    "files": {
+      "description": "One entry per source file, keyed by import path, in topological order.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/file" }
+    },
+    "services": {
+      "description": "Keyed by fully qualified service name.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/service" }
+    },
+    "components": {
+      "type": "object",
+      "properties": {
+        "messages": {
+          "description": "Keyed by fully qualified message name (nested messages as pkg.Outer.Inner).",
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/message" }
+        },
+        "enums": {
+          "description": "Keyed by fully qualified enum name.",
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/enum" }
+        },
+        "extensions": {
+          "description": "Keyed by fully qualified extension name (pkg.name, or pkg.Outer.name for an extend inside Outer).",
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/extension" }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "syntax": {
+      "description": "proto2, proto3, a known edition, or an unknown edition verbatim.",
+      "anyOf": [{ "enum": ["proto2", "proto3", "2023", "2024", "2026"] }, { "type": "string" }]
+    },
+    "file": {
+      "type": "object",
+      "properties": {
+        "description": { "type": "string", "description": "The file header comment. Absent on bundled files." },
+        "syntax": { "$ref": "#/$defs/syntax" },
+        "package": { "type": "string" },
+        "imports": { "type": "array", "items": { "type": "string" } },
+        "importFlags": {
+          "type": "object",
+          "additionalProperties": { "enum": ["public", "weak", "option"] }
+        },
+        "options": { "$ref": "#/$defs/options" },
+        "bundled": { "const": true }
+      },
+      "additionalProperties": false
+    },
+    "element": {
+      "description": "Keys every element may carry.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "file": { "type": "string", "description": "The import path of the declaring file." },
+        "description": { "type": "string" },
+        "deprecation": {
+          "type": "object",
+          "properties": { "reason": { "type": "string" } },
+          "additionalProperties": false
+        },
+        "options": { "$ref": "#/$defs/options" },
+        "x-annotation-conflicts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/annotationConflict" }
+        }
+      }
+    },
+    "options": {
+      "description": "Options not lifted into a keyword, keyed by descriptor field name or fully qualified extension name.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/optionValue" }
+    },
+    "optionValue": {
+      "description": "A canonical option value; never null.",
+      "anyOf": [
+        { "type": ["string", "number", "boolean"] },
+        { "type": "array", "items": { "$ref": "#/$defs/optionValue" } },
+        { "type": "object", "additionalProperties": { "$ref": "#/$defs/optionValue" } }
+      ]
+    },
+    "annotationSource": {
+      "enum": ["option", "google.api", "buf.validate", "validate.rules", "openapiv2", "tag", "prefix"]
+    },
+    "annotationConflict": {
+      "type": "object",
+      "required": ["keyword", "kept", "dropped"],
+      "properties": {
+        "keyword": { "type": "string" },
+        "kept": { "$ref": "#/$defs/annotationValue" },
+        "dropped": { "$ref": "#/$defs/annotationValue" }
+      },
+      "additionalProperties": false
+    },
+    "annotationValue": {
+      "type": "object",
+      "required": ["source", "value"],
+      "properties": {
+        "source": { "$ref": "#/$defs/annotationSource" },
+        "value": true
+      },
+      "additionalProperties": false
+    },
+    "service": {
+      "type": "object",
+      "allOf": [{ "$ref": "#/$defs/element" }],
+      "required": ["methods"],
+      "properties": {
+        "methods": {
+          "description": "Method name to Method, in declaration order.",
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/method" }
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "method": {
+      "type": "object",
+      "allOf": [{ "$ref": "#/$defs/element" }],
+      "required": ["request", "response"],
+      "properties": {
+        "request": { "$ref": "#/$defs/methodMessage" },
+        "response": { "$ref": "#/$defs/methodMessage" },
+        "idempotency": { "enum": ["NO_SIDE_EFFECTS", "IDEMPOTENT"] },
+        "http": { "$ref": "#/$defs/httpRule" }
+      },
+      "unevaluatedProperties": false
+    },
+    "methodMessage": {
+      "type": "object",
+      "required": ["schema"],
+      "properties": {
+        "schema": {
+          "type": "object",
+          "required": ["$ref"],
+          "properties": { "$ref": { "$ref": "#/$defs/messageRef" } },
+          "additionalProperties": false
+        },
+        "stream": { "const": true }
+      },
+      "additionalProperties": false
+    },
+    "httpRule": {
+      "type": "object",
+      "required": ["method", "path"],
+      "properties": {
+        "method": {
+          "description": "GET, PUT, POST, DELETE, PATCH, or the kind of a custom pattern.",
+          "type": "string"
+        },
+        "path": { "type": "string" },
+        "body": { "type": "string" },
+        "responseBody": { "type": "string" },
+        "additionalBindings": { "type": "array", "items": { "$ref": "#/$defs/httpRule" } }
+      },
+      "additionalProperties": false
+    },
+    "messageRef": { "type": "string", "pattern": "^#/components/messages/." },
+    "typeRef": { "type": "string", "pattern": "^#/components/(messages|enums)/." },
+    "scalar": {
+      "enum": [
+        "int32",
+        "int64",
+        "uint32",
+        "uint64",
+        "sint32",
+        "sint64",
+        "fixed32",
+        "fixed64",
+        "sfixed32",
+        "sfixed64",
+        "float",
+        "double",
+        "bool",
+        "string",
+        "bytes"
+      ]
+    },
+    "range": {
+      "description": "An inclusive interval [start, end].",
+      "type": "array",
+      "prefixItems": [{ "type": "integer" }, { "type": "integer" }],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "reserved": {
+      "type": "object",
+      "properties": {
+        "numbers": { "type": "array", "items": { "$ref": "#/$defs/range" } },
+        "names": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "jsonFormat": {
+      "description": "The resolved features.json_format when it is not ALLOW.",
+      "anyOf": [{ "const": "LEGACY_BEST_EFFORT" }, { "type": "string" }]
+    },
+    "bound": {
+      "description": "A canonical number: a JSON number, a decimal string for 64-bit integers, or a non-finite or negative-zero string.",
+      "type": ["number", "string"]
+    },
+    "annotations": {
+      "description": "JSON Schema keywords lifted by the annotation layer.",
+      "type": "object",
+      "properties": {
+        "format": { "type": "string" },
+        "readOnly": { "const": true },
+        "writeOnly": { "const": true },
+        "immutable": { "const": true },
+        "minimum": { "$ref": "#/$defs/bound" },
+        "maximum": { "$ref": "#/$defs/bound" },
+        "exclusiveMinimum": { "$ref": "#/$defs/bound" },
+        "exclusiveMaximum": { "$ref": "#/$defs/bound" },
+        "multipleOf": { "$ref": "#/$defs/bound" },
+        "minLength": { "type": "integer", "minimum": 0 },
+        "maxLength": { "type": "integer", "minimum": 0 },
+        "pattern": { "type": "string" },
+        "minItems": { "type": "integer", "minimum": 0 },
+        "maxItems": { "type": "integer", "minimum": 0 },
+        "uniqueItems": { "const": true },
+        "minProperties": { "type": "integer", "minimum": 0 },
+        "maxProperties": { "type": "integer", "minimum": 0 },
+        "enum": { "type": "array", "items": { "type": ["string", "number"] } },
+        "const": { "type": ["string", "number", "boolean"] },
+        "examples": { "type": "array" }
+      }
+    },
+    "scalarPosition": {
+      "description": "A scalar position: the items of a repeated field, or the key or value of a map.",
+      "type": "object",
+      "allOf": [{ "$ref": "#/$defs/annotations" }],
+      "required": ["type"],
+      "properties": {
+        "type": { "$ref": "#/$defs/scalar" },
+        "utf8Validation": { "const": false }
+      },
+      "unevaluatedProperties": false
+    },
+    "namedPosition": {
+      "description": "A message- or enum-typed position.",
+      "type": "object",
+      "allOf": [{ "$ref": "#/$defs/annotations" }],
+      "required": ["$ref"],
+      "properties": {
+        "$ref": { "$ref": "#/$defs/typeRef" }
+      },
+      "unevaluatedProperties": false
+    },
+    "position": {
+      "oneOf": [{ "$ref": "#/$defs/scalarPosition" }, { "$ref": "#/$defs/namedPosition" }]
+    },
+    "fieldKeywords": {
+      "description": "The keys of a field (and of an extension), with exactly one type shape.",
+      "type": "object",
+      "allOf": [{ "$ref": "#/$defs/element" }, { "$ref": "#/$defs/annotations" }],
+      "required": ["number"],
+      "properties": {
+        "number": { "type": "integer" },
+        "type": {
+          "description": "The protobuf scalar type, array (repeated) or object (map).",
+          "anyOf": [{ "$ref": "#/$defs/scalar" }, { "enum": ["array", "object"] }]
+        },
+        "$ref": { "$ref": "#/$defs/typeRef" },
+        "items": { "$ref": "#/$defs/position" },
+        "propertyNames": { "$ref": "#/$defs/scalarPosition" },
+        "additionalProperties": { "$ref": "#/$defs/position" },
+        "presence": { "enum": ["explicit", "required"] },
+        "oneof": { "type": "string" },
+        "jsonName": { "type": "string" },
+        "default": { "type": ["string", "number", "boolean"] },
+        "delimited": { "const": true },
+        "packed": { "const": false },
+        "utf8Validation": { "const": false },
+        "required": { "const": true },
+        "x-default": true
+      },
+      "oneOf": [
+        {
+          "title": "scalar",
+          "required": ["type"],
+          "properties": { "type": { "$ref": "#/$defs/scalar" } },
+          "not": {
+            "anyOf": [
+              { "required": ["$ref"] },
+              { "required": ["items"] },
+              { "required": ["propertyNames"] },
+              { "required": ["additionalProperties"] }
+            ]
+          }
+        },
+        {
+          "title": "message or enum",
+          "required": ["$ref"],
+          "not": {
+            "anyOf": [
+              { "required": ["type"] },
+              { "required": ["items"] },
+              { "required": ["propertyNames"] },
+              { "required": ["additionalProperties"] }
+            ]
+          }
+        },
+        {
+          "title": "repeated",
+          "required": ["type", "items"],
+          "properties": { "type": { "const": "array" } },
+          "not": {
+            "anyOf": [
+              { "required": ["$ref"] },
+              { "required": ["propertyNames"] },
+              { "required": ["additionalProperties"] }
+            ]
+          }
+        },
+        {
+          "title": "map",
+          "required": ["type", "propertyNames", "additionalProperties"],
+          "properties": { "type": { "const": "object" } },
+          "not": { "anyOf": [{ "required": ["$ref"] }, { "required": ["items"] }] }
+        }
+      ]
+    },
+    "field": {
+      "type": "object",
+      "$ref": "#/$defs/fieldKeywords",
+      "unevaluatedProperties": false
+    },
+    "extension": {
+      "type": "object",
+      "description": "A field with the fully qualified name of the extended message.",
+      "$ref": "#/$defs/fieldKeywords",
+      "required": ["extendee"],
+      "properties": {
+        "extendee": { "type": "string" }
+      },
+      "unevaluatedProperties": false
+    },
+    "oneof": {
+      "type": "object",
+      "$ref": "#/$defs/element",
+      "unevaluatedProperties": false
+    },
+    "message": {
+      "type": "object",
+      "allOf": [{ "$ref": "#/$defs/element" }],
+      "required": ["type", "properties"],
+      "properties": {
+        "type": { "const": "object" },
+        "properties": {
+          "description": "Field name to Field, in declaration order.",
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/field" }
+        },
+        "oneofs": {
+          "description": "Real oneofs (not the synthetic oneofs of proto3 optional), in declaration order.",
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/oneof" }
+        },
+        "reserved": { "$ref": "#/$defs/reserved" },
+        "extensions": {
+          "description": "Extension ranges, sorted and merged; max is 536870911.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/range" }
+        },
+        "extensionOptions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["range", "options"],
+            "properties": {
+              "range": { "$ref": "#/$defs/range" },
+              "options": { "$ref": "#/$defs/options" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "jsonFormat": { "$ref": "#/$defs/jsonFormat" }
+      },
+      "unevaluatedProperties": false
+    },
+    "enumValue": {
+      "type": "object",
+      "$ref": "#/$defs/element",
+      "required": ["number"],
+      "properties": {
+        "number": { "type": "integer" }
+      },
+      "unevaluatedProperties": false
+    },
+    "enum": {
+      "type": "object",
+      "allOf": [{ "$ref": "#/$defs/element" }],
+      "required": ["type", "values"],
+      "properties": {
+        "type": { "const": "string" },
+        "values": {
+          "description": "Value name to Enum Value, in declaration order; an alias is a second name with the same number.",
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/enumValue" }
+        },
+        "reserved": { "$ref": "#/$defs/reserved" },
+        "closed": { "const": true },
+        "jsonFormat": { "$ref": "#/$defs/jsonFormat" }
+      },
+      "unevaluatedProperties": false
+    }
+  }
+}

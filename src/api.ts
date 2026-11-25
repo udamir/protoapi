@@ -1,10 +1,8 @@
-// The public API over a set of bundled definitions (design §4.3, validation decision PK-1). `protoapi` creates it
-// with the bundled sources, `protoapi/core` with none; `createProtoApi` lets a caller inject a bundle of its own
-// (for example the `bundledFiles` of `protoapi`, loaded lazily).
+// The public API over a set of bundled definitions. `protoapi` creates it with the bundled sources, `protoapi/core` with none; `createProtoApi` lets a caller inject a bundle of its own (for example the `bundledFiles` of `protoapi`, loaded lazily).
 
-import type { PrintOptions, ProtoApiDocument } from "./types"
-import { type Builders, createBuilders } from "./build"
-import { createPrinter } from "./print"
+import type { PrintOptions, ProtoApiDocument } from "./types.ts"
+import { type Builders, createBuilders } from "./build.ts"
+import { createPrinter } from "./print/index.ts"
 
 export interface ProtoApi extends Builders {
   /** Print a document back to `.proto` files (path -> text). */

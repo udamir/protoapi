@@ -2,12 +2,12 @@
 //
 // `roundTrip` (helpers.ts) prints with the build's tag options and rebuilds from the printed files alone (`imports: "user"`, the default), every printed file over the sources (`"all"`) or the printed entry files over the sources (`"referenced"`). PB-7.7 … PB-7.11 run it over every input the tests have, in all three emission modes; PB-7.12 checks that the printed text passes `buf build` wherever the input did (recorded by scripts/print-check.ts in test/images/printed.json, keyed by the printed text's hash).
 
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vite-plus/test"
 import { existsSync, readFileSync } from "node:fs"
-import { buildFromProto, bundledFiles, printProto } from "../src"
-import type { BuildOptions, PrintOptions, ProtoApiDocument, ProtoSources } from "../src"
-import { IMPORT_MODES, inMode, loadSources, roundTrip } from "./helpers"
-import { PRINT_CHECK, type PrintCheck, printedHash, roundTripSets } from "./roundtrip-sets"
+import { buildFromProto, bundledFiles, printProto } from "../src/index.ts"
+import type { BuildOptions, PrintOptions, ProtoApiDocument, ProtoSources } from "../src/index.ts"
+import { IMPORT_MODES, inMode, loadSources, roundTrip } from "./helpers.ts"
+import { PRINT_CHECK, type PrintCheck, printedHash, roundTripSets } from "./roundtrip-sets.ts"
 
 const L = (...lines: string[]) => lines.join("\n")
 
@@ -188,7 +188,7 @@ describe("PB-7 printer round trip", () => {
   }, 60000)
 
   test("PB-7.12: the printed text passes buf build wherever the input does (recorded oracle)", () => {
-    expect(existsSync(PRINT_CHECK) ? "recorded" : "run `bun scripts/print-check.ts`").toBe("recorded")
+    expect(existsSync(PRINT_CHECK) ? "recorded" : "run `node scripts/print-check.ts`").toBe("recorded")
     const recorded = JSON.parse(readFileSync(PRINT_CHECK, "utf8")) as PrintCheck
     const problems: string[] = []
     let checked = 0
@@ -379,7 +379,7 @@ describe("PB-7 printer round trip", () => {
       { "a.proto": 'syntax = "proto2"; package nf.v1; message M { optional int32 a = 1 [default = 3]; }' },
       { files: false },
     ).document
-    expect(printProto(doc)["protoapi.proto"]).toStartWith('syntax = "proto2";\npackage nf.v1;')
+    expect(printProto(doc)["protoapi.proto"]).toMatch(/^syntax = "proto2";\npackage nf\.v1;/)
   })
 
   test("PB-7.19: Any option values print in the expanded text form (P-8)", () => {
@@ -427,7 +427,7 @@ describe("PB-7 printer round trip", () => {
     )
     const r = roundTrip({ "a.proto": L('edition = "2027";', "package a;", "message M { int32 a = 1; }") })
     expect(r.diff).toEqual([])
-    expect(r.printed["a.proto"]).toStartWith('edition = "2027";')
+    expect(r.printed["a.proto"]).toMatch(/^edition = "2027";/)
   })
 
   test("PB-7.21: the written imports, re-exports (P-12), option definitions from PrintOptions.sources (P-9)", () => {
@@ -587,12 +587,12 @@ describe("PB-7 printer round trip", () => {
         messages: {
           "p.A": {
             type: "object",
-            properties: { f: { number: 1, type: "string", protoType: "string", required: true } },
+            properties: { f: { number: 1, type: "string", required: true } },
           },
           "p.B": {
             type: "object",
             required: ["f"],
-            properties: { f: { number: 1, type: "string", protoType: "string" } },
+            properties: { f: { number: 1, type: "string" } },
           },
         },
       },
@@ -600,6 +600,235 @@ describe("PB-7 printer round trip", () => {
     const out = printProto(doc)["x.proto"]
     expect(out).toContain("  // @Required\n  string f = 1;")
     expect(out.match(/@Required/g)?.length).toBe(1)
+  })
+
+  test("PB-7.27: a type from a file imported only with `import option` makes it a plain import; added imports print before `import option`", () => {
+    const sources = {
+      "a.proto": L(
+        'edition = "2024";',
+        "package a;",
+        'import "google/protobuf/descriptor.proto";',
+        "extend google.protobuf.MessageOptions { int32 tag = 50000; }",
+        "message T {}",
+      ),
+      "b.proto": L(
+        'edition = "2024";',
+        "package a;",
+        'import option "a.proto";',
+        "message U {",
+        "  option (tag) = 1;",
+        "  int32 x = 1;",
+        "}",
+      ),
+      "c.proto": L('edition = "2024";', "package c;", "message V {}"),
+    }
+    exact(sources)
+    const built = buildFromProto(sources).document
+    expect(printProto(built)["b.proto"]).toContain('\nimport option "a.proto";\n')
+    const rebuild = (field: object) => {
+      const doc = structuredClone(built)
+      doc.components!.messages!["a.U"].properties.x = field as never
+      const printed = printProto(doc)
+      const again = buildFromProto(printed)
+      expect(again.issues).toEqual([])
+      expect(again.document.components?.messages?.["a.U"]?.properties.x).toEqual(field)
+      return printed["b.proto"]
+    }
+    // buf rejects `import option "a.proto"` next to `import "a.proto"` (imported twice), so the flag is dropped
+    const t = rebuild({ number: 1, $ref: "#/components/messages/a.T" })
+    expect(t).toContain('\nimport "a.proto";\n')
+    expect(t).not.toContain("import option")
+    // an added import comes before the written `import option`, which must be last
+    expect(rebuild({ number: 1, $ref: "#/components/messages/c.V" })).toContain(
+      'import "c.proto";\nimport option "a.proto";\n',
+    )
+  })
+
+  test("PB-7.28: nested types under two or more missing parents print inside a wrapper message for every level", () => {
+    exact(
+      {
+        "dep.proto": L(
+          'syntax = "proto3";',
+          "package dep;",
+          "message E { message F { message Inner { int32 y = 1; } enum Lvl { LVL_UNSPECIFIED = 0; } } message G {} }",
+        ),
+        "main.proto": L(
+          'syntax = "proto3";',
+          "package main;",
+          'import "dep.proto";',
+          "message M { dep.E.F.Inner i = 1; dep.E.F.Lvl l = 2; }",
+        ),
+      },
+      { entry: ["main.proto"] },
+    )
+    const D = { type: "object", properties: { x: { type: "int32", number: 1 } } }
+    const keys = (messages: Record<string, unknown>) => {
+      const printed = printProto({ protoapi: "0.1", components: { messages } } as ProtoApiDocument)
+      const again = buildFromProto(printed)
+      expect(again.issues).toEqual([])
+      return { text: printed["protoapi.proto"], keys: Object.keys(again.document.components?.messages ?? {}) }
+    }
+    // one missing parent: one wrapper (the rebuild has the wrapper message too)
+    expect(keys({ "p.B.C": D }).keys).toEqual(["p.B", "p.B.C"])
+    const deep = keys({ "p.B.C.D": D })
+    expect(deep.text).toContain("message B {\n  message C {\n    message D {\n      int32 x = 1;\n")
+    expect(deep.keys).toEqual(["p.B", "p.B.C", "p.B.C.D"])
+    // a missing parent below a message of the document
+    expect(keys({ "p.B": { type: "object" }, "p.B.C.D": D }).keys).toEqual(["p.B", "p.B.C", "p.B.C.D"])
+  })
+
+  test("PB-7.29: option value types from PrintOptions.sources follow the symbol visibility of its descriptor.proto", () => {
+    // edition 2024 exports nested types here (EXPORT_ALL), so the option's type Outer.Inner resolves across files
+    const descriptor = bundledFiles["google/protobuf/descriptor.proto"].replace(
+      'edition_defaults = { edition: EDITION_2024, value: "EXPORT_TOP_LEVEL" }',
+      'edition_defaults = { edition: EDITION_2024, value: "EXPORT_ALL" }',
+    )
+    expect(descriptor).not.toBe(bundledFiles["google/protobuf/descriptor.proto"])
+    const sources = {
+      "google/protobuf/descriptor.proto": descriptor,
+      "a.proto": L(
+        'edition = "2024";',
+        "package a;",
+        "message Outer { message Inner { E e = 1; } enum E { E_UNSPECIFIED = 0; E_ONE = 1; } }",
+      ),
+      "o.proto": L(
+        'edition = "2024";',
+        "package a;",
+        'import "google/protobuf/descriptor.proto";',
+        'import "a.proto";',
+        "extend google.protobuf.MessageOptions { Outer.Inner opt = 50000; }",
+      ),
+    }
+    const all = {
+      ...sources,
+      "b.proto": L(
+        'edition = "2024";',
+        "package b;",
+        'import "o.proto";',
+        "message M { option (a.opt) = { e: E_ONE }; }",
+      ),
+    }
+    const built = buildFromProto(all)
+    expect(built.issues).toEqual([])
+    const printed = printProto(built.document, { sources })
+    expect(printed["b.proto"]).toContain("option (a.opt) = { e: E_ONE };")
+    const again = buildFromProto({ ...sources, ...printed })
+    expect(again.issues).toEqual([])
+    expect(again.document).toEqual(built.document)
+  })
+
+  test("PB-7.30: an Any holding a Timestamp or Duration outside ProtoJSON's range keeps the message form and round trips", () => {
+    exact({
+      "a.proto": L(
+        'syntax = "proto3";',
+        "package a;",
+        'import "google/protobuf/any.proto";',
+        'import "google/protobuf/descriptor.proto";',
+        'import "google/protobuf/duration.proto";',
+        'import "google/protobuf/timestamp.proto";',
+        "extend google.protobuf.MessageOptions { repeated google.protobuf.Any an = 50000; }",
+        "message M {",
+        "  option (an) = { [type.googleapis.com/google.protobuf.Timestamp] { seconds: 253402300800 } };",
+        "  option (an) = { [type.googleapis.com/google.protobuf.Timestamp] { seconds: 100000000000000 nanos: 5 } };",
+        "  option (an) = { [type.googleapis.com/google.protobuf.Timestamp] { seconds: 1 nanos: -1 } };",
+        "  option (an) = { [type.googleapis.com/google.protobuf.Duration] { seconds: -315576000001 } };",
+        "  option (an) = { [type.googleapis.com/google.protobuf.Duration] { seconds: 1 nanos: -1 } };",
+        "}",
+      ),
+    })
+  })
+
+  test("PB-7.31: an extension declared outside a package prints in parentheses; a method name hides a type of the same name", () => {
+    const sources = {
+      "a.proto": L(
+        'syntax = "proto3";',
+        'import "google/protobuf/descriptor.proto";',
+        "message Opt { int32 v = 1; }",
+        "extend google.protobuf.MessageOptions { int32 flag = 50000; Opt opt = 50001; }",
+        "extend google.protobuf.FieldOptions { Opt fopt = 50002; }",
+        "message Foo {",
+        "  option (flag) = 1;",
+        "  option (opt) = { v: 2 };",
+        "  int32 x = 1 [(fopt) = { v: 3 }];",
+        "}",
+        "service S { rpc Foo(.Foo) returns (.Foo); }",
+      ),
+    }
+    const built = buildFromProto(sources)
+    expect(built.issues).toEqual([])
+    exact(sources)
+    const printed = printProto(built.document)["a.proto"]
+    expect(printed).toContain("option (flag) = 1;")
+    expect(printed).toContain("option (opt) = { v: 2 };")
+    expect(printed).toContain("[(fopt) = { v: 3 }]")
+    expect(printed).toContain("rpc Foo(.Foo) returns (.Foo);")
+  })
+
+  test("PB-7.32: an extendee or method type name is not shortened to a name a field, oneof, enum value, extension or method hides", () => {
+    // protoc and buf take the first symbol of any kind for extendees and method types; the short `E` / `Req` of each input is rejected by buf ("expected message type, found message field `p.M.E`", … `oneof definition`, `enum value`, `message extension`, `service method`), the printed text builds with buf
+    const P2 = (...lines: string[]) =>
+      L('syntax = "proto2";', "package p;", "message E { extensions 1 to 9; }", ...lines)
+    const inputs: [ProtoSources, string[]][] = [
+      [
+        { "a.proto": P2("message M { optional int32 E = 1; extend .p.E { optional int32 x = 2; } }") },
+        ["extend p.E {"],
+      ],
+      [{ "a.proto": P2("message M { enum K { E = 0; } extend .p.E { optional int32 x = 2; } }") }, ["extend p.E {"]],
+      [
+        { "a.proto": P2("message M { optional int32 E = 1; message N { extend .p.E { optional int32 x = 2; } } }") },
+        ["extend p.E {"],
+      ],
+      [
+        { "a.proto": P2("message M { oneof E { int32 a = 1; } extend .p.E { optional int32 x = 2; } }") },
+        ["extend p.E {"],
+      ],
+      [{ "a.proto": P2("message M { extend .p.E { optional int32 E = 2; } }") }, ["extend p.E {"]],
+      // a field hides only a single-component name: `E.I` resolves past it in protoc, the printer spells the longer `p.E.I`
+      [
+        {
+          "a.proto": L(
+            'syntax = "proto2";',
+            "package p;",
+            "message E { message I { extensions 1 to 9; } }",
+            "message M { optional int32 E = 1; extend E.I { optional int32 x = 2; } }",
+          ),
+        },
+        ["extend p.E.I {"],
+      ],
+      // top-level enum values and extensions are members of the package scope
+      [
+        {
+          "a.proto": L(
+            'syntax = "proto2";',
+            "package p.q;",
+            'import "b.proto";',
+            "enum K { E = 0; Req = 1; }",
+            "extend p.E { optional int32 x = 1; optional int32 Res = 2; }",
+            "service S { rpc M(p.Req) returns (p.Res); }",
+          ),
+          "b.proto": P2("message Req {}", "message Res {}"),
+        },
+        ["extend p.E {", "rpc M(p.Req) returns (p.Res);"],
+      ],
+      [
+        {
+          "a.proto": L(
+            'syntax = "proto3";',
+            "package p;",
+            "message Req {}",
+            "service S { rpc Req(.p.Req) returns (.p.Req); }",
+          ),
+        },
+        ["rpc Req(p.Req) returns (p.Req);"],
+      ],
+    ]
+    for (const [sources, lines] of inputs) {
+      const built = buildFromProto(sources)
+      expect(built.issues).toEqual([])
+      exact(sources)
+      const printed = printProto(built.document)["a.proto"]
+      for (const line of lines) expect(printed).toContain(line)
+    }
   })
 
   test("PB-7.23: documents with missing optional parts print (API-2); wrong argument types are a TypeError", () => {

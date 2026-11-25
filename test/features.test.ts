@@ -2,12 +2,12 @@
 // the buf oracle (cases in test/cases/features.ts); syntax migrations that now diff clean on the resolved keywords;
 // printer round trips of the new keywords (packed, utf8Validation, jsonFormat, extensionOptions).
 
-import { describe, expect, test } from "bun:test"
-import { buildFromProto, printProto } from "../src"
-import type { ProtoApiDocument, ProtoSources } from "../src"
-import { describeCases } from "./cases/run"
-import { cases } from "./cases/features"
-import { jsonDiff, loadSources } from "./helpers"
+import { describe, expect, test } from "vite-plus/test"
+import { buildFromProto, printProto } from "../src/index.ts"
+import type { ProtoApiDocument, ProtoSources } from "../src/index.ts"
+import { describeCases } from "./cases/run.ts"
+import { cases } from "./cases/features.ts"
+import { jsonDiff, loadSources } from "./helpers.ts"
 
 describeCases("F-3 resolved features", "features", cases)
 

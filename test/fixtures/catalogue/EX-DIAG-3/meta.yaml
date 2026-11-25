@@ -3,6 +3,6 @@ title: syntax error; the file contributes no declarations, other files still bui
 textOnly: true   # syntax error
 expect:
   - pointer: "#/components/messages/shop.v1.Other"
-    value: { type: object, properties: { name: { number: 1, type: string, protoType: string } } }
+    value: { type: object, properties: { name: { number: 1, type: string } } }
 absent: [ "#/components/messages/shop.v1.Pet" ]
 issues: [ "syntax @ * at shop.proto:2:28" ]

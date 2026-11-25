@@ -6,11 +6,11 @@ expect:
     value:
       type: object
       properties:
-        ok:      { number: 1, type: integer, protoType: int32 }
-        impl_lo: { number: 19000, type: integer, protoType: int32 }
-        impl_hi: { number: 19999, type: integer, protoType: int32 }
-        zero:    { number: 0, type: integer, protoType: int32 }
-        big:     { number: 536870912, type: integer, protoType: int32 }
+        ok:      { number: 1, type: int32 }
+        impl_lo: { number: 19000, type: int32 }
+        impl_hi: { number: 19999, type: int32 }
+        zero:    { number: 0, type: int32 }
+        big:     { number: 536870912, type: int32 }
 issues:
   - "invalid-number @ #/components/messages/shop.v1.Bad/properties/impl_lo"
   - "invalid-number @ #/components/messages/shop.v1.Bad/properties/impl_hi"

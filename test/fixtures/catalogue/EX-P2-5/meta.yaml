@@ -12,5 +12,5 @@ expect:
   - pointer: "#/components/messages/shop.legacy.Packet.Header"
     value:
       type: object
-      properties: { version: { number: 1, type: integer, protoType: int32, presence: required } }
+      properties: { version: { number: 1, type: int32, presence: required } }
       jsonFormat: LEGACY_BEST_EFFORT

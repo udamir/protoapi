@@ -2,16 +2,16 @@
 // input, or buf's error when it rejects it, in test/images/cases/<module>.json. Dev only (needs the buf CLI from
 // devDependencies). Bundled files are removed from the images: the descriptor producer takes them from the bundle.
 //
-//   bun scripts/case-images.ts               # every case module
-//   bun scripts/case-images.ts validation    # one module
+//   node scripts/case-images.ts               # every case module
+//   node scripts/case-images.ts validation    # one module
 
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { dirname, join } from "node:path"
 import { spawn } from "node:child_process"
-import { bundledFiles } from "../src"
-import type { Case, CaseOracle } from "../test/cases/types"
+import { bundledFiles } from "../src/index.ts"
+import type { Case, CaseOracle } from "../test/cases/types.ts"
 
-const ROOT = join(import.meta.dir, "..")
+const ROOT = join(import.meta.dirname, "..")
 const CASES = join(ROOT, "test", "cases")
 const OUT = join(ROOT, "test", "images", "cases")
 const SCRATCH = join(ROOT, ".tmp", "case-images")

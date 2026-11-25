@@ -1,11 +1,11 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vite-plus/test"
 import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
-import type * as ast from "../../src/parser"
-import { as, comments, fixturesDir, parseOk, topLevel } from "./helpers"
-import { type SciLocation, compareComments } from "./sci"
-import { IMAGES, fixtureSets, loadImage, loadSources } from "../helpers"
-import { bundledFiles } from "../../src"
+import type * as ast from "../../src/parser/index.ts"
+import { as, comments, fixturesDir, parseOk, topLevel } from "./helpers.ts"
+import { type SciLocation, compareComments } from "./sci.ts"
+import { IMAGES, fixtureSets, loadImage, loadSources } from "../helpers.ts"
+import { bundledFiles } from "../../src/index.ts"
 
 /** The SourceCodeInfo locations of one file of a set's buf image. */
 const locationsOf = (set: string, name: string): SciLocation[] =>

@@ -6,7 +6,7 @@ expect:
     value: { syntax: UNSTABLE, package: shop.v1 }
   - pointer: "#/components/messages/shop.v1.Pet/properties"
     value:
-      name: { number: 1, type: string, protoType: string, presence: explicit }
-      ids: { number: 2, type: array, items: { type: integer, protoType: int32 } }
+      name: { number: 1, type: string, presence: explicit }
+      ids: { number: 2, type: array, items: { type: int32 } }
 issues:
   - "unsupported @ #/files/shop.proto/syntax"

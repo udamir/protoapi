@@ -2,10 +2,10 @@
 //
 // The catalogue variants per mode are EX-FILE-6.user, EX-FILE-6.public.user (an import public chain), EX-EXT-2.shop.user, EX-E24-1.user (import option) and EX-DIAG-4.local-visibility.user beside their referenced-mode sets.
 
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vite-plus/test"
 import { readFileSync } from "node:fs"
 import { join } from "node:path"
-import * as core from "../src/core"
+import * as core from "../src/core.ts"
 import {
   buildFromDescriptorSet,
   buildFromDescriptorSetBinary,
@@ -13,9 +13,9 @@ import {
   buildFromProtoAsync,
   bundledFiles,
   printProto,
-} from "../src"
-import type { BuildOptions, BuildResult, ProtoApiDocument } from "../src"
-import { IMAGES, IMPORT_MODES, buildBoth, jsonDiff, loadImage, loadSources, roundTrip } from "./helpers"
+} from "../src/index.ts"
+import type { BuildOptions, BuildResult, ProtoApiDocument } from "../src/index.ts"
+import { IMAGES, IMPORT_MODES, buildBoth, jsonDiff, loadImage, loadSources, roundTrip } from "./helpers.ts"
 
 const L = (...lines: string[]) => lines.join("\n")
 const TS = "google/protobuf/timestamp.proto"
@@ -218,6 +218,23 @@ describe("U3: emission mode", () => {
     expect(user.components?.messages?.["x.Unused"]).toBeDefined()
   })
 
+  test("U3.8b: an import path named like a member of Object.prototype is looked up as an own key of the bundle", () => {
+    const a = L('syntax = "proto3";', 'import "toString";', 'import "__proto__";', "message M {}")
+    for (const bundle of [undefined, {}]) {
+      const r = buildFromProto({ "a.proto": a }, { bundle })
+      expect(r.issues.map((i) => `${i.code}: ${i.message}`)).toEqual([
+        'missing-import: import "toString" not found',
+        'missing-import: import "__proto__" not found',
+      ])
+    }
+    const bundle = JSON.parse('{"toString": "syntax = \\"proto3\\";", "__proto__": "syntax = \\"proto3\\";"}')
+    const r = buildFromProto({ "a.proto": a }, { bundle, imports: "all" })
+    expect(r.issues).toEqual([])
+    expect(JSON.stringify(r.document.files)).toBe(
+      '{"toString":{"syntax":"proto3","bundled":true},"__proto__":{"syntax":"proto3","bundled":true},"a.proto":{"syntax":"proto3","imports":["toString","__proto__"]}}',
+    )
+  })
+
   test("U3.9: protoapi/core: a well-known type supplied by the loader is a user file", () => {
     const doc = core.buildFromProto({ "a.proto": wkt }, { loader: (p) => bundledFiles[p] }).document
     expect(doc.files?.[TS]?.bundled).toBeUndefined()
@@ -268,7 +285,7 @@ describe("IN-13: bundled files carry no header description", () => {
     expect(asSource.files?.[TS]?.description).toContain("Protocol Buffers")
     expect(fromBundle.files?.[TS]?.description).toBeUndefined()
     // element descriptions of bundled declarations stay
-    expect(fromBundle.components?.messages?.["google.protobuf.Timestamp"]?.description).toBeString()
+    expect(fromBundle.components?.messages?.["google.protobuf.Timestamp"]?.description).toBeTypeOf("string")
   })
 
   test("IN-13.3: the binary path agrees", async () => {

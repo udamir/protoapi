@@ -1,11 +1,11 @@
 // Text front end fixes of phase B: keyword type names (text#13), syntax-error files (text#14), long string literals
 // (text#15), the async loader (C-16) and missing imports per importer (C-17). Oracle cases in test/cases/frontend.ts.
 
-import { describe, expect, test } from "bun:test"
-import { buildFromProto, buildFromProtoAsync, parseProto } from "../src"
-import { cases } from "./cases/frontend"
-import { describeCases } from "./cases/run"
-import { matchIssues } from "./catalogue/match"
+import { describe, expect, test } from "vite-plus/test"
+import { buildFromProto, buildFromProtoAsync, parseProto } from "../src/index.ts"
+import { cases } from "./cases/frontend.ts"
+import { describeCases } from "./cases/run.ts"
+import { matchIssues } from "./catalogue/match.ts"
 
 describeCases("text front end", "frontend", cases)
 

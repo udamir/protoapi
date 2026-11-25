@@ -1,7 +1,7 @@
-// Source map lookups (design §9).
+// Source map lookups (spec §5).
 
-import type { JsonPointer, Location, SourceMap } from "./types"
-import { ptr } from "./paths"
+import type { JsonPointer, Location, SourceMap } from "./types.ts"
+import { ptr } from "./paths.ts"
 
 const toPointer = (path: (string | number)[]): JsonPointer => (path.length ? `#/${path.map(ptr).join("/")}` : "#")
 
@@ -10,7 +10,7 @@ const parentPointer = (p: JsonPointer): JsonPointer | undefined => {
   return i <= 1 ? undefined : p.slice(0, i)
 }
 
-/** Wrong argument types are a TypeError (decision 15). */
+/** Wrong argument types are a TypeError: a programming error, not an issue of the input. */
 const check = (fn: string, ok: unknown) => {
   if (!ok) throw new TypeError(`${fn}: wrong argument types`)
 }
@@ -48,7 +48,7 @@ const isKey = (v: unknown): v is string | number => typeof v === "string" || typ
 const exact = (path: (string | number)[], map: SourceMap): Location | undefined => own(map, toPointer(path))
 
 /**
- * Resolve a diff to a location (design §9, validation L-1, L-2, L-4):
+ * Resolve a diff to a location by the source map pointers of spec §5:
  *
  * - `remove` -> the before map; `add`, `replace`, `rename` -> the after map (the before map when the after map has no
  *   entry on the path, e.g. below a renamed ancestor, whose before key `path` holds); `origin` replaces `path`.
@@ -84,7 +84,7 @@ export const locateDiff = (diff: LocatableDiff, beforeMap: SourceMap, afterMap: 
   return locatePointer(toPointer(base), map) ?? (removed ? undefined : locatePointer(toPointer(base), beforeMap))
 }
 
-/** The rules of §9 that look up another pointer than the path's nearest ancestor. */
+/** The cases of `locateDiff` that look up another pointer than the path's nearest ancestor. */
 const special = (path: (string | number)[], map: SourceMap): Location | undefined => {
   const n = path.length
   const last = path[n - 1]

@@ -5,11 +5,11 @@ expect:
     value:
       type: object
       properties:
-        message:  { number: 5, type: string, protoType: string }
-        optional: { number: 1, type: integer, protoType: int32 }
-        stream:   { number: 3, type: boolean, protoType: bool }
-        type:     { number: 2, type: string, protoType: string }
-        syntax:   { number: 4, type: string, protoType: bytes }
-        reserved: { number: 6, type: string, protoType: string }
+        message:  { number: 5, type: string }
+        optional: { number: 1, type: int32 }
+        stream:   { number: 3, type: bool }
+        type:     { number: 2, type: string }
+        syntax:   { number: 4, type: bytes }
+        reserved: { number: 6, type: string }
   - pointer: "#/components/messages/shop.v1.Odd/properties"
     keyOrder: [message, optional, stream, type, syntax, reserved]

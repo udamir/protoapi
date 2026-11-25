@@ -4,7 +4,7 @@ Copyright (c) 2026 Damir Yusipov. Licensed under the MIT License (see LICENSE).
 This package contains third-party material:
 
 1. src/parser/ is derived from pbkit 0.0.72 (https://github.com/riiid/pbkit), core/parser and core/ast,
-   licensed under MIT OR Apache-2.0. See src/parser/NOTICE, src/parser/LICENSE-MIT, src/parser/LICENSE-APACHE.
+   licensed under MIT OR Apache-2.0 and used here under MIT. See src/parser/NOTICE, src/parser/LICENSE-MIT.
 
 2. src/bundle/sources.ts embeds .proto definitions (see bundle/VERSIONS.md for exact versions):
    - Protocol Buffers well-known types, descriptor.proto, cpp_features.proto and java_features.proto

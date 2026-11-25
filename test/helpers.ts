@@ -2,8 +2,8 @@
 
 import { readdirSync, readFileSync, statSync } from "node:fs"
 import { join, relative } from "node:path"
-import { buildFromDescriptorSet, buildFromProto, printProto } from "../src"
-import { normalizePath } from "../src/paths"
+import { buildFromDescriptorSet, buildFromProto, printProto } from "../src/index.ts"
+import { normalizePath } from "../src/paths.ts"
 import type {
   BuildIssue,
   BuildOptions,
@@ -12,9 +12,9 @@ import type {
   ImportsMode,
   PrintOptions,
   ProtoApiDocument,
-} from "../src"
+} from "../src/index.ts"
 
-export const ROOT = join(import.meta.dir, "..")
+export const ROOT = join(import.meta.dirname, "..")
 export const FIXTURES = join(ROOT, "test", "fixtures")
 export const IMAGES = join(ROOT, "test", "images")
 
@@ -108,7 +108,7 @@ export const roundTrip = (
   const first = buildFromProto(sources, opts)
   const entry = (options.entry ?? Object.keys(sources)).map(normalizePath)
   const printed = printProto(first.document, {
-    tags: options.annotations === "options" || options.annotations === "none" ? false : options.tags ?? true,
+    tags: options.annotations === "options" || options.annotations === "none" ? false : (options.tags ?? true),
     ...(mode === "user" ? {} : { sources }),
     ...print,
   })

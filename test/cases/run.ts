@@ -4,14 +4,14 @@
 //                text build has exactly `issues` (default: none)
 //   buf rejects: the recorded error contains `buf`, and the text build reports exactly `issues`
 
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vite-plus/test"
 import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
-import { buildFromDescriptorSet, buildFromProto } from "../../src"
-import type { BuildResult } from "../../src"
-import { IMAGES, jsonDiff } from "../helpers"
-import { matchIssues } from "../catalogue/match"
-import type { Case, CaseOracle } from "./types"
+import { buildFromDescriptorSet, buildFromProto } from "../../src/index.ts"
+import type { BuildResult } from "../../src/index.ts"
+import { IMAGES, jsonDiff } from "../helpers.ts"
+import { matchIssues } from "../catalogue/match.ts"
+import type { Case, CaseOracle } from "./types.ts"
 
 export const loadOracles = (module: string): Record<string, CaseOracle> => {
   const path = join(IMAGES, "cases", `${module}.json`)
@@ -28,7 +28,7 @@ export const describeCases = (name: string, module: string, cases: Case[]) => {
     for (const c of cases) {
       test(`${c.id}: ${c.title}`, () => {
         const oracle = oracles[c.id]
-        expect(oracle ? "recorded" : `no buf oracle: run \`bun scripts/case-images.ts ${module}\``).toBe("recorded")
+        expect(oracle ? "recorded" : `no buf oracle: run \`node scripts/case-images.ts ${module}\``).toBe("recorded")
         const text = buildCase(c)
         expect(matchIssues(text.issues, c.issues ?? [])).toEqual([])
         if (c.buf !== undefined) {

@@ -8,7 +8,7 @@
 //   `ignoreKeys` may be missing anywhere below the assertion's pointer;
 // - arrays match element-wise and in order; primitives match with Object.is.
 
-import type { BuildIssue, Location } from "../../src"
+import type { BuildIssue, Location } from "../../src/index.ts"
 
 export const ELLIPSIS = "…"
 

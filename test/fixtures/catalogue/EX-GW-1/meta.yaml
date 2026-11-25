@@ -5,5 +5,5 @@ expect:
     value:
       type: object
       properties:
-        sku: { number: 1, title: SKU, type: string, protoType: string, readOnly: true, minLength: 4, pattern: "^[A-Z]{2}-[0-9]+$", examples: [AB-123], x-default: XX-0 }
-        qty: { number: 2, type: integer, protoType: int32, exclusiveMinimum: 1 }
+        sku: { number: 1, title: SKU, type: string, readOnly: true, minLength: 4, pattern: "^[A-Z]{2}-[0-9]+$", examples: [AB-123], x-default: XX-0 }
+        qty: { number: 2, type: int32, exclusiveMinimum: 1 }

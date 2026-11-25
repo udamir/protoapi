@@ -6,9 +6,9 @@ expect:
     value:
       type: object
       properties:
-        id:    { number: 1, type: integer, protoType: int64, presence: required }
-        note:  { number: 2, type: string, protoType: string, presence: explicit, utf8Validation: false }
-        tags:  { number: 3, type: array, items: { type: string, protoType: string, utf8Validation: false } }
+        id:    { number: 1, type: int64, presence: required }
+        note:  { number: 2, type: string, presence: explicit, utf8Validation: false }
+        tags:  { number: 3, type: array, items: { type: string, utf8Validation: false } }
         item:  { number: 4, $ref: "#/components/messages/shop.legacy.Item", presence: required }
         extra: { number: 5, $ref: "#/components/messages/shop.legacy.Item" }
       jsonFormat: LEGACY_BEST_EFFORT

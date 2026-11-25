@@ -1,13 +1,13 @@
 /**
  * Origin: pbkit 0.0.72, `core/ast/lexical-elements.d.ts` (https://github.com/pbkit/pbkit),
- * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0 (see ./../LICENSE-MIT, ./../LICENSE-APACHE).
+ * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0, used here under MIT (see ../LICENSE-MIT).
  *
  * Modifications:
  * - reconstructed as TypeScript source from the published `.d.ts`; type-only imports.
  */
-import type { Span, Token } from "../recursive-descent-parser"
-import type { StatementBase } from "./index"
-import type { TextprotoMessageStatement } from "./textproto"
+import type { Span, Token } from "../scanner.ts"
+import type { StatementBase } from "./index.ts"
+import type { TextprotoMessageStatement } from "./textproto.ts"
 
 export type Node =
   | CommentGroup

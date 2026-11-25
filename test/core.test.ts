@@ -2,12 +2,12 @@
 // by the default entry (src/index.ts) and never imported from the core entry. Core keeps descriptor.proto and the
 // language feature files (design §17 item 4, "registry always included").
 
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vite-plus/test"
 import { readFileSync } from "node:fs"
 import { dirname, join, resolve } from "node:path"
-import * as core from "../src/core"
-import * as full from "../src"
-import { ROOT, loadImage, loadSources } from "./helpers"
+import * as core from "../src/core.ts"
+import * as full from "../src/index.ts"
+import { ROOT, loadImage, loadSources } from "./helpers.ts"
 
 /** Relative imports reachable from a source file (static `import … from "./x"`). */
 const importGraph = (entry: string): Set<string> => {
@@ -17,14 +17,7 @@ const importGraph = (entry: string): Set<string> => {
     seen.add(file)
     const text = readFileSync(file, "utf8")
     for (const m of text.matchAll(/^(?:import|export)\s[^"']*?from\s+["'](\.[^"']+)["']/gm)) {
-      const base = resolve(dirname(file), m[1])
-      let target = `${base}.ts`
-      try {
-        readFileSync(target)
-      } catch {
-        target = join(base, "index.ts")
-      }
-      visit(target)
+      visit(resolve(dirname(file), m[1]))
     }
   }
   visit(entry)
@@ -98,7 +91,7 @@ describe("PK-1: protoapi/core", () => {
       expect(d.components?.messages?.["google.protobuf.FileOptions"]).toBeUndefined()
     // protovalidate is bundled only by `protoapi`: core emits the file in full and does not mark it
     expect(fromCore.files?.["buf/validate/validate.proto"]?.bundled).toBeUndefined()
-    expect(fromCore.files?.["buf/validate/validate.proto"]?.description).toBeString()
+    expect(fromCore.files?.["buf/validate/validate.proto"]?.description).toBeTypeOf("string")
     expect(fromCore.components?.messages?.["buf.validate.FieldRules"]).toBeDefined()
     expect(fromFull.files?.["buf/validate/validate.proto"]).toBeUndefined()
     expect(fromFull.components?.messages?.["buf.validate.FieldRules"]).toBeUndefined()

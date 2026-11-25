@@ -1,19 +1,24 @@
 {
   "compilerOptions": {
-    "target": "es2020",
-    "module": "esnext",
+    "target": "es2022",
+    "lib": ["es2022", "dom"],
+    "module": "preserve",
     "moduleResolution": "bundler",
-    "lib": ["es2020"],
+    "resolveJsonModule": true,
+    "types": ["node"],
     "strict": true,
     "noImplicitOverride": true,
     "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "isolatedModules": true,
-    "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "types": ["bun"],
-    "noEmit": true
+    "noEmit": true,
+    // the scripts run with node's type stripping: explicit .ts extensions, type-only imports marked, erasable syntax only
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true
   },
-  "include": ["src/**/*", "test/**/*", "scripts/**/*", "bench/**/*"]
+  "include": ["src", "test", "scripts", "bench", "vite.config.ts", "docs/.vitepress/**/*.ts", "docs/examples/*.ts"]
 }

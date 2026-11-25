@@ -2,15 +2,15 @@
 // Dev only: needs the buf CLI from devDependencies. Each set is built in a scratch module that also contains the
 // bundled definitions (bundle/proto), so both producers see the same imported files.
 //
-//   bun run images            # all sets
-//   bun run images catalogue  # one set
-//   bun run images bundle     # test/images/bundle.json: every bundled file (PB-2.2)
+//   pnpm images               # all sets
+//   pnpm images catalogue     # one set
+//   pnpm images bundle        # test/images/bundle.json: every bundled file (PB-2.2)
 
 import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs"
 import { join, relative } from "node:path"
 import { spawnSync } from "node:child_process"
 
-const ROOT = join(import.meta.dir, "..")
+const ROOT = join(import.meta.dirname, "..")
 const FIXTURES = join(ROOT, "test", "fixtures")
 const IMAGES = join(ROOT, "test", "images")
 const SCRATCH = join(ROOT, ".tmp", "images")

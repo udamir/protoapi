@@ -1,10 +1,10 @@
-// protoapi: the ProtoApi 0.1 document format and its conversion tools, with the bundled definitions (design §11).
+// protoapi: the ProtoApi 0.1 document format and its conversion tools, with the bundled definitions.
 // `protoapi/core` has the same API without the bundled sources.
 
-import { type ProtoApi, createProtoApi } from "./api"
-import { bundledSources } from "./bundle/sources"
+import { type ProtoApi, createProtoApi } from "./api.ts"
+import { bundledSources } from "./bundle/sources.ts"
 
-export * from "./shared"
+export * from "./shared.ts"
 
 const api = createProtoApi(bundledSources)
 

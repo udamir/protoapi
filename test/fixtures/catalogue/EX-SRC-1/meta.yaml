@@ -2,7 +2,7 @@
 title: source-map pointers for one message
 expect:
   - pointer: "#/components/messages/shop.v1.Pet/properties/id"
-    value: { number: 1, type: integer, protoType: int64, jsonName: petId }
+    value: { number: 1, type: int64, jsonName: petId }
 sourceMap:
   "#/files/shop.proto/syntax": "0:0-0:18"
   "#/files/shop.proto/package": "1:0-1:16"

@@ -1,4 +1,4 @@
-// Comment text handling shared by both producers (design §3.8 "Comment attachment", D15).
+// Comment text handling shared by both producers (spec §3.8 "Comments").
 //
 // Both front ends deliver comments in protoc's SourceCodeInfo form: for `//` comments the text after `//` of each
 // line followed by "\n"; for `/* */` comments the text between the markers where every line after the first has
@@ -24,8 +24,7 @@ export const protocCommentText = (raw: string): string => {
 /** Join consecutive comment tokens of one group (consecutive `//` lines or one block). */
 export const protocGroupText = (tokens: string[]): string => tokens.map(protocCommentText).join("")
 
-/** Description text from protoc comment text (D15): doc-block marker line removed, common indentation stripped,
- *  horizontal whitespace runs collapsed, trailing whitespace removed, blank-line runs kept as one empty line. */
+/** Description text from protoc comment text (spec §3.8): doc-block marker line removed, common indentation stripped, horizontal whitespace runs collapsed, trailing whitespace removed, blank-line runs kept as one empty line. */
 export const normalizeComment = (text: string | undefined): string | undefined => {
   if (!text) return undefined
   // fast path: one line without tabs or runs of spaces
@@ -37,8 +36,7 @@ export const normalizeComment = (text: string | undefined): string | undefined =
   const lines = text.replace(/\r/g, "").split("\n")
   if (lines.length && /^\*+[ \t]*$/.test(lines[0])) lines.shift()
   else if (lines.length && /^\*+[ \t]/.test(lines[0])) lines[0] = lines[0].replace(/^\*+/, "")
-  // common indentation in columns (a tab advances to the next multiple of 4, buf's tab stop), so lines indented
-  // with tabs and with spaces lose the same indentation (A-14)
+  // common indentation in columns (a tab advances to the next multiple of 4, buf's tab stop), so lines indented with tabs and with spaces lose the same indentation
   let indent = Number.POSITIVE_INFINITY
   for (const line of lines) {
     if (!line.trim()) continue
@@ -82,6 +80,3 @@ const stripColumns = (line: string, n: number): string => {
   }
   return line.slice(i)
 }
-
-/** Split normalised text into lines; used by the annotation layer. */
-export const descriptionLines = (text: string | undefined): string[] => (text ? text.split("\n") : [])

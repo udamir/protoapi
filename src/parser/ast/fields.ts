@@ -1,27 +1,18 @@
 /**
  * Origin: pbkit 0.0.72, `core/ast/fields.d.ts` (https://github.com/pbkit/pbkit),
- * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0 (see ./../LICENSE-MIT, ./../LICENSE-APACHE).
+ * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0, used here under MIT (see ../LICENSE-MIT).
  *
  * Modifications:
  * - reconstructed as TypeScript source from the published `.d.ts`; type-only imports.
  * - `OneofGroup.fieldOptions` added (`group Foo = 1 [deprecated = true] { ... }` inside a oneof).
+ * - `MalformedField` removed (the parser no longer recovers inside a field).
  */
-import type { Span, Token } from "../recursive-descent-parser"
-import type { MalformedBase, Option, OptionName, StatementBase } from "./index"
-import type { Comma, Constant, Empty, IntLit, Keyword, Semi, Type } from "./lexical-elements"
-import type { MessageBody } from "./top-level-definitions"
+import type { Span, Token } from "../scanner.ts"
+import type { Option, OptionName, StatementBase } from "./index.ts"
+import type { Comma, Constant, Empty, IntLit, Keyword, Semi, Type } from "./lexical-elements.ts"
+import type { MessageBody } from "./top-level-definitions.ts"
 
-export type Node =
-  | Field
-  | MalformedField
-  | FieldOptions
-  | FieldOption
-  | Group
-  | Oneof
-  | OneofBody
-  | OneofField
-  | OneofGroup
-  | MapField
+export type Node = Field | FieldOptions | FieldOption | Group | Oneof | OneofBody | OneofField | OneofGroup | MapField
 
 export interface Field extends StatementBase {
   type: "field"
@@ -33,12 +24,6 @@ export interface Field extends StatementBase {
   fieldOptions?: FieldOptions
   semi: Semi
 }
-
-/**
- * A field statement that could only be parsed partially (pbkit's error recovery).
- * `parseProto` reports a syntax error whenever one is produced.
- */
-export type MalformedField = MalformedBase<Field, "malformed-field", "fieldLabel" | "fieldType">
 
 export interface FieldOptions extends Span {
   type: "field-options"

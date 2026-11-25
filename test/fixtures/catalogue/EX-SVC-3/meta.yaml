@@ -25,9 +25,9 @@ expect:
       description: …
       type: object
       properties:
-        name:     { number: 1, description: …, type: string, protoType: string }
+        name:     { number: 1, description: …, type: string }
         metadata: { number: 2, description: …, $ref: "#/components/messages/google.protobuf.Any" }
-        done:     { number: 3, description: …, type: boolean, protoType: bool }
+        done:     { number: 3, description: …, type: bool }
         error:    { number: 4, description: …, $ref: "#/components/messages/google.rpc.Status", oneof: result }
         response: { number: 5, description: …, $ref: "#/components/messages/google.protobuf.Any", oneof: result }
       oneofs: { result: { description: … } }
@@ -38,8 +38,8 @@ expect:
       description: …
       type: object
       properties:
-        code:    { number: 1, description: …, type: integer, protoType: int32 }
-        message: { number: 2, description: …, type: string, protoType: string }
+        code:    { number: 1, description: …, type: int32 }
+        message: { number: 2, description: …, type: string }
         details: { number: 3, description: …, type: array, items: { $ref: "#/components/messages/google.protobuf.Any" } }
   - pointer: "#/components/messages/google.protobuf.Any"
     value: { … }

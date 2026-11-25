@@ -1,7 +1,7 @@
 // Source-map positions of the text producer against buf's SourceCodeInfo (C-8 / decision D-A: tab stops of 4, no
 // width for a BOM, `\r`, `\f`, `\v`), option statement spans (IN-5, C-10) and syntax-error locations (text#14).
 
-import type { Case } from "./types"
+import type { Case } from "./types.ts"
 
 const span = (
   r: { sourceMap: Record<string, { start: { line: number; column: number }; end: { line: number; column: number } }> },
@@ -133,5 +133,47 @@ export const cases: Case[] = [
     },
     buf: "invalid escape sequence",
     issues: ["syntax @ * at a.proto:2:46", "syntax @ * at b.proto:2:9", "syntax @ * at c.proto:5:15"],
+  },
+  {
+    id: "POS-14",
+    title:
+      "a surrogate (even a \\u high + low pair) or a code point above U+10FFFF is an invalid escape at its backslash",
+    sources: {
+      "a.proto": 'syntax = "proto2";\npackage p;\nmessage M { optional string a = 1 [default = "a\\uD83Dz"]; }\n',
+      "b.proto": 'syntax = "proto2";\npackage q;\nmessage M { optional string a = 1 [default = "\\uD83D\\uD83D"]; }\n',
+      "c.proto":
+        'syntax = "proto2";\npackage r;\nmessage M { optional string a = 1 [default = "ab\\uD83D\\U0000DE00"]; }\n',
+      "d.proto":
+        'syntax = "proto2";\npackage s;\nmessage M { optional string a = 1 [default = "\\uDE00" "\\U0000D83D"]; }\n',
+      "e.proto": 'syntax = "proto2";\npackage t;\nmessage M { optional string a = 1 [json_name = "\\U00110000"]; }\n',
+      "f.proto": `syntax = "proto2";\npackage u;\n${OPTS}message B { optional string s = 1; }\nextend google.protobuf.FileOptions { optional B b = 50001; }\noption (b) = { s: "\\uD83D" };\n`,
+      "g.proto": 'syntax = "proto2";\npackage v;\nmessage M { optional string a = 1 [default = "\\uD83D\\uDE00"]; }\n',
+      "h.proto": `syntax = "proto2";\npackage w;\n${OPTS}message B { optional string s = 1; }\nextend google.protobuf.FileOptions { optional B b = 50002; }\noption (b) = { s: "x\\ud83d\\ude00" };\n`,
+    },
+    buf: "invalid escape sequence",
+    issues: [
+      "syntax @ * at a.proto:2:47",
+      "syntax @ * at b.proto:2:46",
+      "syntax @ * at c.proto:2:48",
+      "syntax @ * at d.proto:2:46",
+      "syntax @ * at e.proto:2:48",
+      "syntax @ * at f.proto:6:19",
+      "syntax @ * at g.proto:2:46",
+      "syntax @ * at h.proto:6:20",
+    ],
+    check: (r, x) => x(new Set(r.issues.map((i) => i.message))).toEqual(new Set(["invalid escape sequence"])),
+  },
+  {
+    id: "POS-15",
+    title:
+      "the first syntax error of a field wins over a malformed token later in the field (no recovery inside a field)",
+    sources: {
+      "a.proto": 'syntax = "proto2";\npackage p;\nmessage M {\n  optional int32 x 1 [json_name = "\\q"];\n}\n',
+      "b.proto":
+        'syntax = "proto2";\npackage q;\nmessage M { extensions 1 to 9; }\nextend M {\n  optional int32 x 1 [default = "\\q"];\n}\n',
+    },
+    buf: "unexpected integer literal",
+    issues: ["syntax @ * at a.proto:3:19", "syntax @ * at b.proto:4:19"],
+    check: (r, x) => x(r.issues.map((i) => i.message)).toEqual(['expected "=", got "1"', 'expected "=", got "1"']),
   },
 ]

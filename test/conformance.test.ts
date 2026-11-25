@@ -1,10 +1,10 @@
 // PB-2: buildFromProto ≡ buildFromDescriptorSet(buf image) as JSON text, source maps equal (design §13). The builds use the default emission mode `imports: "user"` (U3) unless a test names another.
 
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vite-plus/test"
 import { readFileSync } from "node:fs"
 import { join } from "node:path"
-import { buildFromDescriptorSet, buildFromProto, bundledFiles } from "../src"
-import { IMAGES, buildBoth, fixtureSets, jsonDiff } from "./helpers"
+import { buildFromDescriptorSet, buildFromProto, bundledFiles } from "../src/index.ts"
+import { IMAGES, buildBoth, fixtureSets, jsonDiff } from "./helpers.ts"
 
 /** Document text and source map of both producers are equal, neither reports an issue. */
 const conformant = (set: string) => {
@@ -87,7 +87,7 @@ describe("PB-2 conformance", () => {
     conformant("named/comments-same-line")
     const { text } = buildBoth("named/comments-same-line")
     const legs = text.document.components?.messages?.["named.comments.sameline.Pet"]?.properties?.legs
-    expect(legs).toEqual({ type: "integer", protoType: "int32", number: 7 })
+    expect(legs).toEqual({ type: "int32", number: 7 })
   })
 
   // Q0-P phase C (IN-10): the layouts in which protoc and buf 1.75 attach comments differently follow buf; each fixture's header names the layout and protoc's attachment
@@ -96,8 +96,8 @@ describe("PB-2 conformance", () => {
   test("PB-2.8: a block comment after `;` and a newline leads the next declaration", () => {
     conformant("named/comments-block-after-decl")
     const properties = pet("named/comments-block-after-decl", "blockafterdecl")?.properties
-    expect(properties?.age).toEqual({ number: 6, type: "integer", protoType: "int32" })
-    expect(properties?.legs).toEqual({ number: 7, type: "integer", protoType: "int32", minimum: 1 })
+    expect(properties?.age).toEqual({ number: 6, type: "int32" })
+    expect(properties?.legs).toEqual({ number: 7, type: "int32", minimum: 1 })
   })
   test("PB-2.9: a block comment and a `//` comment after `;`: the block comment trails, the `//` comment leads the next", () => {
     conformant("named/comments-block-then-line")

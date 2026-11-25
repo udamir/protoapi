@@ -1,7 +1,7 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vite-plus/test"
 import { readFileSync } from "node:fs"
-import { parseConstant, parseProto, parseTextprotoMessage } from "../../src/parser"
-import { bundleDir, listProtoFiles } from "./helpers"
+import { parseConstant, parseProto, parseTextprotoMessage } from "../../src/parser/index.ts"
+import { bundleDir, listProtoFiles } from "./helpers.ts"
 
 describe("syntax errors", () => {
   test("EX-DIAG-3: missing field number", () => {
@@ -15,10 +15,24 @@ describe("syntax errors", () => {
     expect(r.error?.message).toBe('expected integer literal, got ";"')
   })
 
-  test("the first error wins when recovery continues", () => {
+  test("the first error wins", () => {
     const text = 'syntax = "proto3";\nmessage A {\n  string a = ;\n  int32 b = 2;\n  bad bad bad;\n}'
     const r = parseProto(text)
     expect(r.error?.offset).toBe(text.indexOf("= ;") + 2)
+  })
+
+  test("a malformed token later in the same field does not hide the field's first error (buf)", () => {
+    for (const field of [
+      'optional int32 x 1 [json_name = "\\q"];',
+      'int32 x 1 [default = "\\q"];',
+      'int32 x 1 "\\x"',
+    ]) {
+      const text = `syntax = "proto2";\nmessage M {\n  ${field}\n}\nextend M { optional int32 y 2 [default = "\\q"]; }\n`
+      const r = parseProto(text)
+      expect(r.error?.offset).toBe(text.indexOf(" 1 ") + 1)
+      expect(r.error?.message).toBe('expected "=", got "1"')
+      expect(r.ast.statements.map((st) => st.type)).toEqual(["syntax"])
+    }
   })
 
   test("trailing garbage after the last statement", () => {

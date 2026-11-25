@@ -6,13 +6,13 @@
  * algorithm was rewritten after protoc; on these files it gives the same groups), statement spans are ignored
  * (they include the comment groups), and `undefined`-valued keys are ignored.
  */
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vite-plus/test"
 import { existsSync, readFileSync } from "node:fs"
 import { createRequire } from "node:module"
 import { join, relative } from "node:path"
-import { parseProto } from "../../src/parser"
-import { bundleDir, listProtoFiles, packageRoot } from "./helpers"
-import { generateSyntheticProto } from "./synthetic"
+import { parseProto } from "../../src/parser/index.ts"
+import { bundleDir, listProtoFiles, packageRoot } from "./helpers.ts"
+import { generateSyntheticProto } from "./synthetic.ts"
 
 const pbkitParser = join(packageRoot, ".tmp", "package", "core", "parser", "proto.js")
 const available = existsSync(pbkitParser)

@@ -1,4 +1,4 @@
-// File path normalisation (D12): posix separators, no leading `./`, `..` and `.` segments resolved.
+// File path normalisation: posix separators, no leading `./`, `..` and `.` segments resolved.
 
 export const normalizePath = (path: string): string => {
   const parts: string[] = []
@@ -15,5 +15,3 @@ export const ptr = (segment: string | number): string => {
   const s = String(segment)
   return s.includes("~") || s.includes("/") ? s.replace(/~/g, "~0").replace(/\//g, "~1") : s
 }
-
-export const join = (...segments: (string | number)[]): string => segments.map(ptr).join("/")

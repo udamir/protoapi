@@ -1,8 +1,8 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vite-plus/test"
 import { readFileSync } from "node:fs"
 import { join, relative } from "node:path"
-import { parseProto } from "../../src/parser"
-import { as, bundleDir, fixturesDir, listProtoFiles } from "./helpers"
+import { parseProto } from "../../src/parser/index.ts"
+import { as, bundleDir, fixturesDir, listProtoFiles } from "./helpers.ts"
 
 /** Every token's `text` equals its source slice, and every span lies within the text. */
 function checkTokens(text: string, node: unknown, path = "ast"): string[] {

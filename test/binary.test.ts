@@ -1,15 +1,15 @@
 // Binary FileDescriptorSet input through the optional @bufbuild/protobuf decoder (design D11).
 
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vite-plus/test"
 import { readFileSync } from "node:fs"
 import { join } from "node:path"
 import * as pb from "@bufbuild/protobuf"
 import * as wkt from "@bufbuild/protobuf/wkt"
-import { buildFromDescriptorSet, buildFromDescriptorSetBinary, buildFromProto } from "../src"
-import { createBuilders } from "../src/build"
-import { bundledSources } from "../src/bundle/sources"
-import { BUFBUILD_MINIMUM, loadBufbuild, readBufExtension } from "../src/binary"
-import { IMAGES, jsonDiff, loadImage, loadSources } from "./helpers"
+import { buildFromDescriptorSet, buildFromDescriptorSetBinary, buildFromProto } from "../src/index.ts"
+import { createBuilders } from "../src/build.ts"
+import { bundledSources } from "../src/bundle/sources.ts"
+import { BUFBUILD_MINIMUM, loadBufbuild, readBufExtension } from "../src/binary.ts"
+import { IMAGES, jsonDiff, loadImage, loadSources } from "./helpers.ts"
 
 const readBinary = (name: string) => new Uint8Array(readFileSync(join(IMAGES, `${name}.binpb`)))
 const decode = (bytes: Uint8Array) => pb.fromBinary(wkt.FileDescriptorSetSchema, bytes)
@@ -197,4 +197,121 @@ describe("editions and Go features through the binary path", () => {
       expect(JSON.stringify(fromBinary.document)).toBe(JSON.stringify(fromJson.document))
     })
   }
+})
+
+describe("bundled definitions of a binary set", () => {
+  // buf image of b.proto alone (`option (a.opt) = { v: 7 }`), built against a descriptor.proto whose edition 2024 default exports nested types
+  const bytes = Uint8Array.from(
+    atob(
+      "CqMBCgdiLnByb3RvEgFiGgdvLnByb3RvIgsKAU06BoK1GAIIB0pqCgYSBAAABQEKCAoBDBIDAAARCggKAQISAwEACgoJCgIDABIDAgARCgoKAgQAEgQDAAUBCgoKAwQAARIDAwgJCgoKAwQABxIDBAIcCg0KBgQAB9CGAxIDBAkbCg4KBwQAB9CGAwESAwQVGWIIZWRpdGlvbnNw6QfS9gMECAAYAA==",
+    ),
+    (c) => c.charCodeAt(0),
+  )
+  const sources = {
+    "x.proto": 'edition = "2024";\npackage a;\nmessage Outer {\n  message Inner {\n    int32 v = 1;\n  }\n}\n',
+    "o.proto":
+      'edition = "2024";\npackage a;\nimport "google/protobuf/descriptor.proto";\nimport "x.proto";\nextend google.protobuf.MessageOptions {\n  Outer.Inner opt = 50000;\n}\n',
+  }
+
+  test("they follow the symbol visibility of the descriptor.proto in BuildOptions.bundle", async () => {
+    const descriptor = bundledSources["google/protobuf/descriptor.proto"].replace(
+      'edition_defaults = { edition: EDITION_2024, value: "EXPORT_TOP_LEVEL" }',
+      'edition_defaults = { edition: EDITION_2024, value: "EXPORT_ALL" }',
+    )
+    expect(descriptor).not.toBe(bundledSources["google/protobuf/descriptor.proto"])
+    const bundle = { "google/protobuf/descriptor.proto": descriptor, ...sources }
+    const r = await buildFromDescriptorSetBinary(bytes, { bundle })
+    expect(codes(r.issues)).toEqual([])
+    expect(r.document.components?.messages?.["b.M"]?.options).toEqual({ "a.opt": { v: 7 } })
+  })
+
+  test("they follow the symbol visibility of a descriptor.proto the set contains", async () => {
+    const descriptor = pb.clone(wkt.FileDescriptorProtoSchema, wkt.file_google_protobuf_descriptor.proto)
+    const visibility = descriptor.messageType
+      .find((m) => m.name === "FeatureSet")
+      ?.field.find((f) => f.name === "default_symbol_visibility")?.options?.editionDefaults
+    const in2024 = visibility?.find((d) => d.edition === wkt.Edition.EDITION_2024)
+    expect(in2024?.value).toBe("EXPORT_TOP_LEVEL")
+    if (in2024) in2024.value = "EXPORT_ALL"
+    const r = await buildFromDescriptorSetBinary(new Uint8Array([...encode([descriptor]), ...bytes]), {
+      bundle: sources,
+      entry: ["b.proto"],
+    })
+    expect(codes(r.issues)).toEqual([
+      "no-source-info: google/protobuf/descriptor.proto has no SourceCodeInfo; the source map is empty",
+    ])
+    expect(r.document.components?.messages?.["b.M"]?.options).toEqual({ "a.opt": { v: 7 } })
+  })
+})
+
+describe("option values without a ProtoJSON form", () => {
+  // the file of the buf image below (`--exclude-imports --exclude-source-info`): an Any of a type the set does not define, a Timestamp and a Duration outside the ProtoJSON range (@bufbuild/protobuf's toJson throws for each), and option map and Struct keys named like members of Object.prototype
+  const source = `syntax = "proto3";
+package p;
+import "google/protobuf/descriptor.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+message O { map<string, int32> m = 1; }
+extend google.protobuf.FieldOptions {
+  google.protobuf.Any any = 50000;
+  int32 num = 50001;
+  google.protobuf.Timestamp ts = 50002;
+  google.protobuf.Duration dur = 50003;
+}
+extend google.protobuf.MessageOptions { string label = 50004; O o = 50005; google.protobuf.Struct s = 50006; }
+message M {
+  option (label) = "kept";
+  int32 a = 1 [(any) = { type_url: "type.googleapis.com/x.Unknown" value: "\\x08\\x01" }, (num) = 1];
+  int32 b = 2 [(ts) = { seconds: 253402300800 }, (num) = 2];
+  int32 c = 3 [(dur) = { seconds: 315576000001 }, (num) = 3];
+  int32 d = 4 [(num) = 4];
+}
+message A { option (o) = { m: { key: "toString" value: 1 } m: { key: "__proto__" value: 2 } }; }
+message B { option (s) = { fields: { key: "constructor" value: { number_value: 1 } } fields: { key: "__proto__" value: { bool_value: true } } }; }
+`
+  const bytes = Uint8Array.from(
+    atob(
+      "CtoHCgdhLnByb3RvEgFwGiBnb29nbGUvcHJvdG9idWYvZGVzY3JpcHRvci5wcm90bxoZZ29vZ2xlL3Byb3RvYnVmL2FueS5wcm90bxoeZ29vZ2" +
+        "xlL3Byb3RvYnVmL2R1cmF0aW9uLnByb3RvGhxnb29nbGUvcHJvdG9idWYvc3RydWN0LnByb3RvGh9nb29nbGUvcHJvdG9idWYvdGltZXN0YW1w" +
+        "LnByb3RvIlQKAU8SGQoBbRgBIAMoCzILLnAuTy5NRW50cnlSAW0aNAoGTUVudHJ5EhAKA2tleRgBIAEoCVIDa2V5EhQKBXZhbHVlGAIgASgFUg" +
+        "V2YWx1ZToCOAEimgEKAU0SOQoBYRgBIAEoBUIrgrUYIwoddHlwZS5nb29nbGVhcGlzLmNvbS94LlVua25vd24SAggBiLUYAVIBYRIdCgFiGAIg" +
+        "ASgFQg+ItRgCkrUYBwiAg9H/rwdSAWISHQoBYxgDIAEoBUIPiLUYA5q1GAcIgbyuzpcJUgFjEhIKAWQYBCABKAVCBIi1GARSAWQ6CKK1GARrZX" +
+        "B0IiYKAUE6Iaq1GB0KDQoJX19wcm90b19fEAIKDAoIdG9TdHJpbmcQASI0CgFCOi+ytRgrCg8KCV9fcHJvdG9fXxICIAEKGAoLY29uc3RydWN0" +
+        "b3ISCREAAAAAAADwPzpHCgNhbnkSHS5nb29nbGUucHJvdG9idWYuRmllbGRPcHRpb25zGNCGAyABKAsyFC5nb29nbGUucHJvdG9idWYuQW55Ug" +
+        "Nhbnk6MQoDbnVtEh0uZ29vZ2xlLnByb3RvYnVmLkZpZWxkT3B0aW9ucxjRhgMgASgFUgNudW06SwoCdHMSHS5nb29nbGUucHJvdG9idWYuRmll" +
+        "bGRPcHRpb25zGNKGAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wUgJ0czpMCgNkdXISHS5nb29nbGUucHJvdG9idWYuRmllbGRPcH" +
+        "Rpb25zGNOGAyABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb25SA2R1cjo3CgVsYWJlbBIfLmdvb2dsZS5wcm90b2J1Zi5NZXNzYWdlT3B0" +
+        "aW9ucxjUhgMgASgJUgVsYWJlbDo1CgFvEh8uZ29vZ2xlLnByb3RvYnVmLk1lc3NhZ2VPcHRpb25zGNWGAyABKAsyBC5wLk9SAW86SAoBcxIfLm" +
+        "dvb2dsZS5wcm90b2J1Zi5NZXNzYWdlT3B0aW9ucxjWhgMgASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdFIBc2IGcHJvdG8z0vYDBAgAGAA=",
+    ),
+    (c) => c.charCodeAt(0),
+  )
+
+  test("only the value without a ProtoJSON form is decoded from its bytes; the other options of the file survive", async () => {
+    const text = buildFromProto({ "a.proto": source })
+    const r = await buildFromDescriptorSetBinary(bytes)
+    expect(codes(r.issues)).toEqual([
+      "no-source-info: a.proto has no SourceCodeInfo; the source map is empty",
+      "unknown-option: unknown type type.googleapis.com/x.Unknown in an Any option value; the value is kept as written",
+    ])
+    expect(codes(text.issues)).toEqual(codes(r.issues).slice(1))
+    expect(JSON.stringify(r.document)).toBe(JSON.stringify(text.document))
+    const m = r.document.components?.messages?.["p.M"]
+    expect(m?.options).toEqual({ "p.label": "kept" })
+    expect(m?.properties.a.options).toEqual({
+      "p.any": { type_url: "type.googleapis.com/x.Unknown", value: "CAE=" },
+      "p.num": 1,
+    })
+    expect(m?.properties.b.options).toEqual({ "p.num": 2, "p.ts": { seconds: "253402300800" } })
+    expect(m?.properties.c.options).toEqual({ "p.num": 3, "p.dur": { seconds: "315576000001" } })
+    expect(m?.properties.d.options).toEqual({ "p.num": 4 })
+    expect(JSON.stringify(r.document.components?.messages?.["p.A"]?.options)).toBe(
+      '{"p.o":{"m":{"__proto__":2,"toString":1}}}',
+    )
+    expect(JSON.stringify(r.document.components?.messages?.["p.B"]?.options)).toBe(
+      '{"p.s":{"fields":{"__proto__":{"bool_value":true},"constructor":{"number_value":1}}}}',
+    )
+  })
 })

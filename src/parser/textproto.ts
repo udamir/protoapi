@@ -1,10 +1,10 @@
 /**
  * Origin: pbkit 0.0.72, `core/parser/textproto.{js,d.ts}` (https://github.com/pbkit/pbkit),
- * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0 (see ./LICENSE-MIT, ./LICENSE-APACHE).
+ * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0, used here under MIT (see ./LICENSE-MIT).
  *
  * Modifications:
  * - strict TypeScript port; comments are recorded with `parser.addComment` instead of a "comment" event.
- * - sticky patterns (see recursive-descent-parser.ts); comment patterns use `[\s\S]` / `[^\n]` so that a lone `\r`,
+ * - sticky patterns (see scanner.ts); comment patterns use `[\s\S]` / `[^\n]` so that a lone `\r`,
  *   U+2028 or U+2029 inside a comment no longer breaks the comment token.
  * - hexadecimal integers (`0x1F`, `-0x10`) are parsed as `textproto-signed-hex-lit` (pbkit had a TODO and parsed
  *   `0x10` as the decimal `0` followed by a field named `x10`); `inf` / `nan` stay identifiers as in text format.
@@ -12,11 +12,12 @@
  *   letters are case-sensitive as in protoc (pbkit's `i` flag also accepted e.g. `\N`). Patterns use explicit
  *   character classes instead of the `i` flag.
  * - `parseTextprotoMessage` never throws: it returns `error` and requires the whole input to be consumed.
+ * - the identifier pattern and the string literal scanner (`strLitPattern`, `acceptStrLitToken`) moved to lexer.ts, `signed` to combinators.ts (shared with proto.ts).
  */
-import type * as ast from "./ast/textproto"
-import type { MultilineComment, SinglelineComment } from "./ast/lexical-elements"
-import { acceptPatternAndThen, choice, many, mergeSpans, skipTrivia } from "./misc"
-import type { AcceptFn } from "./misc"
+import type * as ast from "./ast/textproto.ts"
+import type { MultilineComment, SinglelineComment } from "./ast/lexical-elements.ts"
+import { acceptPatternAndThen, choice, many, mergeSpans, signed } from "./combinators.ts"
+import { acceptStrLitToken, identPattern, skipTrivia, strLitPattern } from "./lexer.ts"
 import {
   type RecursiveDescentParser,
   type Token,
@@ -24,8 +25,7 @@ import {
   eof,
   namePattern,
   ParserSyntaxError,
-  TokenSyntaxError,
-} from "./recursive-descent-parser"
+} from "./scanner.ts"
 
 type Comment = ast.TextprotoComment | SinglelineComment | MultilineComment
 
@@ -194,7 +194,6 @@ function expectTextprotoFullIdent(parser: TextprotoParser): ast.TextprotoFullIde
   throw new ParserSyntaxError(parser, [".", identPattern])
 }
 
-const identPattern = namePattern(/[A-Za-z_][A-Za-z0-9_]*/y, "identifier")
 const acceptTextprotoIdent = acceptPatternAndThen<ast.TextprotoIdent>(identPattern, (ident) => ({
   type: "textproto-ident",
   ...ident,
@@ -222,74 +221,6 @@ const acceptTextprotoDecLit = acceptPatternAndThen<ast.TextprotoDecLit>(decLitPa
   type: "textproto-dec-lit",
   ...dec,
 }))
-
-/**
- * Protobuf string literal token (shared with proto.ts). Escapes: `\a \b \f \n \r \t \v \\ \? \' \"`, octal `\N`..`\NNN`,
- * hex `\xH` / `\xHH` (also `\X`), `\uXXXX`, `\UXXXXXXXX`. Raw NUL and newline are not allowed inside the quotes.
- */
-export const strLitPattern = namePattern(
-  /'(?:\\[xX][0-9a-fA-F]{1,2}|\\[0-7]{1,3}|\\u[0-9a-fA-F]{4}|\\U[0-9a-fA-F]{8}|\\[abfnrtv\\?'"]|[^'\0\n\\])*'|"(?:\\[xX][0-9a-fA-F]{1,2}|\\[0-7]{1,3}|\\u[0-9a-fA-F]{4}|\\U[0-9a-fA-F]{8}|\\[abfnrtv\\?'"]|[^"\0\n\\])*"/y,
-  "string literal",
-)
-
-const isHex = (c: number) => (c >= 48 && c <= 57) || (c >= 65 && c <= 70) || (c >= 97 && c <= 102)
-const isOctal = (c: number) => c >= 48 && c <= 55
-/** `\a \b \f \n \r \t \v \\ \? \' \"` */
-const SIMPLE_ESCAPES = new Set([97, 98, 102, 110, 114, 116, 118, 92, 63, 39, 34])
-
-/** A malformed string literal: the error is located at `offset` (the bad escape, or the opening quote). */
-function stringLiteralError(parser: RecursiveDescentParser<Token>, offset: number, message: string): ParserSyntaxError {
-  const loc = parser.loc
-  parser.loc = offset
-  const error = new TokenSyntaxError(parser, [strLitPattern], message)
-  parser.loc = loc
-  return error
-}
-
-/**
- * Scans one string literal token at the current position (the grammar of `strLitPattern`) without a regular
- * expression: a per-character alternation hits the regex engine's backtracking limit on literals of about a million
- * characters (validation text#15). Returns `undefined` when the input does not start with a quote. A literal that
- * starts but is malformed throws: an invalid escape at its backslash ("invalid escape sequence", as buf), a raw
- * newline / NUL or the end of the input at the opening quote ("unterminated string literal").
- */
-export function acceptStrLitToken(parser: RecursiveDescentParser<Token>): Token | undefined {
-  const input = parser.input
-  const start = parser.loc
-  const quote = input.charCodeAt(start)
-  if (quote !== 34 && quote !== 39) return
-  let i = start + 1
-  while (true) {
-    if (i >= input.length) throw stringLiteralError(parser, start, "unterminated string literal")
-    const c = input.charCodeAt(i)
-    if (c === quote) break
-    if (c === 10 || c === 0) throw stringLiteralError(parser, start, "unterminated string literal")
-    if (c !== 92) {
-      i++
-      continue
-    }
-    const n = input.charCodeAt(i + 1)
-    if (SIMPLE_ESCAPES.has(n)) i += 2
-    else if (n === 120 || n === 88) {
-      // \xH or \xHH
-      if (!isHex(input.charCodeAt(i + 2))) throw stringLiteralError(parser, i, "invalid escape sequence")
-      i += isHex(input.charCodeAt(i + 3)) ? 4 : 3
-    } else if (isOctal(n)) {
-      i += 2
-      if (isOctal(input.charCodeAt(i))) i++
-      if (isOctal(input.charCodeAt(i))) i++
-    } else if (n === 117 || n === 85) {
-      // \uXXXX, \UXXXXXXXX
-      const digits = n === 117 ? 4 : 8
-      for (let k = 0; k < digits; k++)
-        if (!isHex(input.charCodeAt(i + 2 + k))) throw stringLiteralError(parser, i, "invalid escape sequence")
-      i += 2 + digits
-    } else throw stringLiteralError(parser, i, "invalid escape sequence")
-  }
-  const end = i + 1
-  parser.loc = end
-  return { start, end, text: input.slice(start, end) }
-}
 
 function acceptTextprotoStrLit(parser: TextprotoParser): ast.TextprotoStrLit | undefined {
   const strLit = acceptStrLitToken(parser)
@@ -321,27 +252,13 @@ const acceptTextprotoSemiOrComma = choice<ast.TextprotoSemi | ast.TextprotoComma
   acceptTextprotoComma,
 ])
 
-function signed<TValue extends Token, TType extends string>(
-  acceptFn: AcceptFn<TValue>,
-  type: TType,
-): AcceptFn<{ start: number; end: number; type: TType; sign?: Token; value: TValue }> {
-  return function accept(parser) {
-    const loc = parser.loc
-    const sign = parser.accept("-")
-    const value = acceptFn(parser)
-    if (!value) {
-      parser.loc = loc
-      return
-    }
-    return { ...mergeSpans([sign, value]), type, sign, value }
-  }
-}
+const MINUS = ["-"]
 
-const acceptTextprotoSignedIdent = signed(acceptTextprotoIdent, "textproto-signed-ident")
-const acceptTextprotoSignedFloatLit = signed(acceptTextprotoFloatLit, "textproto-signed-float-lit")
-const acceptTextprotoSignedHexLit = signed(acceptTextprotoHexLit, "textproto-signed-hex-lit")
-const acceptTextprotoSignedOctLit = signed(acceptTextprotoOctLit, "textproto-signed-oct-lit")
-const acceptTextprotoSignedDecLit = signed(acceptTextprotoDecLit, "textproto-signed-dec-lit")
+const acceptTextprotoSignedIdent = signed(acceptTextprotoIdent, "textproto-signed-ident", MINUS)
+const acceptTextprotoSignedFloatLit = signed(acceptTextprotoFloatLit, "textproto-signed-float-lit", MINUS)
+const acceptTextprotoSignedHexLit = signed(acceptTextprotoHexLit, "textproto-signed-hex-lit", MINUS)
+const acceptTextprotoSignedOctLit = signed(acceptTextprotoOctLit, "textproto-signed-oct-lit", MINUS)
+const acceptTextprotoSignedDecLit = signed(acceptTextprotoDecLit, "textproto-signed-dec-lit", MINUS)
 
 const acceptTextprotoScalarValue = choice<ast.TextprotoScalarValue, TextprotoParser>([
   acceptTextprotoStrLit,

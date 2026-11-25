@@ -1,12 +1,12 @@
 /**
  * Origin: pbkit 0.0.72, `core/ast/textproto.d.ts` (https://github.com/pbkit/pbkit),
- * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0 (see ./../LICENSE-MIT, ./../LICENSE-APACHE).
+ * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0, used here under MIT (see ../LICENSE-MIT).
  *
  * Modifications:
  * - reconstructed as TypeScript source from the published `.d.ts`; type-only imports.
  * - (parser side) `TextprotoSignedHexLit` values are now produced; pbkit declared the type but never parsed hex.
  */
-import type { Span, Token } from "../recursive-descent-parser"
+import type { Span, Token } from "../scanner.ts"
 
 export interface Textproto {
   statements: TextprotoMessageStatement[]

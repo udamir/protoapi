@@ -4,11 +4,11 @@
 // and spans. PB-6.10 … run the locateDiff rules with diffs in api-smart-diff 2.0's shape (`Diff.path` holds the before
 // keys; a rename's path is the container, `before` / `after` the old and new key).
 
-import { describe, expect, test } from "bun:test"
-import { buildFromDescriptorSet, buildFromProto, locateDiff, locatePointer } from "../src"
-import type { SourceMap } from "../src"
-import { describeCases, loadOracles } from "./cases/run"
-import { SM_PROTO2, SM_REQUIRED, cases, find } from "./cases/sourcemap"
+import { describe, expect, test } from "vite-plus/test"
+import { buildFromDescriptorSet, buildFromProto, locateDiff, locatePointer } from "../src/index.ts"
+import type { SourceMap } from "../src/index.ts"
+import { describeCases, loadOracles } from "./cases/run.ts"
+import { SM_PROTO2, SM_REQUIRED, cases, find } from "./cases/sourcemap.ts"
 
 const SRC = [
   'syntax = "proto3";',

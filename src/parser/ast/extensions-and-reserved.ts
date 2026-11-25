@@ -1,15 +1,15 @@
 /**
  * Origin: pbkit 0.0.72, `core/ast/extensions-and-reserved.d.ts` (https://github.com/pbkit/pbkit),
- * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0 (see ./../LICENSE-MIT, ./../LICENSE-APACHE).
+ * Copyright (c) JongChan Choi. Licence: MIT OR Apache-2.0, used here under MIT (see ../LICENSE-MIT).
  *
  * Modifications:
  * - reconstructed as TypeScript source from the published `.d.ts`; type-only imports.
  * - `FieldNames.strLitOrCommas` may also hold `Ident` nodes (editions: `reserved OLD, LEGACY;`).
  */
-import type { Span, Token } from "../recursive-descent-parser"
-import type { FieldOptions } from "./fields"
-import type { StatementBase } from "./index"
-import type { Comma, Ident, Keyword, Semi, SignedIntLit, StrLit } from "./lexical-elements"
+import type { Span, Token } from "../scanner.ts"
+import type { FieldOptions } from "./fields.ts"
+import type { StatementBase } from "./index.ts"
+import type { Comma, Ident, Keyword, Semi, SignedIntLit, StrLit } from "./lexical-elements.ts"
 
 export type Node = Extensions | Ranges | Range | Max | Reserved | FieldNames
 

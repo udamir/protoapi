@@ -1,6 +1,6 @@
-import { describe, expect, test } from "bun:test"
-import type { BuildIssue } from "../../src"
-import { formatPointer, matchFragment, matchIssues, parsePointer, resolvePointer } from "./match"
+import { describe, expect, test } from "vite-plus/test"
+import type { BuildIssue } from "../../src/index.ts"
+import { formatPointer, matchFragment, matchIssues, parsePointer, resolvePointer } from "./match.ts"
 
 describe("catalogue matcher", () => {
   test("pointers use RFC 6901 escaping", () => {

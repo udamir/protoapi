@@ -1,16 +1,16 @@
 // Protobuf version compatibility (validation report §7): editions (D-C, C-4, F-4), edition feature defaults read
 // from FeatureSetDefaults, ProtoJSON serializer variants (C-14), descriptor default values (desc#13).
 
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vite-plus/test"
 import { readFileSync } from "node:fs"
 import { join } from "node:path"
 import * as pb from "@bufbuild/protobuf"
 import * as wkt from "@bufbuild/protobuf/wkt"
-import { buildFromDescriptorSet, buildFromProto, bundledFiles } from "../src"
-import type { BuildResult, FileDescriptorSetJson } from "../src"
-import { FeatureDefaults, featureDefaultsSource } from "../src/features"
-import { bundledFeatureDefaults } from "../src/bundle/features"
-import { IMAGES, loadImage } from "./helpers"
+import { buildFromDescriptorSet, buildFromProto, bundledFiles } from "../src/index.ts"
+import type { BuildResult, FileDescriptorSetJson } from "../src/index.ts"
+import { FeatureDefaults, featureDefaultsSource } from "../src/features.ts"
+import { bundledFeatureDefaults } from "../src/bundle/features.ts"
+import { IMAGES, loadImage } from "./helpers.ts"
 
 const codes = (r: BuildResult) =>
   r.issues.filter((i) => i.code !== "no-source-info").map((i) => `${i.code} @ ${i.pointer}: ${i.message}`)
@@ -51,7 +51,6 @@ describe("D-C: editions", () => {
     expect(msg(r, "p.M")?.properties.s).toEqual({
       number: 1,
       type: "string",
-      protoType: "string",
       presence: "explicit",
     })
   })
@@ -87,6 +86,8 @@ describe("D-C: editions", () => {
     ["unknown name", { syntax: "editions", edition: "EDITION_2027" }, "2027", "edition EDITION_2027"],
     ["no syntax, unnamed number", { edition: 1003 }, "1003", "edition 1003"],
     ["editions without an edition", { syntax: "editions" }, "editions", 'syntax "editions" without an edition'],
+    ["an Object.prototype name", { syntax: "editions", edition: "toString" }, "toString", "edition toString"],
+    ["constructor", { syntax: "editions", edition: "constructor" }, "constructor", "edition constructor"],
   ]
   for (const [label, fields, syntax, what] of unknown) {
     test(`descriptor, ${label}: syntax "${syntax}" verbatim, unsupported, newest known defaults`, () => {
@@ -97,8 +98,8 @@ describe("D-C: editions", () => {
       ])
       // 2026 defaults: explicit presence, packed (no `packed: false`), open enums
       expect(msg(r, "p.M")?.properties).toEqual({
-        s: { number: 1, type: "string", protoType: "string", presence: "explicit" },
-        r: { number: 2, type: "array", items: { type: "integer", protoType: "int32" } },
+        s: { number: 1, type: "string", presence: "explicit" },
+        r: { number: 2, type: "array", items: { type: "int32" } },
       })
     })
   }
@@ -106,6 +107,8 @@ describe("D-C: editions", () => {
   for (const [label, text, syntax] of [
     ["UNSTABLE", "UNSTABLE", "UNSTABLE"],
     ["a future year", "2027", "2027"],
+    ["an Object.prototype name", "constructor", "constructor"],
+    ["__proto__", "__proto__", "__proto__"],
   ]) {
     test(`text, ${label}: the same spelling and issue as the descriptor producer`, () => {
       const r = buildFromProto({ "a.proto": `edition = "${text}";\npackage p;\nmessage M { string s = 1; }\n` })

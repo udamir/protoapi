@@ -1,9 +1,9 @@
 // Inline test cases with a buf oracle (phase B). Each case module under test/cases/ exports `cases: Case[]`;
-// `bun scripts/case-images.ts` builds every case with buf 1.75 and records the image (buf accepts) or buf's error
+// `node scripts/case-images.ts` builds every case with buf 1.75 and records the image (buf accepts) or buf's error
 // (buf rejects) in test/images/cases/<module>.json, which the test files read.
 
-import type { expect } from "bun:test"
-import type { BuildResult, TextBuildOptions } from "../../src"
+import type { expect } from "vite-plus/test"
+import type { BuildResult, TextBuildOptions } from "../../src/index.ts"
 
 export interface Case {
   /** stable id, e.g. "PB-4.1" */

@@ -3,5 +3,5 @@ title: packed on a bytes element is an invalid-option issue
 textOnly: true   # protoc rejects packed on a length-delimited element
 expect:
   - pointer: "#/components/messages/shop.v1.Lists/properties/chunks"
-    value: { number: 2, type: array, items: { type: string, protoType: bytes }, …: true }
+    value: { number: 2, type: array, items: { type: bytes }, …: true }
 issues: [ "invalid-option @ #/components/messages/shop.v1.Lists/properties/chunks/**" ]

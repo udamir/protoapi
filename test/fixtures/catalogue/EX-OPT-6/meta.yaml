@@ -12,7 +12,7 @@ expect:
     value:
       type: object
       properties:
-        body: { number: 1, type: string, protoType: string, presence: explicit, options: { features: { pb.cpp: { string_type: CORD } } } }
+        body: { number: 1, type: string, presence: explicit, options: { features: { pb.cpp: { string_type: CORD } } } }
   - pointer: "#/components/enums/shop.edt.Legacy"
     value:
       type: string

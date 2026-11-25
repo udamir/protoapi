@@ -1,25 +1,24 @@
 /**
  * `.proto` parser: a strict TypeScript port of pbkit 0.0.72's `core/parser` + `core/ast` (MIT OR Apache-2.0, see ./NOTICE), extended for editions 2023 / 2024 and with buf 1.75's comment attachment.
  */
-import type { BuildIssue } from "../types"
-import type * as ast from "./ast/index"
-import { createLineIndex } from "./position"
-import { type Comment, type ParseError, parse, parseConstant } from "./proto"
-import { parseTextprotoMessage } from "./textproto"
+import type { BuildIssue } from "../types.ts"
+import type * as ast from "./ast/index.ts"
+import { createLineIndex } from "./position.ts"
+import { type Comment, type ParseError, parse, parseConstant } from "./proto.ts"
+import { parseTextprotoMessage } from "./textproto.ts"
 
-export type * from "./ast/index"
-export type { Comment as ProtoComment, ParseError, ParseResult, ProtoParser } from "./proto"
-export type { TextprotoParseResult } from "./textproto"
-export type { LineIndex, Position } from "./position"
-export type { Span, Token } from "./recursive-descent-parser"
-export { createLineIndex } from "./position"
-export { decodeBytesLit, decodeStrLit, decodeUtf8, parseFloatLit, parseIntLit } from "./literals"
+export type * from "./ast/index.ts"
+export type { Comment as ProtoComment, ParseError, ParseResult, ProtoParser } from "./proto.ts"
+export type { TextprotoParseResult } from "./textproto.ts"
+export type { LineIndex, Position } from "./position.ts"
+export type { Span, Token } from "./scanner.ts"
+export { createLineIndex } from "./position.ts"
+export { decodeBytesLit, decodeStrLit, decodeUtf8, parseFloatLit, parseIntLit } from "./literals.ts"
 export { parseConstant, parseTextprotoMessage }
 
 export interface ParseProtoResult {
   /**
-   * The file's statements. With a syntax error: the complete top-level statements that end before it (a partial
-   * AST; the builders still take no declarations from such a file, design EX-DIAG-3).
+   * The file's statements. With a syntax error: the complete top-level statements that end before it (a partial AST; the builders still take no declarations from such a file).
    */
   ast: ast.Proto
   /**
@@ -34,18 +33,26 @@ export interface ParseProtoResult {
 }
 
 /**
- * Parses `.proto` source text (design §4.3, validation decision 14). `path` names the file in the issues (default
- * `"input.proto"`); columns use buf's tab stop of 4, like the builders' default `tabWidth`. Never throws on bad
- * input; throws a TypeError when `text` is not a string.
+ * Parses `.proto` source text. `path` names the file in the issues (default `"input.proto"`); columns use buf's tab stop of 4, like the builders' default `tabWidth`. Never throws on bad input; throws a TypeError when `text` is not a string.
  */
 export function parseProto(text: string, path = "input.proto"): ParseProtoResult {
   if (typeof text !== "string" || typeof path !== "string") throw new TypeError("parseProto: text and path are strings")
+  return parseProtoSource(text, path, { tabWidth: 4 })
+}
+
+export interface ParseProtoSourceOptions {
+  /** Tab stop of the syntax issue's columns (the builders' `tabWidth`). */
+  tabWidth: number
+}
+
+/** `parseProto` without the argument checks and with the columns of the syntax issue counted with `options.tabWidth`: the text front end's entry point. */
+export function parseProtoSource(text: string, path: string, options: ParseProtoSourceOptions): ParseProtoResult {
   const { ast, comments, error, partial } = parse(text)
   const result: ParseProtoResult = { ast, comments: comments as Comment[], issues: [] }
   if (error) {
     result.ast = { statements: partial ?? [] }
     result.error = error
-    const lines = createLineIndex(text, { tabWidth: 4 })
+    const lines = createLineIndex(text, { tabWidth: options.tabWidth })
     const at = lines.toPosition(error.offset)
     result.issues.push({
       code: "syntax",

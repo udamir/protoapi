@@ -7,7 +7,7 @@ expect:
     value:
       type: object
       properties:
-        name: { number: 1, type: string, protoType: string }
-        qty:  { number: 2, type: integer, protoType: int32, presence: explicit }
-        code: { number: 3, type: string, protoType: string, presence: required }
+        name: { number: 1, type: string }
+        qty:  { number: 2, type: int32, presence: explicit }
+        code: { number: 3, type: string, presence: required }
         next: { number: 4, $ref: "#/components/messages/shop.edt.Item" }
