@@ -1,5 +1,7 @@
 # protoapi
 
+<img alt="npm" src="https://img.shields.io/npm/v/protoapi"> <img alt="npm" src="https://img.shields.io/npm/dm/protoapi?label=npm"> <img alt="npm type definitions" src="https://img.shields.io/npm/types/protoapi"> <img alt="license" src="https://img.shields.io/npm/l/protoapi">
+
 ProtoApi is a JSON document format for Protocol Buffers APIs, plus the tools that convert to and from it: `.proto` text → ProtoApi, `FileDescriptorSet` → ProtoApi, ProtoApi → `.proto` text, and a source map that locates every document node in the original files.
 
 **Documentation: [udamir.github.io/protoapi](https://udamir.github.io/protoapi/)** — [guide](https://udamir.github.io/protoapi/guide/), [specification](https://udamir.github.io/protoapi/spec/), [conversion examples](https://udamir.github.io/protoapi/examples/) and an [online demo](https://udamir.github.io/protoapi/demo).
